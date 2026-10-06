@@ -2,8 +2,6 @@
 
 #include "common.h"
 
-#include <type_traits>
-
 // The retail code passes arguments the way GCC 2.9x's EABI does: integers and pointers in $a0-$a7 in their order, floats in
 // $f12-$f19 in theirs. The C++ is n32, where every argument has a position and goes in that position's register of its kind:
 // the two agree when a function takes no floats, or nothing but floats. A function taking both goes through a thunk that moves
@@ -14,15 +12,12 @@
 // - EABI_IMPORT(name, function): an asm function, for the C++ that calls it through its declaration.
 //
 // Calls through the retail vtables and function pointers use the EABI's registers whatever is behind them (CallEabi).
+#if defined(_EE) && !defined(__INTELLISENSE__) && !defined(_MSC_VER)
+#include <type_traits>
+
 #define RETAIL_N32(name) asm(#name "_n32")
-#ifdef __INTELLISENSE__
-// VS Code's C/C++ extension doesn't take asm made of constant expressions
-#define EABI_EXPORT(name, function)
-#define EABI_IMPORT(name, function)
-#else
 #define EABI_EXPORT(name, function) asm((Abi::Thunk<decltype(function)>(Abi::Direction::Export, #name)))
 #define EABI_IMPORT(name, function) asm((Abi::Thunk<decltype(function)>(Abi::Direction::Import, #name)))
-#endif
 
 namespace Abi
 {
@@ -268,3 +263,8 @@ inline Result CallEabi(const void* function, Args... args)
     }
 }
 }
+#else
+#define RETAIL_N32(name)
+#define EABI_EXPORT(name, function)
+#define EABI_IMPORT(name, function)
+#endif

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|PS3">
+      <Configuration>Debug</Configuration>
+      <Platform>PS3</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|PS3">
+      <Configuration>Release</Configuration>
+      <Platform>PS3</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCTargetsPath Condition="'$(VCTargetsPath12)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath12)</VCTargetsPath>
+    <ProjectGuid>{1D1F1ACC-4BE5-4DBA-95DC-BEC772B9F742}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>SNC</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>SNC</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(DebuggerFlavor)'=='PS3Debugger'" Label="OverrideDebuggerDefaults">
+  </PropertyGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;__CELL_ASSERT__;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OptimizationLevel>Level2</OptimizationLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\abi.cpp" />
+    <ClCompile Include="..\..\src\debug.cpp" />
+    <ClCompile Include="..\..\src\game\agentlab.cpp" />
+    <ClCompile Include="..\..\src\game\agentlabitems.cpp" />
+    <ClCompile Include="..\..\src\game\agentnodes.cpp" />
+    <ClCompile Include="..\..\src\game\agentparts.cpp" />
+    <ClCompile Include="..\..\src\game\agents.cpp" />
+    <ClCompile Include="..\..\src\game\animation.cpp" />
+    <ClCompile Include="..\..\src\game\archive.cpp" />
+    <ClCompile Include="..\..\src\game\array.cpp" />
+    <ClCompile Include="..\..\src\game\attachment.cpp" />
+    <ClCompile Include="..\..\src\game\attachments.cpp" />
+    <ClCompile Include="..\..\src\game\behaviourevents.cpp" />
+    <ClCompile Include="..\..\src\game\behaviourmodule.cpp" />
+    <ClCompile Include="..\..\src\game\behaviours.cpp" />
+    <ClCompile Include="..\..\src\game\bindings.cpp" />
+    <ClCompile Include="..\..\src\game\camerablender.cpp" />
+    <ClCompile Include="..\..\src\game\camerarig.cpp" />
+    <ClCompile Include="..\..\src\game\cameras.cpp" />
+    <ClCompile Include="..\..\src\game\charactercontrollers.cpp" />
+    <ClCompile Include="..\..\src\game\characterframe.cpp" />
+    <ClCompile Include="..\..\src\game\characterlink.cpp" />
+    <ClCompile Include="..\..\src\game\characterlook.cpp" />
+    <ClCompile Include="..\..\src\game\charactermovement.cpp" />
+    <ClCompile Include="..\..\src\game\charactermoves.cpp" />
+    <ClCompile Include="..\..\src\game\characternodes.cpp" />
+    <ClCompile Include="..\..\src\game\characters.cpp" />
+    <ClCompile Include="..\..\src\game\charactersolver.cpp" />
+    <ClCompile Include="..\..\src\game\characterstate.cpp" />
+    <ClCompile Include="..\..\src\game\characterwalk.cpp" />
+    <ClCompile Include="..\..\src\game\chunkdata.cpp" />
+    <ClCompile Include="..\..\src\game\chunkfiles.cpp" />
+    <ClCompile Include="..\..\src\game\chunkloading.cpp" />
+    <ClCompile Include="..\..\src\game\chunkrigidbodies.cpp" />
+    <ClCompile Include="..\..\src\game\chunkscenery.cpp" />
+    <ClCompile Include="..\..\src\game\chunkview.cpp" />
+    <ClCompile Include="..\..\src\game\chunkwind.cpp" />
+    <ClCompile Include="..\..\src\game\claw.cpp" />
+    <ClCompile Include="..\..\src\game\clock.cpp" />
+    <ClCompile Include="..\..\src\game\collision.cpp" />
+    <ClCompile Include="..\..\src\game\colour.cpp" />
+    <ClCompile Include="..\..\src\game\commands.cpp" />
+    <ClCompile Include="..\..\src\game\commandsagents.cpp" />
+    <ClCompile Include="..\..\src\game\commandsattach.cpp" />
+    <ClCompile Include="..\..\src\game\commandscamera.cpp" />
+    <ClCompile Include="..\..\src\game\commandscharacters.cpp" />
+    <ClCompile Include="..\..\src\game\commandscontrollers.cpp" />
+    <ClCompile Include="..\..\src\game\commandsfocus.cpp" />
+    <ClCompile Include="..\..\src\game\commandsgame.cpp" />
+    <ClCompile Include="..\..\src\game\commandsmotion.cpp" />
+    <ClCompile Include="..\..\src\game\commandsnode.cpp" />
+    <ClCompile Include="..\..\src\game\commandsphysics.cpp" />
+    <ClCompile Include="..\..\src\game\commandsroutes.cpp" />
+    <ClCompile Include="..\..\src\game\commandtokens.cpp" />
+    <ClCompile Include="..\..\src\game\commandtokens2.cpp" />
+    <ClCompile Include="..\..\src\game\commandtokens3.cpp" />
+    <ClCompile Include="..\..\src\game\commandtokens4.cpp" />
+    <ClCompile Include="..\..\src\game\commandtokens5.cpp" />
+    <ClCompile Include="..\..\src\game\conditionchecks.cpp" />
+    <ClCompile Include="..\..\src\game\conditions.cpp" />
+    <ClCompile Include="..\..\src\game\context.cpp" />
+    <ClCompile Include="..\..\src\game\controls.cpp" />
+    <ClCompile Include="..\..\src\game\copyprotection.cpp" />
+    <ClCompile Include="..\..\src\game\curves.cpp" />
+    <ClCompile Include="..\..\src\game\curvesearch.cpp" />
+    <ClCompile Include="..\..\src\game\cutsceneplayer.cpp" />
+    <ClCompile Include="..\..\src\game\cutscenereader.cpp" />
+    <ClCompile Include="..\..\src\game\cutscenetracks.cpp" />
+    <ClCompile Include="..\..\src\game\decals.cpp" />
+    <ClCompile Include="..\..\src\game\disk.cpp" />
+    <ClCompile Include="..\..\src\game\dynamicscenery.cpp" />
+    <ClCompile Include="..\..\src\game\dynamicsceneryrun.cpp" />
+    <ClCompile Include="..\..\src\game\eventcallers.cpp" />
+    <ClCompile Include="..\..\src\game\filestream.cpp" />
+    <ClCompile Include="..\..\src\game\followcamera.cpp" />
+    <ClCompile Include="..\..\src\game\followrig.cpp" />
+    <ClCompile Include="..\..\src\game\font.cpp" />
+    <ClCompile Include="..\..\src\game\gamechunkmanager.cpp" />
+    <ClCompile Include="..\..\src\game\gamecontext.cpp" />
+    <ClCompile Include="..\..\src\game\gamecontroller.cpp" />
+    <ClCompile Include="..\..\src\game\graphicstables.cpp" />
+    <ClCompile Include="..\..\src\game\graplerope.cpp" />
+    <ClCompile Include="..\..\src\game\gun.cpp" />
+    <ClCompile Include="..\..\src\game\headtracking.cpp" />
+    <ClCompile Include="..\..\src\game\hoverboard.cpp" />
+    <ClCompile Include="..\..\src\game\hull.cpp" />
+    <ClCompile Include="..\..\src\game\humiliskate.cpp" />
+    <ClCompile Include="..\..\src\game\ikchain.cpp" />
+    <ClCompile Include="..\..\src\game\iksolver.cpp" />
+    <ClCompile Include="..\..\src\game\instancedecals.cpp" />
+    <ClCompile Include="..\..\src\game\instancefactory.cpp" />
+    <ClCompile Include="..\..\src\game\instanceparticles.cpp" />
+    <ClCompile Include="..\..\src\game\instanceplacement.cpp" />
+    <ClCompile Include="..\..\src\game\instances.cpp" />
+    <ClCompile Include="..\..\src\game\instancesection.cpp" />
+    <ClCompile Include="..\..\src\game\language.cpp" />
+    <ClCompile Include="..\..\src\game\layout.cpp" />
+    <ClCompile Include="..\..\src\game\layoutiterators.cpp" />
+    <ClCompile Include="..\..\src\game\lights.cpp" />
+    <ClCompile Include="..\..\src\game\listiterators.cpp" />
+    <ClCompile Include="..\..\src\game\math.cpp" />
+    <ClCompile Include="..\..\src\game\matrixinverse.cpp" />
+    <ClCompile Include="..\..\src\game\memory.cpp" />
+    <ClCompile Include="..\..\src\game\menus.cpp" />
+    <ClCompile Include="..\..\src\game\messagetriggers.cpp" />
+    <ClCompile Include="..\..\src\game\modelinstances.cpp" />
+    <ClCompile Include="..\..\src\game\motion.cpp" />
+    <ClCompile Include="..\..\src\game\movementnode.cpp" />
+    <ClCompile Include="..\..\src\game\movie.cpp" />
+    <ClCompile Include="..\..\src\game\navigation.cpp" />
+    <ClCompile Include="..\..\src\game\nodecontrollers.cpp" />
+    <ClCompile Include="..\..\src\game\nodeparts.cpp" />
+    <ClCompile Include="..\..\src\game\objectbuilder.cpp" />
+    <ClCompile Include="..\..\src\game\objectcollision.cpp" />
+    <ClCompile Include="..\..\src\game\objectnode.cpp" />
+    <ClCompile Include="..\..\src\game\objectnodehelpers.cpp" />
+    <ClCompile Include="..\..\src\game\objectnodemotion.cpp" />
+    <ClCompile Include="..\..\src\game\objectnodeparts.cpp" />
+    <ClCompile Include="..\..\src\game\objectresources.cpp" />
+    <ClCompile Include="..\..\src\game\objects.cpp" />
+    <ClCompile Include="..\..\src\game\ogi.cpp" />
+    <ClCompile Include="..\..\src\game\oleg.cpp" />
+    <ClCompile Include="..\..\src\game\olegpages.cpp" />
+    <ClCompile Include="..\..\src\game\overlay.cpp" />
+    <ClCompile Include="..\..\src\game\pads.cpp" />
+    <ClCompile Include="..\..\src\game\particles.cpp" />
+    <ClCompile Include="..\..\src\game\particles2d.cpp" />
+    <ClCompile Include="..\..\src\game\particletrails.cpp" />
+    <ClCompile Include="..\..\src\game\perception.cpp" />
+    <ClCompile Include="..\..\src\game\physics.cpp" />
+    <ClCompile Include="..\..\src\game\pickups.cpp" />
+    <ClCompile Include="..\..\src\game\place.cpp" />
+    <ClCompile Include="..\..\src\game\pools.cpp" />
+    <ClCompile Include="..\..\src\game\proceduraljoints.cpp" />
+    <ClCompile Include="..\..\src\game\progress.cpp" />
+    <ClCompile Include="..\..\src\game\projectiles.cpp" />
+    <ClCompile Include="..\..\src\game\properties.cpp" />
+    <ClCompile Include="..\..\src\game\readers.cpp" />
+    <ClCompile Include="..\..\src\game\reference.cpp" />
+    <ClCompile Include="..\..\src\game\renderer.cpp" />
+    <ClCompile Include="..\..\src\game\rendererpool.cpp" />
+    <ClCompile Include="..\..\src\game\resources.cpp" />
+    <ClCompile Include="..\..\src\game\resourcetables.cpp" />
+    <ClCompile Include="..\..\src\game\rigidbody.cpp" />
+    <ClCompile Include="..\..\src\game\rigidbodyframe.cpp" />
+    <ClCompile Include="..\..\src\game\rollerbrawl.cpp" />
+    <ClCompile Include="..\..\src\game\rotations.cpp" />
+    <ClCompile Include="..\..\src\game\save.cpp" />
+    <ClCompile Include="..\..\src\game\savecode.cpp" />
+    <ClCompile Include="..\..\src\game\savecodeselection.cpp" />
+    <ClCompile Include="..\..\src\game\savedevice.cpp" />
+    <ClCompile Include="..\..\src\game\savefiles.cpp" />
+    <ClCompile Include="..\..\src\game\savemanager.cpp" />
+    <ClCompile Include="..\..\src\game\savepages.cpp" />
+    <ClCompile Include="..\..\src\game\scenery.cpp" />
+    <ClCompile Include="..\..\src\game\sceneryitems.cpp" />
+    <ClCompile Include="..\..\src\game\scriptpacks.cpp" />
+    <ClCompile Include="..\..\src\game\scripttokenhelpers.cpp" />
+    <ClCompile Include="..\..\src\game\scripttokens.cpp" />
+    <ClCompile Include="..\..\src\game\segments.cpp" />
+    <ClCompile Include="..\..\src\game\shaderanimation.cpp" />
+    <ClCompile Include="..\..\src\game\shadows.cpp" />
+    <ClCompile Include="..\..\src\game\shapes.cpp" />
+    <ClCompile Include="..\..\src\game\skidmarks.cpp" />
+    <ClCompile Include="..\..\src\game\sound.cpp" />
+    <ClCompile Include="..\..\src\game\soundobjects.cpp" />
+    <ClCompile Include="..\..\src\game\springbody.cpp" />
+    <ClCompile Include="..\..\src\game\stream.cpp" />
+    <ClCompile Include="..\..\src\game\string.cpp" />
+    <ClCompile Include="..\..\src\game\targetlock.cpp" />
+    <ClCompile Include="..\..\src\game\textconsole.cpp" />
+    <ClCompile Include="..\..\src\game\trajectory.cpp" />
+    <ClCompile Include="..\..\src\game\triggernodes.cpp" />
+    <ClCompile Include="..\..\src\game\unusedreaders.cpp" />
+    <ClCompile Include="..\..\src\game\vehicles.cpp" />
+    <ClCompile Include="..\..\src\game\videocontroller.cpp" />
+    <ClCompile Include="..\..\src\game\view.cpp" />
+    <ClCompile Include="..\..\src\game\volumes.cpp" />
+    <ClCompile Include="..\..\src\game\waypointroutes.cpp" />
+    <ClCompile Include="..\..\src\game\widgeteffects.cpp" />
+    <ClCompile Include="..\..\src\game\widgets.cpp" />
+    <ClCompile Include="..\..\src\game\wrestle.cpp" />
+    <ClCompile Include="..\..\src\gcc2.cpp" />
+    <ClCompile Include="..\..\src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\abi.h" />
+    <ClInclude Include="..\..\include\common.h" />
+    <ClInclude Include="..\..\include\debug.h" />
+    <ClInclude Include="..\..\include\game\agentlab.h" />
+    <ClInclude Include="..\..\include\game\agentparts.h" />
+    <ClInclude Include="..\..\include\game\agents.h" />
+    <ClInclude Include="..\..\include\game\animation.h" />
+    <ClInclude Include="..\..\include\game\archive.h" />
+    <ClInclude Include="..\..\include\game\array.h" />
+    <ClInclude Include="..\..\include\game\attachment.h" />
+    <ClInclude Include="..\..\include\game\attachments.h" />
+    <ClInclude Include="..\..\include\game\behaviours.h" />
+    <ClInclude Include="..\..\include\game\bindings.h" />
+    <ClInclude Include="..\..\include\game\camerablender.h" />
+    <ClInclude Include="..\..\include\game\camerarig.h" />
+    <ClInclude Include="..\..\include\game\cameras.h" />
+    <ClInclude Include="..\..\include\game\characters.h" />
+    <ClInclude Include="..\..\include\game\chunkdata.h" />
+    <ClInclude Include="..\..\include\game\chunkfiles.h" />
+    <ClInclude Include="..\..\include\game\chunkloading.h" />
+    <ClInclude Include="..\..\include\game\clock.h" />
+    <ClInclude Include="..\..\include\game\collision.h" />
+    <ClInclude Include="..\..\include\game\colour.h" />
+    <ClInclude Include="..\..\include\game\commands.h" />
+    <ClInclude Include="..\..\include\game\conditions.h" />
+    <ClInclude Include="..\..\include\game\context.h" />
+    <ClInclude Include="..\..\include\game\controllers.h" />
+    <ClInclude Include="..\..\include\game\controls.h" />
+    <ClInclude Include="..\..\include\game\copyprotection.h" />
+    <ClInclude Include="..\..\include\game\cutscenereader.h" />
+    <ClInclude Include="..\..\include\game\cutscenes.h" />
+    <ClInclude Include="..\..\include\game\decals.h" />
+    <ClInclude Include="..\..\include\game\disk.h" />
+    <ClInclude Include="..\..\include\game\dynamicscenery.h" />
+    <ClInclude Include="..\..\include\game\effects.h" />
+    <ClInclude Include="..\..\include\game\events.h" />
+    <ClInclude Include="..\..\include\game\filestream.h" />
+    <ClInclude Include="..\..\include\game\followcamera.h" />
+    <ClInclude Include="..\..\include\game\font.h" />
+    <ClInclude Include="..\..\include\game\gamecontroller.h" />
+    <ClInclude Include="..\..\include\game\graphicstables.h" />
+    <ClInclude Include="..\..\include\game\hull.h" />
+    <ClInclude Include="..\..\include\game\ik.h" />
+    <ClInclude Include="..\..\include\game\instancefactory.h" />
+    <ClInclude Include="..\..\include\game\instanceparticles.h" />
+    <ClInclude Include="..\..\include\game\instances.h" />
+    <ClInclude Include="..\..\include\game\instancesection.h" />
+    <ClInclude Include="..\..\include\game\language.h" />
+    <ClInclude Include="..\..\include\game\layout.h" />
+    <ClInclude Include="..\..\include\game\lights.h" />
+    <ClInclude Include="..\..\include\game\list.h" />
+    <ClInclude Include="..\..\include\game\math.h" />
+    <ClInclude Include="..\..\include\game\memory.h" />
+    <ClInclude Include="..\..\include\game\menus.h" />
+    <ClInclude Include="..\..\include\game\movie.h" />
+    <ClInclude Include="..\..\include\game\navigation.h" />
+    <ClInclude Include="..\..\include\game\nodecontrollers.h" />
+    <ClInclude Include="..\..\include\game\objectbuilder.h" />
+    <ClInclude Include="..\..\include\game\objectcollision.h" />
+    <ClInclude Include="..\..\include\game\objectnode.h" />
+    <ClInclude Include="..\..\include\game\objects.h" />
+    <ClInclude Include="..\..\include\game\oleg.h" />
+    <ClInclude Include="..\..\include\game\olegpages.h" />
+    <ClInclude Include="..\..\include\game\overlay.h" />
+    <ClInclude Include="..\..\include\game\pads.h" />
+    <ClInclude Include="..\..\include\game\particles.h" />
+    <ClInclude Include="..\..\include\game\particles2d.h" />
+    <ClInclude Include="..\..\include\game\physics.h" />
+    <ClInclude Include="..\..\include\game\pickups.h" />
+    <ClInclude Include="..\..\include\game\place.h" />
+    <ClInclude Include="..\..\include\game\player.h" />
+    <ClInclude Include="..\..\include\game\pools.h" />
+    <ClInclude Include="..\..\include\game\progress.h" />
+    <ClInclude Include="..\..\include\game\properties.h" />
+    <ClInclude Include="..\..\include\game\readers.h" />
+    <ClInclude Include="..\..\include\game\reference.h" />
+    <ClInclude Include="..\..\include\game\renderer.h" />
+    <ClInclude Include="..\..\include\game\resources.h" />
+    <ClInclude Include="..\..\include\game\rigidbody.h" />
+    <ClInclude Include="..\..\include\game\save.h" />
+    <ClInclude Include="..\..\include\game\savedevice.h" />
+    <ClInclude Include="..\..\include\game\savemanager.h" />
+    <ClInclude Include="..\..\include\game\scenery.h" />
+    <ClInclude Include="..\..\include\game\scripttokens.h" />
+    <ClInclude Include="..\..\include\game\shaderanimation.h" />
+    <ClInclude Include="..\..\include\game\shadows.h" />
+    <ClInclude Include="..\..\include\game\shapes.h" />
+    <ClInclude Include="..\..\include\game\sound.h" />
+    <ClInclude Include="..\..\include\game\springbody.h" />
+    <ClInclude Include="..\..\include\game\stream.h" />
+    <ClInclude Include="..\..\include\game\string.h" />
+    <ClInclude Include="..\..\include\game\vehicles.h" />
+    <ClInclude Include="..\..\include\game\view.h" />
+    <ClInclude Include="..\..\include\game\volumes.h" />
+    <ClInclude Include="..\..\include\game\widgeteffects.h" />
+    <ClInclude Include="..\..\include\game\widgets.h" />
+    <ClInclude Include="..\..\include\gcc2.h" />
+    <ClInclude Include="..\..\include\platform\audio.h" />
+    <ClInclude Include="..\..\include\platform\disc.h" />
+    <ClInclude Include="..\..\include\platform\files.h" />
+    <ClInclude Include="..\..\include\platform\graphics.h" />
+    <ClInclude Include="..\..\include\platform\io.h" />
+    <ClInclude Include="..\..\include\platform\math.h" />
+    <ClInclude Include="..\..\include\platform\memory.h" />
+    <ClInclude Include="..\..\include\platform\movie.h" />
+    <ClInclude Include="..\..\include\platform\pads.h" />
+    <ClInclude Include="..\..\include\platform\saves.h" />
+    <ClInclude Include="..\..\include\platform\sound.h" />
+    <ClInclude Include="..\..\include\platform\stream.h" />
+    <ClInclude Include="..\..\include\platform\system.h" />
+    <ClInclude Include="..\..\include\platform\time.h" />
+    <ClInclude Include="..\..\include\retail\libc.h" />
+    <ClInclude Include="..\..\include\labels.inc" />
+    <ClInclude Include="..\..\include\macro.inc" />
+  </ItemGroup>
+  <Import Condition="'$(ConfigurationType)' == 'Makefile' and Exists('$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets')" Project="$(VCTargetsPath)\Platforms\$(Platform)\SCE.Makefile.$(Platform).targets" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

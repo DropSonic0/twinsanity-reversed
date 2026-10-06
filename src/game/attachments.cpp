@@ -21,6 +21,7 @@ EABI_EXPORT(FUN_00196958, HoldInPlace);
 
 // AttachSpring has more arguments than n32 passes in registers: the asm hands it the eight integers in $a0-$a7 and the three
 // floats in $f12-$f14, the C++ function takes the floats there, the first five integers in $a3-$a7 and the rest on the stack
+#if defined(_EE)
 asm(R"(
     .pushsection .text.FUN_001966b0, "ax", @progbits
     .globl FUN_001966b0

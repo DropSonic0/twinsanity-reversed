@@ -415,7 +415,9 @@ extern "C"
         {
             // A square root and a division: GCC makes them one RSQRT.S otherwise, which rounds differently
             f32 root = __builtin_sqrtf(squared);
+            #if defined(__GNUC__) || defined(__clang__)
             asm("" : "+f"(root));
+            #endif
             return 1.0f / root;
         }
 

@@ -9,7 +9,11 @@
 extern "C"
 {
     // SplineDistanceSquaredIn's EABI entry, which the minimum search calls
+#if defined(__GNUC__) || defined(__clang__)
     void SplineDistanceSquaredEntry() asm("FUN_0018f2d8");
+#else
+    void SplineDistanceSquaredEntry();
+#endif
 }
 
 EABI_EXPORT(FUN_0018ea78, PathDirectionIn);
