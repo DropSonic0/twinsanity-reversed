@@ -24,7 +24,7 @@ union TextAlignment
     };
 
     // The bits' masks, and the alignments the game uses
-    enum Mask : u32
+    enum Mask
     {
         Top = 0x1,
         Centre = 0x2,
@@ -39,7 +39,7 @@ union TextAlignment
         MiddleRight = Middle | Right,
         BottomLeft = Bottom | Left,
         BottomCentre = Bottom | Centre,
-        BottomRight = Bottom | Right,
+        BottomRight = Bottom | Right
     };
 };
 CHECK_SIZE(TextAlignment, 4);
@@ -90,7 +90,7 @@ struct GameTexture;
 class Font
 {
 public:
-    static constexpr u32 MaxPages = 3;
+    static CONSTEXPR u32 MaxPages = 3;
 
     s32 glyphCount;
     s32 firstCharacter;

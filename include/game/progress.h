@@ -14,7 +14,7 @@ class Stream;
 // How the second character is paired with the first (the progress's, a checkpoint's and a save's pairing): alone, the second on
 // the Humiliskate or the Rollerbrawl with the first, the two tied together, 5 (only the scripts set it and test it: SetPlayerMode
 // and PairingIs5Condition), on the hoverboard, and on it with its controls
-enum Pairing : u32
+enum Pairing
 {
     PairingAlone = 1,
     PairingHumiliskate = 2,
@@ -22,38 +22,38 @@ enum Pairing : u32
     PairingTied = 4,
     Pairing5 = 5,
     PairingHoverboard = 6,
-    PairingHoverboardControls = 7,
+    PairingHoverboardControls = 7
 };
 
 // The ways into the game (the progress's Reset and Enter, the game controller's entry): a new game, a new game from the start's
 // checkpoint (nothing asks for it), from a save's chunk and place (Enter; Reset, also the game over's continue: from the saved
 // checkpoint, else the start's) and from the latest checkpoint of any (the scripts' RestartFromCheckpoint). The first two drop
 // the chunks' instances
-enum GameEntry : u32
+enum GameEntry
 {
     EntryNewGame = 0,
     EntryNewGameFromStart = 1,
     EntrySaved = 2,
-    EntryCheckpoint = 3,
+    EntryCheckpoint = 3
 };
 
 // The play modes: normal, with a health bar (boss mode) and timed with a count (whack-a-worm)
-enum PlayMode : u32
+enum PlayMode
 {
     PlayNormal = 0,
     PlayHealth = 1,
-    PlayTimed = 2,
+    PlayTimed = 2
 };
 
 // A level's gems (its progress's bits, the order of TokenGem's keywords)
-enum Gem : u32
+enum Gem
 {
     GemBlue = 0,
     GemClear = 1,
     GemGreen = 2,
     GemPurple = 3,
     GemRed = 4,
-    GemYellow = 5,
+    GemYellow = 5
 };
 
 // A checkpoint's bits: set, play started from it since it was set, and the progress's pairing, character and second character
@@ -157,29 +157,29 @@ struct GameProgress
 {
     // The checkpoints: the last one a script set without saving, the one play started from (a new game's or a loaded save's) and
     // the last one a script saved at
-    enum CheckpointSlot : u32
+    enum CheckpointSlot
     {
         CheckpointRespawn = 0,
         CheckpointStart = 1,
         CheckpointSaved = 2,
-        Checkpoints = 3,
+        Checkpoints = 3
     };
 
     // How ChunkLoaded waits for the start chunk: every loader under the loading's path loaded (only once asked again), the chunk,
     // the chunk and its links
-    enum LoadedHow : u32
+    enum LoadedHow
     {
         LoadedAll = 0,
         LoadedChunk = 1,
-        LoadedWithLinks = 2,
+        LoadedWithLinks = 2
     };
 
-    static constexpr u32 NoCharacter = 6;
-    static constexpr u32 Levels = 16;
-    static constexpr u32 Characters = 6;
-    static constexpr u32 Gems = 6;
+    static CONSTEXPR u32 NoCharacter = 6;
+    static CONSTEXPR u32 Levels = 16;
+    static CONSTEXPR u32 Characters = 6;
+    static CONSTEXPR u32 Gems = 6;
     // A new game's lives
-    static constexpr u32 StartLives = 5;
+    static CONSTEXPR u32 StartLives = 5;
 
     ProgressCounts counts;
     PlayState play;
@@ -284,7 +284,7 @@ CHECK_SIZE(SaveControllerOptions, 4);
 // the save's data (the levels' progress and the chunks' persistent flags) and the progress
 struct SaveController
 {
-    static constexpr u32 DataSize = 0xF000;
+    static CONSTEXPR u32 DataSize = 0xF000;
 
     SaveControllerSummary summary;
     SaveControllerOptions options;

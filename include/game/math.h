@@ -5,7 +5,15 @@
 
 // The game's maths library. Angles are 65536ths of a turn. Matrixes are four rows, the axes and then the translation, which
 // vectors multiply from the left. The functions on vectors only touch x, y and z
-struct alignas(16) Vector4
+#if defined(__SNC__)
+#define ALIGN16 __attribute__((aligned(16)))
+#elif defined(_MSC_VER)
+#define ALIGN16 __declspec(align(16))
+#else
+#define ALIGN16 alignas(16)
+#endif
+
+struct ALIGN16 Vector4
 {
     f32 x;
     f32 y;
@@ -21,7 +29,7 @@ struct Vector2
 };
 CHECK_SIZE(Vector2, 8);
 
-struct alignas(16) Matrix4x4
+struct ALIGN16 Matrix4x4
 {
     f32 m[4][4];
 };
@@ -40,30 +48,30 @@ union FloatBits
     };
 };
 CHECK_SIZE(FloatBits, 4);
-constexpr u32 FloatExponentBias = 127;
+CONSTEXPR u32 FloatExponentBias = 127;
 
 // The constants the game's maths shares: squared lengths up to LengthEpsilon (2.5e-09) have no direction, values within Epsilon
 // (5e-05) of none are none, lengths up to InverseEpsilon (1e-10, the epsilon InverseLength4 squares) have no inverse, and
 // Infinite (1e30) is beyond any distance
-constexpr f32 LengthEpsilon = 0x1.5798ecp-29f;
-constexpr f32 Epsilon = 0x1.a36e2ep-15f;
-constexpr f32 InverseEpsilon = 0x1.b7cdfep-34f;
-constexpr f32 Infinite = 0x1.93e594p+99f;
+CONSTEXPR f32 LengthEpsilon = 0x1.5798ecp-29f;
+CONSTEXPR f32 Epsilon = 0x1.a36e2ep-15f;
+CONSTEXPR f32 InverseEpsilon = 0x1.b7cdfep-34f;
+CONSTEXPR f32 Infinite = 0x1.93e594p+99f;
 // π, its multiples and its inverse
-constexpr f32 Pi = 0x1.921fb6p+1f;
-constexpr f32 TwoPi = 0x1.921fb6p+2f;
-constexpr f32 HalfPi = 0x1.921fb6p+0f;
-constexpr f32 QuarterPi = 0x1.921fb6p-1f;
-constexpr f32 InversePi = 0x1.45f306p-2f;
+CONSTEXPR f32 Pi = 0x1.921fb6p+1f;
+CONSTEXPR f32 TwoPi = 0x1.921fb6p+2f;
+CONSTEXPR f32 HalfPi = 0x1.921fb6p+0f;
+CONSTEXPR f32 QuarterPi = 0x1.921fb6p-1f;
+CONSTEXPR f32 InversePi = 0x1.45f306p-2f;
 // Angles: a quarter, a half and a whole turn; a 65536th of a turn in radians, a radian and a degree in 65536ths of a turn, and a
 // degree in radians (a bit above the float nearest π / 180, as retail has it)
-constexpr s32 QuarterTurnAngle = 0x4000;
-constexpr s32 HalfTurnAngle = 0x8000;
-constexpr s32 FullTurnAngle = 0x10000;
-constexpr f32 AngleToRadians = 0x1.921fb6p-14f;
-constexpr f32 RadiansToAngle = 0x1.45f306p+13f;
-constexpr f32 DegreesToAngle = 0x1.6c16c2p+7f;
-constexpr f32 DegreesToRadians = 0x1.1df46cp-6f;
+CONSTEXPR s32 QuarterTurnAngle = 0x4000;
+CONSTEXPR s32 HalfTurnAngle = 0x8000;
+CONSTEXPR s32 FullTurnAngle = 0x10000;
+CONSTEXPR f32 AngleToRadians = 0x1.921fb6p-14f;
+CONSTEXPR f32 RadiansToAngle = 0x1.45f306p+13f;
+CONSTEXPR f32 DegreesToAngle = 0x1.6c16c2p+7f;
+CONSTEXPR f32 DegreesToRadians = 0x1.1df46cp-6f;
 
 extern "C"
 {
@@ -83,24 +91,30 @@ extern "C"
 }
 
 // The units AngleFrom takes a value in
-enum AngleUnit : u32
+enum AngleUnit
 {
     AngleRadians = 0,
     AngleDegrees = 1,
-    AngleTurns = 2,
+    AngleTurns = 2
 };
 
 // A value GCC mustn't fold into what follows: 1 / sqrt(x) made one RSQRT.S rounds unlike the retail SQRT.S and DIV.S
 inline f32 Kept(f32 value)
 {
+#if (defined(__GNUC__) || defined(__clang__)) && !defined(__SNC__)
     asm("" : "+f"(value));
+#endif
     return value;
 }
 
 // A row of a matrix (a place's axes and its position, PositionRow)
-constexpr u32 PositionRow = 3;
+CONSTEXPR u32 PositionRow = 3;
 // Each axis's (or row's) next one, round from z back to x
+#if defined(__SNC__) || defined(__CELLOS_LV2__)
+static const s32 NextAxis[3] = {1, 2, 0};
+#else
 inline constexpr s32 NextAxis[3] = {1, 2, 0};
+#endif
 
 inline const Vector4* RowOf(const Matrix4x4* matrix, u32 row)
 {
@@ -115,10 +129,10 @@ inline Vector4* RowOf(Matrix4x4* matrix, u32 row)
 // Abramowitz and Stegun's 4.4.45: the arc cosine of a value from 0 to 1 is about the square root of 1 less it times this cubic
 inline f32 ArcCosineOfPositive(f32 value)
 {
-    constexpr f32 A3 = -0x1.32dc6p-6f;
-    constexpr f32 A2 = 0x1.302c4ep-4f;
-    constexpr f32 A1 = 0x1.b26908p-3f;
-    constexpr f32 A0 = 0x1.921b48p+0f;
+    CONSTEXPR f32 A3 = -0x1.32dc6p-6f;
+    CONSTEXPR f32 A2 = 0x1.302c4ep-4f;
+    CONSTEXPR f32 A1 = 0x1.b26908p-3f;
+    CONSTEXPR f32 A0 = 0x1.921b48p+0f;
     return ((value * A3 + A2) * value - A1) * value + A0;
 }
 
@@ -129,11 +143,11 @@ inline s32 WrapAngle(s32 angle)
 }
 
 // Where PlaneSide finds a point
-enum PlaneSideResult : u32
+enum PlaneSideResult
 {
     InFrontOfPlane = 1,
     OnPlane = 2,
-    BehindPlane = 3,
+    BehindPlane = 3
 };
 
 // A box along the axes: its lowest and its highest corner
@@ -479,5 +493,5 @@ extern "C"
 
 // The steps and the tolerance (the absolute and the relative one) the curves' nearest point searches refine with (a path's,
 // a camera spline's: FindMinimum)
-constexpr s32 CurveRefineSteps = 4;
-constexpr f32 CurveRefineTolerance = Epsilon;
+CONSTEXPR s32 CurveRefineSteps = 4;
+CONSTEXPR f32 CurveRefineTolerance = Epsilon;

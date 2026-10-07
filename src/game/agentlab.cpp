@@ -10,7 +10,7 @@
 namespace
 {
 // A script's priority when it's made
-constexpr u32 DefaultPriority = 50;
+CONSTEXPR u32 DefaultPriority = 50;
 
 ObjectBuilder* Builder()
 {
@@ -76,9 +76,9 @@ u32 ScriptResource::ItemType()
 // The tool's locality (anywhere), status (any state) and preference (anyhow), which the game never reads
 void CallConvention::SetDefaults()
 {
-    constexpr u32 Anywhere = 3;
-    constexpr u32 AnyState = 2;
-    constexpr u32 Anyhow = 5;
+    CONSTEXPR u32 Anywhere = 3;
+    CONSTEXPR u32 AnyState = 2;
+    CONSTEXPR u32 Anyhow = 5;
     CallConventionBits defaults = {};
     defaults.assignee = AssignNone;
     defaults.unused4 = Anywhere;
@@ -106,7 +106,7 @@ void Assigner::Read(Stream* stream)
     s32 index;
     stream->ReadS32(&index);
     graphIndex = index;
-    auto* read = static_cast<CallConvention*>(MemoryAllocate(sizeof(CallConvention)));
+    CallConvention* read = static_cast<CallConvention*>(MemoryAllocate(sizeof(CallConvention)));
     read->Read(stream);
     convention = read;
 }
@@ -168,7 +168,7 @@ void ScriptStarter::Resolve(ResourceTable* scripts)
         }
 
         u16 id = static_cast<u16>(assigner->graphIndex - 1);
-        auto* graph = id != NoScriptId ? static_cast<ScriptGraph*>(scripts->items[id & ResourceIndexMask]) : nullptr;
+        ScriptGraph* graph = id != NoScriptId ? static_cast<ScriptGraph*>(scripts->items[id & ResourceIndexMask]) : nullptr;
         if (graph != nullptr)
         {
             assigners[index]->graph = graph->data;
@@ -185,7 +185,7 @@ void ScriptStarter::Read(Stream* stream)
     stream->ReadS32(reinterpret_cast<s32*>(&assignerCountWord));
     for (u32 index = 0; index < assignerCount; index++)
     {
-        auto* assigner = static_cast<Assigner*>(MemoryAllocate(sizeof(Assigner)));
+        Assigner* assigner = static_cast<Assigner*>(MemoryAllocate(sizeof(Assigner)));
         assigner->Read(stream);
         assigners[index] = assigner;
     }
@@ -438,7 +438,7 @@ void StateBody::Read(Stream* stream)
     commands = bits.commandCount != 0 ? ReadCommand(stream) : nullptr;
     if (bits.hasNext != 0)
     {
-        auto* following = static_cast<StateBody*>(MemoryAllocate(sizeof(StateBody)));
+        StateBody* following = static_cast<StateBody*>(MemoryAllocate(sizeof(StateBody)));
         following->Read(stream);
         next = following;
     }
@@ -457,12 +457,12 @@ void StateBody::Destroy(u32 destroyFlags)
 
     if (commands != nullptr)
     {
-        CallVirtual<void>(commands, commands->vtable, ScriptCommand::DestroySlot, u32{DestroyAndFree});
+        CallVirtual<void>(commands, commands->vtable, ScriptCommand::DestroySlot, static_cast<u32>(DestroyAndFree));
     }
 
     if (condition != nullptr)
     {
-        CallVirtual<void>(condition, condition->vtable, ScriptCondition::DestroySlot, u32{DestroyAndFree});
+        CallVirtual<void>(condition, condition->vtable, ScriptCondition::DestroySlot, static_cast<u32>(DestroyAndFree));
     }
 
     if ((destroyFlags & 1) != 0)
@@ -487,7 +487,7 @@ void GraphState::Read(Stream* stream, u32 readBodies)
     packet = readPacket;
     if (bits.hasNext != 0)
     {
-        auto* following = static_cast<GraphState*>(MemoryAllocate(sizeof(GraphState)));
+        GraphState* following = static_cast<GraphState*>(MemoryAllocate(sizeof(GraphState)));
         following->Read(stream, 0);
         next = following;
     }
@@ -513,7 +513,7 @@ void GraphState::ReadBodies(Stream* stream)
         return;
     }
 
-    auto* first = static_cast<StateBody*>(MemoryAllocate(sizeof(StateBody)));
+    StateBody* first = static_cast<StateBody*>(MemoryAllocate(sizeof(StateBody)));
     first->Read(stream);
     bodies = first;
 }
@@ -561,7 +561,7 @@ void GraphData::Read(Stream* stream)
     stream->ReadS32(&stateCount);
     s32 startIndex;
     stream->ReadS32(&startIndex);
-    auto* first = static_cast<GraphState*>(MemoryAllocate(sizeof(GraphState)));
+    GraphState* first = static_cast<GraphState*>(MemoryAllocate(sizeof(GraphState)));
     first->Read(stream, 0);
     states = first;
     start = nullptr;
@@ -616,7 +616,7 @@ void ScriptGraph::Resolve()
 
 void ScriptGraph::Read(Stream* stream)
 {
-    auto* read = static_cast<GraphData*>(MemoryAllocate(sizeof(GraphData)));
+    GraphData* read = static_cast<GraphData*>(MemoryAllocate(sizeof(GraphData)));
     read->name.string = nullptr;
     read->name.capacity = 0;
     read->name.length = 0;
@@ -645,7 +645,7 @@ ObjectBuilder* ObjectBuilder::Construct(ObjectBuilder* builder)
 
 void* ObjectBuilder::Build(u32 id, s32 kind)
 {
-    constexpr u32 MakeSlot = 2;
+    CONSTEXPR u32 MakeSlot = 2;
     for (Node* node = first; node != nullptr; node = node->next)
     {
         void* factory = node->factory;
@@ -661,7 +661,7 @@ void* ObjectBuilder::Build(u32 id, s32 kind)
 
 void ObjectBuilder::Add(void* factory)
 {
-    auto* node = static_cast<Node*>(MemoryAllocate(sizeof(Node)));
+    Node* node = static_cast<Node*>(MemoryAllocate(sizeof(Node)));
     node->factory = factory;
     node->previous = nullptr;
     node->next = nullptr;
@@ -687,7 +687,7 @@ ScriptCommand* ReadCommand(Stream* stream)
     ObjectBuilder* builder = Builder();
     ScriptCommandBits read;
     stream->ReadS32(reinterpret_cast<s32*>(&read.value));
-    auto* command = static_cast<ScriptCommand*>(builder->Build(read.id, ObjectBuilder::CommandKind));
+    ScriptCommand* command = static_cast<ScriptCommand*>(builder->Build(read.id, ObjectBuilder::CommandKind));
     u32 size = CallVirtual<u32>(command, command->vtable, ScriptCommand::SizeSlot) - sizeof(ScriptCommand);
     if (size != 0)
     {
@@ -714,11 +714,11 @@ ScriptCondition* ReadCondition(Stream* stream)
     ObjectBuilder* builder = Builder();
     ScriptConditionBits read;
     stream->ReadS32(reinterpret_cast<s32*>(&read.value));
-    auto* condition = static_cast<ScriptCondition*>(builder->Build(read.id, ObjectBuilder::ConditionKind));
+    ScriptCondition* condition = static_cast<ScriptCondition*>(builder->Build(read.id, ObjectBuilder::ConditionKind));
     condition->bits = read;
-    for (f32& value : condition->values)
+    for (s32 i = 0; i < 3; i++)
     {
-        stream->ReadF32(&value);
+        stream->ReadF32(&condition->values[i]);
     }
 
     return condition;
@@ -729,7 +729,7 @@ void ScriptCommand::Destroy(u32 destroyFlags)
     vtable = g_ScriptCommandVTable;
     if (next != nullptr)
     {
-        CallVirtual<void>(next, next->vtable, ScriptCommand::DestroySlot, u32{DestroyAndFree});
+        CallVirtual<void>(next, next->vtable, ScriptCommand::DestroySlot, static_cast<u32>(DestroyAndFree));
     }
 
     if ((destroyFlags & 1) != 0)

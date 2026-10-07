@@ -55,8 +55,8 @@ CHECK_SIZE(StringListIterator, 0xC);
 struct Archive
 {
     // What a new archive's table grows by, and its list of lookups' room and growth
-    static constexpr u16 FilesGrowth = 0x40;
-    static constexpr u32 LookupsGrowth = 10;
+    static CONSTEXPR u16 FilesGrowth = 0x40;
+    static CONSTEXPR u32 LookupsGrowth = 10;
 
     ArchiveFile* files;
     u16 count;
@@ -75,11 +75,11 @@ CHECK_OFFSET(Archive, path, 0x20);
 class SectionReader
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ReadSlot = 2,
-        MissingSlot = 3,
+        MissingSlot = 3
     };
 
     const GccVTableEntry* vtable;

@@ -17,7 +17,7 @@ struct String
 CHECK_SIZE(String, 0xC);
 
 // StringFind's result when the text isn't there
-constexpr s32 StringNotFound = -1;
+CONSTEXPR s32 StringNotFound = -1;
 
 extern "C"
 {

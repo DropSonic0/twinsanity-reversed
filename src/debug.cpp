@@ -33,8 +33,8 @@ union StatesHighWord
 CHECK_SIZE(StatesHighWord, 4);
 
 // A state logged is the frame and the state's low byte
-constexpr u32 LoggedFrameShift = 8;
-constexpr u32 LoggedStateMask = 0xFF;
+CONSTEXPR u32 LoggedFrameShift = 8;
+CONSTEXPR u32 LoggedStateMask = 0xFF;
 
 volatile u32* StatesHigh()
 {
@@ -62,8 +62,9 @@ void DebugFrameRendered()
         }
     }
 
-    for (volatile DebugInput& input : g_DebugInputs)
+    for (s32 i = 0; i < DebugInputCount; i++)
     {
+        volatile DebugInput& input = g_DebugInputs[i];
         if (input.kind == DebugInput::State && input.frame == frame && G_GameController != nullptr)
         {
             StatesHighWord states;

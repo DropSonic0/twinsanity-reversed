@@ -161,7 +161,7 @@ CHECK_SIZE(LayoutTrigger, 0x60);
 class MessageTrigger : public LayoutTrigger
 {
 public:
-    static constexpr u32 TypeId = 0x1813;
+    static CONSTEXPR u32 TypeId = 0x1813;
 
     s16 messages[4];
     u8 unused68[0x70 - 0x68];
@@ -176,7 +176,7 @@ CHECK_SIZE(MessageTrigger, 0x70);
 class CameraTrigger : public LayoutTrigger
 {
 public:
-    static constexpr u32 TypeId = 0x1C00;
+    static CONSTEXPR u32 TypeId = 0x1C00;
 
     struct MainCamera* camera;
     u8 unused64[0x70 - 0x64];
@@ -222,13 +222,13 @@ CHECK_SIZE(LayoutPosition, 0x10);
 class PointList
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
-        ReadSlot = 3,
+        ReadSlot = 3
     };
 
-    static constexpr u32 TypeId = 0x1511;
+    static CONSTEXPR u32 TypeId = 0x1511;
 
     s32 count;
     Vector4* points;
@@ -248,7 +248,7 @@ CHECK_SIZE(PointList, 0xC);
 class LayoutPath : public PointList
 {
 public:
-    static constexpr u32 TypeId = 0x1512;
+    static CONSTEXPR u32 TypeId = 0x1512;
 
     f32* lengths;
     f32* steps;
@@ -289,7 +289,7 @@ CHECK_SIZE(ContactMessage, 0x20);
 // kicks, kind 18, heavy hits (Cortex's blast and laser, the mecha's rockets, the stomp kick), kinds 21 and 22, sinking (lava,
 // drowning), the knee drop's landing and water. The hit conditions test them; nothing in retail sends kinds 18 and 22 (the
 // scripts' CreateDamage could)
-enum HitKind : u32
+enum HitKind
 {
     HitExplosion = 1u << 1,
     HitFallingThrough = 1u << 2,
@@ -313,7 +313,7 @@ enum HitKind : u32
     HitKind22 = 1u << 22,
     HitSinking = 1u << 23,
     HitKneeDrop = 1u << 24,
-    HitWater = 1u << 25,
+    HitWater = 1u << 25
 };
 
 // A collision surface's flags (TT Lab's SurfaceCollisionFlags): a bit for the ray casts and box queries that take it as solid
@@ -323,13 +323,13 @@ union SurfaceFlags
 {
     // The masks of the casts and queries that take a surface as solid: the player's probes (the characters' casts, the agents'
     // and vehicles' collision caches), the follow camera, objects (and rigid bodies), the lines of sight, and the player
-    enum Mask : u32
+    enum Mask
     {
         SolidToPlayerProbes = 0x10,
         BlocksCamera = 0x20,
         SolidToObjects = 0x40,
         BlocksLineOfSight = 0x80,
-        SolidToPlayer = 0x100000,
+        SolidToPlayer = 0x100000
     };
 
     u32 value;
@@ -358,18 +358,18 @@ CHECK_SIZE(SurfaceFlags, 4);
 
 // A collision surface's ID of none (a hull's without a surface of its own; the object nodes keep theirs as -1:
 // ObjectNode::NoSurface)
-constexpr u16 NoSurfaceId = 0xFFFF;
+CONSTEXPR u16 NoSurfaceId = 0xFFFF;
 
 // The surfaces of the default chunk the code tells apart by their IDs (TT Lab's SURF_ names): slippy metal, wood, metal, sand
 // (the agents told of landings on it), water and ice (the Humiliskate's board's sounds)
-enum SurfaceId : u16
+enum SurfaceId
 {
     SurfaceSlippyMetal = 7,
     SurfaceWood = 8,
     SurfaceMetal = 9,
     SurfaceSand = 10,
     SurfaceWater = 12,
-    SurfaceIce = 17,
+    SurfaceIce = 17
 };
 
 // A collision surface of the default chunk's layout 7 (0x90 bytes, a resource of the game): its flags, the physics parameters
@@ -383,8 +383,8 @@ struct CollisionSurface
 {
     // The tools' physics parameters, of which the volume scales (the impact's, the hard impact's, the scrape's, the steps' and
     // the landing's)
-    static constexpr u32 PhysicsParameters = 10;
-    static constexpr u32 VolumeScales = 5;
+    static CONSTEXPR u32 PhysicsParameters = 10;
+    static CONSTEXPR u32 VolumeScales = 5;
 
     u32 header;
     s32 id;

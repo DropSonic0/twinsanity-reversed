@@ -51,10 +51,10 @@ extern "C"
 
 // The curves the lens's blends and the scripted target's and positioner's moves take their share by: a smooth step (eased in and
 // out) or, for any other value, even
-enum CameraCurve : u32
+enum CameraCurve
 {
     CurveEven = 0,
-    CurveSmooth = 2,
+    CurveSmooth = 2
 };
 
 // How a rig's point follower moves (its CameraPointFollower::Ways)
@@ -80,7 +80,7 @@ CHECK_SIZE(CameraFollowerBits, 4);
 class CameraPointFollower
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         TakeSlot = 2,
@@ -89,17 +89,17 @@ public:
         FollowSubtypeSlot = 5,
         SetRateSlot = 6,
         SetKeepsRateSlot = 7,
-        CanChangeChunkSlot = 8,
+        CanChangeChunkSlot = 8
     };
 
     // The share of the way to the point a step moves: all of it, the share its rate makes of the step's time, that squared, its
     // square root (any other way: none)
-    enum Ways : u32
+    enum Ways
     {
         WayAtOnce = 0,
         WayLinear = 1,
         WaySquared = 2,
-        WaySquareRoot = 3,
+        WaySquareRoot = 3
     };
 
     const GccVTableEntry* vtable;
@@ -174,13 +174,13 @@ CHECK_SIZE(CameraPointFollower, 0x30);
 class CameraTarget
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ResetSlot = 2,
         StepSlot = 3,
         ValueSlot = 4,
-        CanChangeChunkSlot = 5,
+        CanChangeChunkSlot = 5
     };
 
     f32 along;
@@ -239,14 +239,14 @@ CHECK_OFFSET(CameraTarget, vtable, 0x64);
 class CameraPositioner
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ResetSlot = 2,
         StepSlot = 3,
         TakeSlot = 4,
         CanChangeChunkSlot = 5,
-        KeepsRigRotationSlot = 6,
+        KeepsRigRotationSlot = 6
     };
 
     u32 unused00;
@@ -329,7 +329,7 @@ class CameraRig
 {
 public:
     // Its vtable's functions, and 5 to 7, which every rig the game makes has (the base's vtable stops at 4)
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ResetSlot = 2,
@@ -337,7 +337,7 @@ public:
         CanChangeChunkSlot = 4,
         PrepareSlot = 5,
         RestoreDefaultsSlot = 6,
-        AssembleSlot = 7,
+        AssembleSlot = 7
     };
 
     CameraRigBits bits;
@@ -664,7 +664,7 @@ CHECK_SIZE(CameraLensBits, 4);
 // takes
 struct CameraLensNode : GameNode
 {
-    static constexpr u32 TypeId = 0x141F;
+    static CONSTEXPR u32 TypeId = 0x141F;
 
     CameraLensBits bits;
     s32 fov;

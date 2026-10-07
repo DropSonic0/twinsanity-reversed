@@ -71,7 +71,7 @@ CHECK_SIZE(GameControllerFlags, 4);
 // frame, the game's progress and OLEG among its members
 struct GameController
 {
-    enum State : u32
+    enum State
     {
         StateWaitingForLoader = 0,
         StateStarting = 1,
@@ -96,13 +96,13 @@ struct GameController
         StateRestartingTitle = 20,
         StateFadingOut = 21,
         StateRestarting = 22,
-        NoState = 24,
+        NoState = 24
     };
 
     // Why play stops (the state word's pauseReason): the start button, the pad missing, a disc error, the autosave's notices
     // (disabled, enabled (only while saving), failed, and a fourth showing the first's widgets), quitting (kept); while paused,
     // the pages the shoulder buttons go to (the four worlds' levels, the extras, ReasonStart the pause menu)
-    enum PauseReasons : u32
+    enum PauseReasons
     {
         ReasonNone = 0,
         ReasonStart = 1,
@@ -114,22 +114,22 @@ struct GameController
         ReasonFourthNotice = 7,
         ReasonQuitting = 8,
         ReasonFirstLevels = 9,
-        ReasonExtras = 13,
+        ReasonExtras = 13
     };
 
     // The notices asked for (the state word's notices, a bit each): the autosave's notices' pause reasons, from ReasonAutosaveOff
-    enum Notice : u32
+    enum Notice
     {
         NoticeAutosaveOff = 0x1,
         NoticeAutosaveOn = 0x2,
         NoticeAutosaveFailed = 0x4,
-        NoticeFourth = 0x8,
+        NoticeFourth = 0x8
     };
 
     // The saving's steps (the state word's savingStep): none, waiting to save (a save due; the save code asked a quarter of a
     // second after the wait began), and after the save code's operation: the save due's, an autosave whose screens it showed
     // (Autosave's), a load, a new game's and the pause menu's save
-    enum SavingStep : u32
+    enum SavingStep
     {
         SavingNone = 0,
         SavingWait = 1,
@@ -137,16 +137,16 @@ struct GameController
         SavingSavedShown = 3,
         SavingLoaded = 4,
         SavingNewGameLoaded = 5,
-        SavingPaused = 6,
+        SavingPaused = 6
     };
 
     // The cameras it shows (ShowCamera's, the state word's camera): the played character's follow camera, the game's rig and the
     // cutscenes' rig
-    enum Camera : u32
+    enum Camera
     {
         CameraFollow = 0,
         CameraGameRig = 3,
-        CameraCutsceneRig = 4,
+        CameraCutsceneRig = 4
     };
 
     // The language's text files (the code's and AgentLab's), in memory
@@ -405,7 +405,7 @@ struct GameMovie
 {
     // The movies (g_Movies' indexes): Traveller's Tales' ident, the story's (FMV\H01_a to H04_db, the first the intro), the
     // attract movie, the four bonus movies, the ending's (FMV\Complete) and Vivendi's logo
-    enum Index : u32
+    enum Index
     {
         TravellersTales = 0,
         Intro = 1,
@@ -413,7 +413,7 @@ struct GameMovie
         FirstBonus = 14,
         Complete = 18,
         Vivendi = 19,
-        Count = 20,
+        Count = 20
     };
 
     const char* file;

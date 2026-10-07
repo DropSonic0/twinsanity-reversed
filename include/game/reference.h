@@ -4,6 +4,7 @@
 #include "gcc2.h"
 #include "game/math.h"
 #include "game/objectcollision.h"
+#include <stddef.h>
 
 struct ReferencedObject;
 
@@ -77,7 +78,7 @@ union ReferencedObjectFlags
     };
 
     // The bits' masks: the collision queries' wanted and unwanted flags
-    enum Mask : u32
+    enum Mask
     {
         Asleep = 0x1,
         Queued = 0x2,
@@ -94,7 +95,7 @@ union ReferencedObjectFlags
         PhysicsBody = 0x8000,
         MovesBetweenChunks = 0x20000,
         DynamicScenery = 0x40000,
-        SolidModel = 0x80000,
+        SolidModel = 0x80000
     };
 };
 CHECK_SIZE(ReferencedObjectFlags, 4);
@@ -104,13 +105,13 @@ CHECK_SIZE(ReferencedObjectFlags, 4);
 // place (0x70 bytes of its own), its collision (0x10 bytes in), the chunk it's in (its data), the reference block at 0xB0
 struct ReferencedObject
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         WakeSlot = 2,
         SleepSlot = 3,
         ReleaseSlot = 4,
-        StepQueuedSlot = 5,
+        StepQueuedSlot = 5
     };
 
     u32 unused00;
@@ -173,7 +174,7 @@ extern "C"
 // Up to 32 references (0x84 bytes): their count and the handles, kept sorted by their objects' addresses when gathered
 struct ReferenceSet
 {
-    static constexpr u32 MostHandles = 32;
+    static CONSTEXPR u32 MostHandles = 32;
 
     u32 count;
     Reference* handles[MostHandles];
@@ -200,10 +201,10 @@ extern "C"
 class HandleWalk
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         SlotIsDone = 3,
-        SlotCurrent = 4,
+        SlotCurrent = 4
     };
 
     const GccVTableEntry* vtable;

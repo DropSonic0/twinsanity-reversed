@@ -31,47 +31,47 @@ CHECK_SIZE(MaterialResource, 0x10);
 // the scenery's LODs and skies draw), the LODs and the skies
 struct TextureKind
 {
-    using Item = GameTexture;
+    typedef GameTexture Item;
 };
 
 struct MaterialKind
 {
-    using Item = MaterialResource;
+    typedef MaterialResource Item;
 };
 
 struct ModelKind
 {
-    using Item = RigidModelData;
+    typedef RigidModelData Item;
 };
 
 struct RigidModelKind
 {
-    using Item = RigidModel;
+    typedef RigidModel Item;
 };
 
 struct SkinKind
 {
-    using Item = Skin;
+    typedef Skin Item;
 };
 
 struct BlendSkinKind
 {
-    using Item = BlendSkin;
+    typedef BlendSkin Item;
 };
 
 struct MeshKind
 {
-    using Item = RigidModel;
+    typedef RigidModel Item;
 };
 
 struct LodKind
 {
-    using Item = Lod;
+    typedef Lod Item;
 };
 
 struct SkyKind
 {
-    using Item = Sky;
+    typedef Sky Item;
 };
 
 // The IDs of a kind's resources a chunk being read took references of (0x800 bytes: how many, then the IDs). The references go
@@ -98,7 +98,7 @@ CHECK_SIZE(PendingIds, 0x800);
 template <typename Kind>
 struct GraphicsTable
 {
-    using Item = typename Kind::Item;
+    typedef typename Kind::Item Item;
 
     struct Entry
     {
@@ -106,7 +106,7 @@ struct GraphicsTable
         u32 id;
     };
 
-    enum Slots : u32
+    enum Slots
     {
         MadeSlot = 1,
         DestroySlot = 2,
@@ -115,7 +115,7 @@ struct GraphicsTable
         ReleaseSlot = 5,
         ReleaseItemSlot = 6,
         ExistsSlot = 7,
-        GetSlot = 8,
+        GetSlot = 8
     };
 
     Entry* entries;
@@ -165,6 +165,7 @@ private:
     void Forget(Item* item, u32 id);
 };
 
+#if defined(__cpp_alias_templates) || (defined(__cplusplus) && __cplusplus >= 201103L)
 using TextureTable = GraphicsTable<TextureKind>;
 using MaterialTable = GraphicsTable<MaterialKind>;
 using ModelTable = GraphicsTable<ModelKind>;
@@ -174,6 +175,17 @@ using BlendSkinTable = GraphicsTable<BlendSkinKind>;
 using MeshTable = GraphicsTable<MeshKind>;
 using LodTable = GraphicsTable<LodKind>;
 using SkyTable = GraphicsTable<SkyKind>;
+#else
+typedef GraphicsTable<TextureKind> TextureTable;
+typedef GraphicsTable<MaterialKind> MaterialTable;
+typedef GraphicsTable<ModelKind> ModelTable;
+typedef GraphicsTable<RigidModelKind> RigidModelTable;
+typedef GraphicsTable<SkinKind> SkinTable;
+typedef GraphicsTable<BlendSkinKind> BlendSkinTable;
+typedef GraphicsTable<MeshKind> MeshTable;
+typedef GraphicsTable<LodKind> LodTable;
+typedef GraphicsTable<SkyKind> SkyTable;
+#endif
 CHECK_OFFSET(TextureTable, pending, 0xC);
 CHECK_OFFSET(TextureTable, queue, 0x10);
 CHECK_OFFSET(TextureTable, vtable, 0x14);
@@ -214,7 +226,7 @@ struct GraphicsResourceReader : SectionReader
 struct GraphicsItem : ItemInterface
 {
     // The subsections' IDs (TT Lab's GRAPHICS_*_SECTION)
-    enum Subsections : u32
+    enum Subsections
     {
         TextureSubsection,
         MaterialSubsection,
@@ -225,7 +237,7 @@ struct GraphicsItem : ItemInterface
         MeshSubsection,
         LodSubsection,
         SkySubsection,
-        SubsectionCount,
+        SubsectionCount
     };
 
     GraphicsKindReader<MaterialKind> materials;

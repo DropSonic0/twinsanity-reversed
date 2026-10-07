@@ -12,7 +12,7 @@ struct ResourceTable;
 // game run a graph on its own) and graphs (states of bodies of a condition and commands, and a jump to another state)
 
 // The class IDs of the AgentLab items (their item types, what the game context's AgentLab items' builder makes)
-enum AgentLabClassId : u32
+enum AgentLabClassId
 {
     GraphStateClassId = 0x1800,
     GraphDataClassId = 0x1801,
@@ -29,11 +29,11 @@ enum AgentLabClassId : u32
     UnusedZerosClassId = 0x180E,
     AiPositionClassId = 0x180F,
     AiPathClassId = 0x1810,
-    UnusedBlockClassId = 0x1811,
+    UnusedBlockClassId = 0x1811
 };
 
 // A script's ID of none (a starter's, a graph's, a state's child behaviour)
-constexpr u16 NoScriptId = 0xFFFF;
+CONSTEXPR u16 NoScriptId = 0xFFFF;
 
 // A script resource's bits: its script's ID (NoScriptId none), its priority (50 when made) and whether its references are
 // resolved
@@ -55,11 +55,11 @@ CHECK_SIZE(ScriptResourceBits, 4);
 // resource ID, its bits and a name
 struct ScriptResource
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         IdSlot = 2,
-        ResolveSlot = 3,
+        ResolveSlot = 3
     };
 
     u32 header;
@@ -83,14 +83,14 @@ CHECK_SIZE(ScriptResource, 0x1C);
 // Whose instance a starter's assigner runs its graph on (the AgentLab tool's names): the agent's own, one its links node keeps
 // (by the argument), a global agent's (the instance registered under the argument), the player's, the originator's; none for
 // the tool's other types
-enum Assignee : u32
+enum Assignee
 {
     AssignMe = 0,
     AssignLinkedObject = 2,
     AssignGlobalAgent = 3,
     AssignHumanPlayer = 4,
     AssignOriginator = 8,
-    AssignNone = 0xF,
+    AssignNone = 0xF
 };
 
 // A call convention's bits: who's assigned (Assignee), the tool's locality (3 anywhere), status (2 any state) and preference (5
@@ -112,7 +112,7 @@ CHECK_SIZE(CallConventionBits, 4);
 // The way a starter's assigner calls its graph (4 bytes, retail's call convention, read whole)
 struct CallConvention
 {
-    static constexpr u16 NoArgument = 0xFFFF;
+    static CONSTEXPR u16 NoArgument = 0xFFFF;
 
     CallConventionBits bits;
 
@@ -206,7 +206,7 @@ CHECK_SIZE(ControlPacketSettings, 4);
 struct ControlPacket
 {
     // Where its target and offset are taken from (the tool's names; SetTranslationTarget in game/motion.cpp says where each is)
-    enum Space : u32
+    enum Space
     {
         WorldSpace = 0,
         InitialSpace = 1,
@@ -215,25 +215,25 @@ struct ControlPacket
         ParentSpace = 4,
         InitialPosition = 5,
         CurrentPosition = 6,
-        StoredSpace = 7,
+        StoredSpace = 7
     };
 
     // The acceleration's curves the motion tells apart (the others are linear)
-    static constexpr u32 SmoothCurve = 2;
+    static CONSTEXPR u32 SmoothCurve = 2;
 
     // The natural axes it rolls along (the tool's names)
-    enum Axes : u32
+    enum Axes
     {
         NoNatural = 0,
         XNatural = 1,
         YNatural = 2,
         ZNatural = 3,
-        AllNatural = 4,
+        AllNatural = 4
     };
 
     // The values by the tool's names (the motion code reads 20 and 19 as the times its acceleration and deceleration take, and
     // 17 as the step a facing's yaw is rounded to)
-    enum Value : u32
+    enum Value
     {
         Selector = 0,
         KeyIndex = 1,
@@ -251,11 +251,11 @@ struct ControlPacket
         DecDist = 19,
         Bounce = 20,
         SyncUnit = 21,
-        JointIndex = 22,
+        JointIndex = 22
     };
 
     // The motions (the tool's names)
-    enum Motion : u32
+    enum Motion
     {
         NoMotion = 0,
         ConstantVelocity = 1,
@@ -270,7 +270,7 @@ struct ControlPacket
         AirChase = 10,
         // 11 to 13 are chases as well, 13 a climbing one (its body keeps to what it touches:
         // ObjectRigidBodyState::followsSurface)
-        ClimbingChase = 13,
+        ClimbingChase = 13
     };
 
     // A value's slot: the index of a float of its data or of an instance property; NoSlot when it isn't given
@@ -284,7 +284,14 @@ struct ControlPacket
         };
     };
 
-    static constexpr u32 NoSlot = 0xFF;
+    static CONSTEXPR u32 NoSlot = 0xFF;
+
+    ValueSlot MakeValueSlot(u8 val)
+    {
+        ValueSlot vs;
+        vs.value = val;
+        return vs;
+    }
 
     union
     {
@@ -325,12 +332,16 @@ struct ControlPacket
     {
         if (index >= slotCount)
         {
-            return {NoSlot};
+            ValueSlot vs;
+            vs.value = static_cast<u8>(NoSlot);
+            return vs;
         }
 
         // Without data the slot is read at the index's address (the game's)
         u32 slots = data != nullptr ? reinterpret_cast<u32>(data) + floatCount * sizeof(f32) : 0;
-        return {*reinterpret_cast<const u8*>(slots + index)};
+        ValueSlot vs;
+        vs.value = *reinterpret_cast<const u8*>(slots + index);
+        return vs;
     }
 
     const f32* Floats() const
@@ -360,16 +371,16 @@ CHECK_SIZE(ScriptCommandBits, 4);
 // are abstract), then its arguments
 struct ScriptCommand
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ExecuteSlot = 3,
         ExecuteOnSlot = 4,
-        SizeSlot = 5,
+        SizeSlot = 5
     };
 
-    static constexpr u32 ClassId = CommandClassId;
-    static constexpr u32 NoId = 0xFFFFFF;
+    static CONSTEXPR u32 ClassId = CommandClassId;
+    static CONSTEXPR u32 NoId = 0xFFFFFF;
 
     ScriptCommandBits bits;
     ScriptCommand* next;
@@ -401,13 +412,13 @@ CHECK_SIZE(ScriptConditionBits, 4);
 // vtable (1 the destructor, 2 its check (abstract), 3 its class's ID)
 struct ScriptCondition
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
-        CheckSlot = 2,
+        CheckSlot = 2
     };
 
-    static constexpr u32 ClassId = ConditionClassId;
+    static CONSTEXPR u32 ClassId = ConditionClassId;
 
     ScriptConditionBits bits;
     union
@@ -563,10 +574,10 @@ CHECK_SIZE(ScriptGraph, 0x20);
 struct ObjectBuilder
 {
     // The kinds of objects it makes
-    enum Kind : s32
+    enum Kind
     {
         CommandKind = -10,
-        ConditionKind = -11,
+        ConditionKind = -11
     };
 
     struct Node

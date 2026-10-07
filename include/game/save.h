@@ -16,7 +16,7 @@ struct SaveDate
     // file's), which a save slot's summary does while the slot holds a save
     u8 bits;
 
-    static constexpr u8 Valid = 3;
+    static CONSTEXPR u8 Valid = 3;
 };
 CHECK_SIZE(SaveDate, 8);
 

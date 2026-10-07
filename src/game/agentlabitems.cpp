@@ -22,7 +22,7 @@ extern "C"
 namespace
 {
 // The size of the block made for UnusedBlockClassId
-constexpr u32 UnusedBlockSize = 0x10;
+CONSTEXPR u32 UnusedBlockSize = 0x10;
 
 template <typename T>
 T* Allocate(u32 size = sizeof(T))
@@ -96,8 +96,8 @@ void* MakeAgentLabItem(void*, u32 classId)
         return ScriptStarter::Construct(Allocate<ScriptStarter>());
     case GraphClassId:
     {
-        auto* graph = Allocate<ScriptGraph>();
-        ScriptResource::Construct(graph);
+        ScriptGraph* graph = Allocate<ScriptGraph>();
+        ScriptResource::Construct(static_cast<ScriptResource*>(graph));
         graph->data = nullptr;
         graph->vtable = g_GraphVTable;
         return graph;
@@ -108,33 +108,33 @@ void* MakeAgentLabItem(void*, u32 classId)
         return ControlPacket::Construct(Allocate<ControlPacket>());
     case CallConventionClassId:
     {
-        auto* convention = Allocate<CallConvention>();
+        CallConvention* convention = Allocate<CallConvention>();
         convention->SetDefaults();
         return convention;
     }
     case UnusedNonesClassId:
     {
-        auto* words = Allocate<s32>(2 * sizeof(s32));
+        s32* words = Allocate<s32>(2 * sizeof(s32));
         words[1] = -1;
         words[0] = -1;
         return words;
     }
     case UnusedZerosClassId:
     {
-        auto* words = Allocate<u32>(2 * sizeof(u32));
+        u32* words = Allocate<u32>(2 * sizeof(u32));
         words[0] = 0;
         words[1] = 0;
         return words;
     }
     case AiPositionClassId:
     {
-        auto* position = Allocate<AiPosition>();
+        AiPosition* position = Allocate<AiPosition>();
         AiPosition::Construct(position);
         return position;
     }
     case AiPathClassId:
     {
-        auto* path = Allocate<AiPath>();
+        AiPath* path = Allocate<AiPath>();
         path->chunkB = NoAiIndex;
         path->positionA = NoAiIndex;
         path->positionB = NoAiIndex;

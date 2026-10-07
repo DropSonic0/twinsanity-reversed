@@ -6,21 +6,21 @@
 // game's region and product codes and the save's name ("/BESLES-52568CRASH" on the PS2). One operation runs at a time: it starts
 // when the storage is there and runs in the Updates after, the storage's info refreshed while none does. The operations keep their
 // retail numbers, which the game's save code goes by
-namespace Platform::Saves
-{
-enum class Operation : s32
+namespace Platform {
+namespace Saves {
+enum Operation
 {
     // What Update returns when the check found no memory card
-    NoStorage = -1,
-    None = 0,
+    OperationNoStorage = -1,
+    OperationNone = 0,
     // The storage is being checked before the operation asked for
-    Checking = 1,
-    Format = 2,
-    CreateSave = 4,
-    MeasureSave = 7,
-    FindFile = 8,
-    Read = 10,
-    Write = 11,
+    OperationChecking = 1,
+    OperationFormat = 2,
+    OperationCreateSave = 4,
+    OperationMeasureSave = 7,
+    OperationFindFile = 8,
+    OperationRead = 10,
+    OperationWrite = 11
 };
 
 // How an operation went: Succeeded 1, 0 when it failed (Error then says why, Step where), -1 while it hasn't finished
@@ -53,9 +53,9 @@ struct FileEntry
 };
 CHECK_SIZE(FileEntry, 64);
 
-constexpr s32 StorageMemoryCard = 2;
-constexpr s32 ErrorNotEnoughSpace = -3;
-constexpr s32 ErrorNoSave = -4;
+CONSTEXPR s32 StorageMemoryCard = 2;
+CONSTEXPR s32 ErrorNotEnoughSpace = -3;
+CONSTEXPR s32 ErrorNoSave = -4;
 
 // The game's region and product codes ("BE", "SLES-52568"). Returns false when the storage couldn't be set up
 bool Initialise(const char* region, const char* product);
@@ -82,4 +82,5 @@ bool Read(s32 port, s32 slot, const char* save, const char* file, void* buffer, 
 // entries
 u32 FileKilobytes(u32 size);
 u32 SaveBytes(u32 kilobytes, u32 files);
+}
 }

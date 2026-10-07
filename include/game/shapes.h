@@ -15,7 +15,7 @@
 class Shape2D
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         SetMaterialSlot = 2,
@@ -25,7 +25,7 @@ public:
         DrawColouredSlot = 6,
         DrawPlacedSlot = 7,
         DrawPlacedColouredSlot = 8,
-        ReadSlot = 9,
+        ReadSlot = 9
     };
 
     Material* material;
@@ -83,7 +83,7 @@ CHECK_SIZE(StripFlags, 1);
 class Strip : public Shape2D
 {
 public:
-    static constexpr u32 MostVertexes = 0x100;
+    static CONSTEXPR u32 MostVertexes = 0x100;
 
     u8 count;
     StripFlags flags;

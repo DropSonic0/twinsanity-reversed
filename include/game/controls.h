@@ -18,14 +18,14 @@ struct TimeClock;
 class ControlsHandler
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ResetSlot = 2,
-        FrameSlot = 3,
+        FrameSlot = 3
     };
 
-    enum Action : u32
+    enum Action
     {
         ActionCross = 0,
         ActionSquare = 1,
@@ -33,13 +33,13 @@ public:
         ActionL = 3,
         ActionR = 4,
         ActionL2 = 5,
-        ActionStart = 6,
+        ActionStart = 6
     };
 
-    enum Axis : u32
+    enum Axis
     {
         AxisX = 0,
-        AxisY = 1,
+        AxisY = 1
     };
 
     ButtonBindings bindings;

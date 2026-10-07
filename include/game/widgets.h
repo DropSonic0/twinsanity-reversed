@@ -16,7 +16,7 @@ class WidgetEffect;
 struct CyclingScale;
 
 // The anchor in the middle of the screen (the x of Widget::anchor a constructor takes)
-constexpr f32 AnchorMiddle = 0.5f;
+CONSTEXPR f32 AnchorMiddle = 0.5f;
 
 // A widget's state (Widget::State) and the state asked for once one is, whether it's drawn, whether it's fitted to a 16:9 TV
 // (its places closing in on its anchor, its sizes shrinking) and the overlay layer its shapes are queued in
@@ -45,7 +45,7 @@ CHECK_SIZE(WidgetFlags, 4);
 class Widget
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         EnterHiddenSlot = 1,
         StartAppearingSlot = 2,
@@ -60,15 +60,15 @@ public:
         BeginFrameSlot = 11,
         UpdateSlot = 12,
         EndFrameSlot = 13,
-        DrawSlot = 14,
+        DrawSlot = 14
     };
 
-    enum State : u32
+    enum State
     {
         StateHidden = 1,
         StateAppearing = 2,
         StateShown = 3,
-        StateDisappearing = 4,
+        StateDisappearing = 4
     };
 
     WidgetFlags flags;
@@ -392,7 +392,7 @@ struct Material;
 class WidgetController
 {
 public:
-    static constexpr u32 Slots = 64;
+    static CONSTEXPR u32 Slots = 64;
 
     u64 locked;
     u64 screens[Slots];

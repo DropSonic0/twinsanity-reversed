@@ -19,17 +19,17 @@ struct DeletionQueue;
 
 // The sound processor's volume groups: the effects volume sets 0, 1 and 3, the music volume 2 (a movie's sound and the cutscenes'
 // music play in 3)
-enum VolumeGroup : s32
+enum VolumeGroup
 {
     EffectsGroup = 0,
     SecondEffectsGroup = 1,
     MusicGroup = 2,
     MovieGroup = 3,
-    VolumeGroupCount = 4,
+    VolumeGroupCount = 4
 };
 
 // The SPU2's reverb modes (libsd's SD_REV_MODE_*): a core's, and the voice kind sounds play in (ReverbOff any core)
-enum ReverbMode : s32
+enum ReverbMode
 {
     ReverbOff = 0,
     ReverbRoom = 1,
@@ -40,36 +40,36 @@ enum ReverbMode : s32
     ReverbSpace = 6,
     ReverbEcho = 7,
     ReverbDelay = 8,
-    ReverbPipe = 9,
+    ReverbPipe = 9
 };
 
 // The music's slots (PlayMusicRequest), each playing one music player: the main music's, the context music's (the cutscenes'
 // too) and the one whose player a new track takes when none is free
-enum MusicSlot : u32
+enum MusicSlot
 {
     MainMusicSlot = 0,
     ContextMusicSlot = 1,
     SpareMusicSlot = 2,
-    MusicSlotCount = 4,
+    MusicSlotCount = 4
 };
 
 // How sounds are heard (g_MusicStereo, the options' and the saves'): the same on both sides, each side what's ahead of it, or
 // panned around the listener (Dolby Pro Logic II)
-enum StereoMode : u32
+enum StereoMode
 {
     StereoOff = 0,
     StereoSides = 1,
-    StereoProLogic2 = 2,
+    StereoProLogic2 = 2
 };
 
 // How far sounds are heard without a range of their own: their volume falls by their whole level over it
-constexpr f32 DefaultSoundRange = 60.0f;
+CONSTEXPR f32 DefaultSoundRange = 60.0f;
 // The level a sound played at a place starts from, at most
-constexpr f32 LoudestLevel = 1.5f;
+CONSTEXPR f32 LoudestLevel = 1.5f;
 // A volume or pitch scale that leaves the sound's own
-constexpr f32 OwnScale = -1.0f;
+CONSTEXPR f32 OwnScale = -1.0f;
 // The sound processor's cores
-constexpr s32 SoundCoreCount = Platform::Audio::Cores;
+CONSTEXPR s32 SoundCoreCount = ::Platform::Audio::Cores;
 
 // A sound's flags
 union GameSoundFlags
@@ -85,7 +85,7 @@ union GameSoundFlags
 CHECK_SIZE(GameSoundFlags, 1);
 
 // A sound's ID of none (a slot without one)
-constexpr u16 NoSoundId = 0xFFFF;
+CONSTEXPR u16 NoSoundId = 0xFFFF;
 
 // A sound of a bank: its resource header (game/resources.h's ResourceHeader: its ID is its number on the sound processor's
 // side), its flags, name, pitch and parameters, and its samples' size and offset in its bank
@@ -186,11 +186,11 @@ CHECK_SIZE(SoundVoiceBits, 4);
 struct SoundVoice
 {
     // What a voice is used for: a voice used for nothing can be taken from what it plays
-    enum Use : u32
+    enum Use
     {
         UseNone = 0,
         UseInstanceSound = 1,
-        UseMusic = 2,
+        UseMusic = 2
     };
 
     SoundVoiceBits bits;
@@ -222,7 +222,7 @@ CHECK_SIZE(SoundCoreBits, 4);
 // it) and its voices (a bit each while in use)
 struct SoundCore
 {
-    static constexpr u32 VoiceCount = 24;
+    static CONSTEXPR u32 VoiceCount = 24;
 
     s32 reverbMode;
     SoundCoreBits bits;
@@ -260,7 +260,7 @@ CHECK_SIZE(MusicPlayerBits, 4);
 // it, LendMusicBuffer)
 struct MusicPlayer
 {
-    enum State : u32
+    enum State
     {
         // Made, its buffers not yet (CreateMusicBuffers)
         WithoutBuffers = 0,
@@ -273,7 +273,7 @@ struct MusicPlayer
         Faded = 7,
         Stopping = 8,
         // Its buffer is the movie player's (LendMusicBuffer)
-        LentToMovie = 9,
+        LentToMovie = 9
     };
 
     MusicPlayerBits bits;
@@ -298,7 +298,7 @@ CHECK_SIZE(MusicPlayer, 0x40);
 // prepared), and the players
 struct MusicSystem
 {
-    static constexpr u32 PlayerCount = 3;
+    static CONSTEXPR u32 PlayerCount = 3;
 
     MusicPlayer* prepared[MusicSlotCount];
     MusicPlayer* playing[MusicSlotCount];
@@ -318,13 +318,13 @@ struct GroupVolume
 // track's stream
 struct MusicTrack
 {
-    enum Kind : s32
+    enum Kind
     {
         Mono = 0,
         // Stereo, its sides alternating in blocks
         Interleaved = 1,
         // The music bank's entry of a track of the voices' bank
-        InVoiceBank = 2,
+        InVoiceBank = 2
     };
 
     s32 kind;
@@ -383,18 +383,18 @@ union InstanceSoundBits
 CHECK_SIZE(InstanceSoundBits, 4);
 
 // An instance sound's index of none (a node playing none; what fails to play one)
-constexpr u8 NoInstanceSound = 0xFF;
+CONSTEXPR u8 NoInstanceSound = 0xFF;
 
 // A sound an instance plays: the instance, its voice (none while it waits), the sound, its volume and pitch scale, its bits and
 // the frames it has played
 struct InstanceSound
 {
-    enum State : u32
+    enum State
     {
         StatePlaying = 1,
         // Until it can be heard to play again
         StateWaiting = 2,
-        StateDone = 3,
+        StateDone = 3
     };
 
     Reference* instance;
@@ -439,12 +439,12 @@ struct MusicEmitter
 CHECK_SIZE(MusicEmitter, 0x1C);
 
 // The volume groups' volumes in cutscenes: their own, fading to the cutscenes' levels, at them, fading back
-enum CutsceneVolumeMode : s32
+enum CutsceneVolumeMode
 {
     OwnVolumes = 0,
     FadingToCutsceneVolumes = 1,
     CutsceneVolumes = 2,
-    FadingFromCutsceneVolumes = 3,
+    FadingFromCutsceneVolumes = 3
 };
 
 // What SoundAtPlace works out of a sound at a place (its out): the left and right volumes, the pitch, the distance and the angle
@@ -664,8 +664,8 @@ extern "C"
     // slots wait to play once a player is free (flagged in g_MusicSlotsPending) and the volume groups' scales (the cutscenes'
     // levels) follow the presets in it
     extern u8 g_AlphaPresetsBlock[] RETAIL(G_AlphaRegPresets);
-    constexpr u32 PendingMusicRequestsOffset = 0x30;
-    constexpr u32 GroupScalesOffset = 0x70;
+    CONSTEXPR u32 PendingMusicRequestsOffset = 0x30;
+    CONSTEXPR u32 GroupScalesOffset = 0x70;
     // A slot's prepared player played with volumes and a fade, a slot's player faded out (and stopped at the end), whether a
     // slot's player is prepared, whether it plays
     u32 PlayPreparedMusic(f32 left, f32 right, f32 fadeTime, s32 slot) RETAIL_N32(FUN_001e59b0);

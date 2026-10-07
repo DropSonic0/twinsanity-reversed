@@ -205,7 +205,7 @@ class OLEG : public WidgetController
 {
 public:
     // Its screens (WidgetController::screens: the widget slots each shows)
-    enum Screen : u32
+    enum Screen
     {
         // A cutscene's bars and its text, the scripts' fader, the bottom text on its backdrop, the dimmer behind menus
         ScreenCutscene = 0,
@@ -259,40 +259,40 @@ public:
         // Every widget but the cutscene's bars, the fader and the bottom text's backdrop, and every widget but the pause menu
         ScreenAllButOverlays = 43,
         ScreenAllButPauseMenu = 44,
-        Screens = 45,
+        Screens = 45
     };
 
     // The pictures it reads from files: the Crash title (into its second sprite), the level's title (the area's, into the third)
     // and the tiles' (the screen picture's)
-    enum Picture : u32
+    enum Picture
     {
         PictureCrashTitle = 0,
         PictureLevelTitle = 1,
         PictureTiles = 2,
-        Pictures = 3,
+        Pictures = 3
     };
 
     // What the pictures read are without a picture: the Crash title's only picture is 0, the level's title's are the areas' (25)
-    static constexpr u32 NoCrashTitle = 1;
-    static constexpr u32 NoLevelTitle = 25;
+    static CONSTEXPR u32 NoCrashTitle = 1;
+    static CONSTEXPR u32 NoLevelTitle = 25;
 
     // The tiles' pictures: the legal screen, the loading screens, the game over screens (Cortex, Crash, Crash and Cortex,
     // Mecha-Bandicoot, Nina), the two named by its picture name (a gallery's), the credits, and none
-    enum TilesPicture : u32
+    enum TilesPicture
     {
         TilesLegal = 0,
         TilesLoading = 1,
         TilesGameOver = 4,
         TilesNamed = 9,
         TilesCredits = 11,
-        TilesNone = 12,
+        TilesNone = 12
     };
 
     // Its sprites: the flat material's square, the pictures' (the Crash title, the level's title), the HUD's icons (SetHudIcon's
     // slots, the first the health bar's body), then StartUp\Icons.psm's: the characters' heads, the empty gem slot, the six gems,
     // the wumpa fruit, the crystal a pickup shows and the crystal, the icons of the ammo, the autosave and the clock, the health
     // bar's pieces, the locked level's title and the levels' titles
-    enum Sprites : u32
+    enum Sprites
     {
         SpriteFlat = 0,
         SpriteCrashTitle = 1,
@@ -314,15 +314,15 @@ public:
         SpriteBarEnd = 28,
         SpriteLockedLevel = 29,
         SpriteLevelTitles = 30,
-        SpriteCount = 46,
+        SpriteCount = 46
     };
 
     // The HUD's icons (SetHudIcon's slots, sprites from SpriteHudIcons): a boss's (the health bar's body), whack-a-worm's (the
     // timed play's count's) and the vehicle gauge's left end
-    static constexpr u32 HudIconBoss = 0;
-    static constexpr u32 HudIconWhackaworm = 1;
-    static constexpr u32 HudIconGauge = 2;
-    static constexpr u32 HudIcons = 3;
+    static CONSTEXPR u32 HudIconBoss = 0;
+    static CONSTEXPR u32 HudIconWhackaworm = 1;
+    static CONSTEXPR u32 HudIconGauge = 2;
+    static CONSTEXPR u32 HudIcons = 3;
 
     // The sprite the pickup's icon shows
     u8 pickupSprite;
@@ -349,7 +349,13 @@ public:
     // Its menus' pages (its start-up makes them)
     MenuPage* pages[18];
     // A renderer material of its own (the platform's, in storage of its own)
+#if defined(__SNC__)
+    __attribute__((aligned(8))) u8 material[0x70];
+#elif defined(_MSC_VER)
+    __declspec(align(8)) u8 material[0x70];
+#else
     alignas(8) u8 material[0x70];
+#endif
     // The particles' shader (the platform's), and their sprite
     void* particleShader;
     Sprite particleSprite;
@@ -574,13 +580,13 @@ CHECK_OFFSET(OLEG, loadingText, 0x4ABC);
 
 // The ring widgets' shapes: a panel's four rings (the disc AddPanelRings makes), every ring a segment of 32 steps round (but
 // the menu rings' and the gem arc's)
-constexpr u32 PanelRings = 4;
-constexpr u32 RingSegments = 1;
-constexpr u32 RingSteps = 32;
+CONSTEXPR u32 PanelRings = 4;
+CONSTEXPR u32 RingSegments = 1;
+CONSTEXPR u32 RingSteps = 32;
 // The game texts (the code's text file's lines) of the confirmations' titles, which their screens and their pages show: the
 // quit's and the disable autosave's
-constexpr u32 QuitTitleText = 0x45;
-constexpr u32 DisableAutosaveTitleText = 0x60;
+CONSTEXPR u32 QuitTitleText = 0x45;
+CONSTEXPR u32 DisableAutosaveTitleText = 0x60;
 
 extern "C"
 {

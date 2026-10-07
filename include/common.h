@@ -2,6 +2,12 @@
 
 #include <stddef.h>
 
+#if defined(__SNC__) || defined(__CELLOS_LV2__) || (defined(__cplusplus) && __cplusplus < 201103L)
+#ifndef nullptr
+#define nullptr NULL
+#endif
+#endif
+
 #if defined(_EE) || defined(__PS2__) || defined(PS2)
 #include <tamtypes.h>
 #else
@@ -20,7 +26,9 @@ typedef int64_t s64;
 typedef float f32;
 typedef double f64;
 
-#if defined(__cpp_constexpr) || (defined(__cplusplus) && __cplusplus >= 201103L) || (defined(_MSC_VER) && _MSC_VER >= 1900)
+#if defined(__SNC__) || defined(__CELLOS_LV2__)
+#define CONSTEXPR const
+#elif defined(__cpp_constexpr) || (defined(__cplusplus) && __cplusplus >= 201103L) || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define CONSTEXPR constexpr
 #else
 #define CONSTEXPR const
@@ -56,6 +64,11 @@ consteval f32 Rounded(double value)
 
     return __builtin_bit_cast(f32, (sign | exponent << FloatFractionBits) + kept);
 }
+#elif defined(__SNC__) || defined(__CELLOS_LV2__)
+inline f32 Rounded(double value)
+{
+    return static_cast<f32>(value);
+}
 #elif defined(__GNUC__) || defined(__clang__)
 constexpr f32 Rounded(double value)
 {
@@ -74,7 +87,7 @@ CONSTEXPR u32 ShiftMask = 0x1F;
 
 // A function or variable by the name the retail executable's symbols give it (the asm's and the Ghidra project's): a function
 // defined with it takes the retail one's place, a variable declared with it is the retail data the split keeps
-#if defined(__GNUC__) || defined(__clang__)
+#if (defined(__GNUC__) || defined(__clang__)) && !defined(__SNC__)
 #define RETAIL(name) asm(#name)
 #else
 #define RETAIL(name)
@@ -82,7 +95,7 @@ CONSTEXPR u32 ShiftMask = 0x1F;
 
 // Checks a struct against the size the game's code gives it. VS Code's C/C++ extension (__INTELLISENSE__) lays structs out
 // for an x86 target, where 64 bit members are only 4 byte aligned: the compiler checks them
-#if defined(__INTELLISENSE__) || defined(_MSC_VER) || !defined(__cpp_static_assert) || (defined(__cplusplus) && __cplusplus < 201103L)
+#if defined(__INTELLISENSE__) || defined(_MSC_VER) || defined(__SNC__) || defined(__CELLOS_LV2__) || !defined(__cpp_static_assert) || (defined(__cplusplus) && __cplusplus < 201103L)
 #define CHECK_SIZE(type, size)
 #define CHECK_OFFSET(type, member, offset)
 #else

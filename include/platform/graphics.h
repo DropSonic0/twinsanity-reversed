@@ -32,8 +32,8 @@ struct ParticlePage;
 struct TimeClock;
 struct RenderTargetDescription;
 
-namespace Platform::Graphics
-{
+namespace Platform {
+namespace Graphics {
 // Puts the graphics hardware (the vector units and their interfaces, the path to the GS and the DMA controller) in the state the
 // renderer starts from
 void ResetDevices();
@@ -107,11 +107,11 @@ void StartFrame(const FrameStart& frame);
 // The helper programs of the vector processor the game's maths runs on (the PS2's VU0 microcode sets: the standard one, the sines
 // and cosines among them; the culling's, the particles' views' too; the decals' aging), waiting until they're loaded when asked
 // (else they're loaded while the game goes on). Nothing elsewhere
-enum HelperPrograms : u32
+enum HelperPrograms
 {
     StandardPrograms = 1,
     CullingPrograms = 2,
-    DecalPrograms = 3,
+    DecalPrograms = 3
 };
 void UseHelperPrograms(u32 set, bool wait);
 
@@ -121,7 +121,7 @@ Material* FlatMaterial();
 
 // A material kept in storage of the game's (OLEG keeps one inside itself, MaterialStorage bytes) made without shaders, and
 // destroyed (its shaders deleted)
-constexpr u32 MaterialStorage = 0x70;
+CONSTEXPR u32 MaterialStorage = 0x70;
 void ConstructMaterial(Material* material);
 void DestroyMaterial(Material* material);
 // The UI's 2D particles' material made in such storage: a shader of its own in the UI's render bucket, the flat material's kind,
@@ -137,16 +137,16 @@ void ChainParticleBlocks(u8* const* blocks, s32 count);
 void EndParticleBlock(u8* block);
 // The sizes of the particles' blocks of 32 particles and of 12 hexagons and of a system's render table, with what the platform puts
 // around the particles and the table, which it makes once when they're allocated
-constexpr u32 ParticleBlockBytes = 0x430;
-constexpr u32 HexagonBlockBytes = 0x1B0;
-constexpr u32 ParticleRenderTableBytes = 0x890;
+CONSTEXPR u32 ParticleBlockBytes = 0x430;
+CONSTEXPR u32 HexagonBlockBytes = 0x1B0;
+CONSTEXPR u32 ParticleRenderTableBytes = 0x890;
 void InitParticleBlock(u8* block, bool hexagons);
 void InitParticleRenderTable(u8* table);
 // What a system's particles look like over their life, for its render table: the gravity, the texture's rectangle (start and end
 // corners in sixteenths of a pixel), the six corners of the distorting hexagons (their directions a quarter long, none for other
 // systems), and at each of 64 steps of the life the quad's shape (two corners and the edge between them, the widths stretched
 // by the screen's aspect) and its colour and alpha (128 leaves the texture as it is)
-constexpr u32 ParticleRenderSteps = 64;
+CONSTEXPR u32 ParticleRenderSteps = 64;
 struct ParticleLook
 {
     f32 gravity;
@@ -333,4 +333,5 @@ void DrawChunkSky(Sky* sky, RenderView* view);
 // materials made from the material's first shader (the decals' page's draw with STQ coordinates)
 void LoadParticlePage(ParticlePage* page, const char* path, bool decals);
 void ReadParticlePage(ParticlePage* page, Stream* stream, bool decals);
+}
 }

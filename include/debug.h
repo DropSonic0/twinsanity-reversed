@@ -3,10 +3,10 @@
 #include "common.h"
 
 // The test hooks' lists: results to watch, game controller states logged, frames of random numbers kept, inputs given
-constexpr u32 DebugValueCount = 16;
-constexpr u32 DebugStateCount = 64;
-constexpr u32 DebugRandomFrames = 4096;
-constexpr u32 DebugInputCount = 16;
+CONSTEXPR u32 DebugValueCount = 16;
+CONSTEXPR u32 DebugStateCount = 64;
+CONSTEXPR u32 DebugRandomFrames = 4096;
+CONSTEXPR u32 DebugInputCount = 16;
 
 // A word the code writes as it gets along, for tools/run_pcsx2.py --watch g_DebugStep to follow over PINE
 extern "C" volatile u32 g_DebugStep;
@@ -20,13 +20,13 @@ extern "C" volatile s32 g_DebugValues[DebugValueCount];
 // frame's, for a snapshot) until the runner changes it
 struct DebugInput
 {
-    enum Kind : u32
+    enum Kind
     {
         None = 0,
         // The game controller's next state: value
         State = 1,
         // Pad 1's buttons (the PS2 pad layer's g_TestPadButtons) held for length frames: value
-        Press = 2,
+        Press = 2
     };
 
     u32 frame;

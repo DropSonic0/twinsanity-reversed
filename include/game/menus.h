@@ -28,8 +28,8 @@ CHECK_SIZE(MenuItemBits, 4);
 
 // The players the menus are made for (the pages' and items' counts of players; an item's shown and enabled bits have a bit per
 // player), and every player's bits
-constexpr u32 MenuPlayers = 1;
-constexpr u8 EveryPlayer = 0xFF;
+CONSTEXPR u32 MenuPlayers = 1;
+CONSTEXPR u8 EveryPlayer = 0xFF;
 
 // The UI's menus (their vtables the retail ones): pages of items, each player with a selected item on the page. An item has its
 // vtable after 0x10 bytes; its functions: 1 activated (for a player, on a page: where it leads), 2 the destructor, 3 and 4 told
@@ -38,7 +38,7 @@ constexpr u8 EveryPlayer = 0xFF;
 // buffer: whether it has one), then its value set and got for a player as an int (8, 9), unsigned (10, 11) and a float (12, 13)
 struct MenuItem
 {
-    enum Slot : u32
+    enum Slot
     {
         ActivateSlot = 1,
         EnteredSlot = 3,
@@ -206,7 +206,7 @@ CHECK_SIZE(MenuPageFlags, 4);
 class MenuPage
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         EnteredSlot = 1,
         FrameSlot = 2,
@@ -219,14 +219,14 @@ public:
 
     // How a page was entered: going on to it, or going back to it (a page entered sideways takes the mode of the page it was
     // entered from)
-    enum EntryMode : u32
+    enum EntryMode
     {
         EnteredAfresh = 1,
         EnteredBack = 2,
     };
 
     // The pages left, right, above and below it
-    enum Link : u32
+    enum Link
     {
         LinkLeft = 0,
         LinkRight = 1,
@@ -331,7 +331,7 @@ CHECK_SIZE(MenuActionBits, 1);
 // held (a bit of held). Its vtable follows 8 bytes (2: poll, 3: nothing)
 struct MenuInput
 {
-    enum Action : u32
+    enum Action
     {
         // Picks the selected item (a page that takes select asks for it too, and drops it)
         ActionSelect = 0,
@@ -370,7 +370,7 @@ struct MenuSounds
     // What each slot is played for: select on an item not shown to the player, an item selected, the selection not moved down
     // (at the end) and moved down, not moved up and moved up, a value not stepped up and stepped up, not stepped down and stepped
     // down, an item selected that leads to a page, going back, and the last slot, which nothing plays
-    enum Slot : u32
+    enum Slot
     {
         SoundNothing = 0,
         SoundSelected = 1,
@@ -387,7 +387,7 @@ struct MenuSounds
         SoundUnused = 12,
     };
 
-    static constexpr u32 Count = 13;
+    static CONSTEXPR u32 Count = 13;
 
     GameSound* sounds[Count];
     s32 groups[Count];
@@ -410,7 +410,7 @@ struct CyclingScale;
 // many-items values. The selected item's colour and size pulse with the two scales
 struct MenuDrawer
 {
-    enum Style : u32
+    enum Style
     {
         StyleTitle = 0,
         StyleSelected = 1,

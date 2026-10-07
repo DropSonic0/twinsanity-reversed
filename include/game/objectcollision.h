@@ -31,7 +31,7 @@ CHECK_SIZE(ObjectCollisionBits, 8);
 // its own or given one, else its OGI's (placed at their joints), else those of its dynamic scenery node
 struct ObjectCollision
 {
-    static constexpr s32 NoCell = -1;
+    static CONSTEXPR s32 NoCell = -1;
 
     ReferencedObject* owner;
     CollisionHull* hull;

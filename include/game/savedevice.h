@@ -18,13 +18,13 @@ struct TimeClock;
 class FolderSummary
 {
 public:
-    enum Slots : u32
+    enum Slots
     {
         DestroySlot = 1,
         DescribeSlot = 2,
         ClearSlot = 3,
         ReadSlot = 5,
-        WriteSlot = 6,
+        WriteSlot = 6
     };
 
     SaveDate date;
@@ -56,7 +56,7 @@ CHECK_SIZE(FolderSummary, 0x18);
 class SaveFile
 {
 public:
-    enum Slots : u32
+    enum Slots
     {
         MakeStreamSlot = 1,
         GatherSlot = 2,
@@ -66,7 +66,7 @@ public:
         BeginReadSlot = 6,
         EndReadSlot = 7,
         BeginWriteSlot = 8,
-        EndWriteSlot = 9,
+        EndWriteSlot = 9
     };
 
     String name;
@@ -229,7 +229,7 @@ CHECK_SIZE(RequestFileIndex, 4);
 class SaveDevice
 {
 public:
-    enum Slots : u32
+    enum Slots
     {
         FileDateSlot = 1,
         PollSlot = 2,
@@ -243,7 +243,7 @@ public:
         SavedBytesSlot = 10,
         FileSizeSlot = 11,
         NeededBytesSlot = 12,
-        FreeBytesSlot = 13,
+        FreeBytesSlot = 13
     };
 
     // The operations the save code asks for (the flags' asked and running): the card checked for once the wait is over, the card
@@ -251,7 +251,7 @@ public:
     // was just made), the folder's file found and read, a file found, a file (the flags' file) and the folder's file written, a
     // file read, and the waits that keep the outcome's message on the screen: after a format, a save and a load (over when the
     // card is taken out) and after a save was cancelled
-    enum Operation : u32
+    enum Operation
     {
         OperationNone = 0,
         OperationCheck = 1,
@@ -266,18 +266,18 @@ public:
         OperationWaitFormatted = 10,
         OperationWaitSaved = 11,
         OperationWaitLoaded = 12,
-        OperationWaitCancelled = 13,
+        OperationWaitCancelled = 13
     };
 
     // The flags' asked once the operation asked for runs
-    static constexpr u32 AskTaken = 14;
+    static CONSTEXPR u32 AskTaken = 14;
     // Kilobytes in bytes
-    static constexpr u32 KilobyteShift = 10;
+    static CONSTEXPR u32 KilobyteShift = 10;
 
     // The requests the operations make of the storage, by their operation's numbers (PollFind asks for the running operation's
     // read): writing the request files (the folder's, every file once the save was just made) and reading the folder's, writing
     // and reading a file (with the folder's), of the file chosen by the request file index for those on a file
-    enum Request : u32
+    enum Request
     {
         RequestFormat = 2,
         RequestMeasureSave = 3,
@@ -286,14 +286,14 @@ public:
         RequestReadFolder = 6,
         RequestFindFile = 7,
         RequestWriteFile = 8,
-        RequestReadFile = 9,
+        RequestReadFile = 9
     };
 
     // The flags' state: StateFailed once a request or a file failed (cleared at every step)
-    enum DeviceState : u32
+    enum DeviceState
     {
         StateOk = 0,
-        StateFailed = 1,
+        StateFailed = 1
     };
 
     SaveDeviceFlags flags;
@@ -314,13 +314,13 @@ public:
     String product;
     String name;
     // The storage's operation running and its info (Update's)
-    Platform::Saves::Operation operation;
-    Platform::Saves::StorageInfo info;
+    ::Platform::Saves::Operation operation;
+    ::Platform::Saves::StorageInfo info;
     // The space the save takes (-1 when it isn't there), the size of the file found
     s32 saveKilobytes;
     s32 fileSize;
     u8 unused5C[0x80 - 0x5C];
-    Platform::Saves::FileEntry fileEntry;
+    ::Platform::Saves::FileEntry fileEntry;
 
     static SaveDevice* Construct(SaveDevice* device, u32 fileCount, SaveIconFiles* icons, SaveFile* folder, const char* name)
         RETAIL(FUN_002a2f78);

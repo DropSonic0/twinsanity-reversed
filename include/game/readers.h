@@ -12,28 +12,28 @@ class GenericItemReader;
 
 // The two storages of readers (g_ReadersStorages): the game's sections and files (its stream reads in blocks of 128 KB), and the
 // files read on their own, whose readers go first (in blocks of 64 KB: the menus' pictures, MemoryStream::LoadFile's files)
-enum ReadersStorageIndex : u32
+enum ReadersStorageIndex
 {
     MainReaders = 0,
     FileReaders = 1,
-    ReadersStorageCount = 2,
+    ReadersStorageCount = 2
 };
 
 // Where AddItemReaderToReaderStorage queues a reader (any other value is the front)
-enum ReaderQueuePlace : s32
+enum ReaderQueuePlace
 {
     QueueBack = 0,
-    QueueFront = 1,
+    QueueFront = 1
 };
 
 // What the readers do (g_ReadersMode): read; hold while a movie plays (it has the disc: the readers reading finish, no others
 // start); and once it's over, start the readers that were reading over (the movie emptied their streams) and read again, the
 // movie's sound given back
-enum ReadersMode : s32
+enum ReadersMode
 {
     ReadersReading = 0,
     ReadersHeldByMovie = 1,
-    ReadersAfterMovie = 2,
+    ReadersAfterMovie = 2
 };
 
 // Readers waiting to read: a reader that finished pushes the readers of what it found here
@@ -161,13 +161,13 @@ union SubItemsReaderOptions
     };
 
     // The options' masks, which the readers are made with
-    enum Mask : u32
+    enum Mask
     {
         Unused0 = 0x1,
         FromArchive = 0x2,
         ClosesFile = 0x4,
         OnDisk = 0x8,
-        ClampsToFile = 0x20,
+        ClampsToFile = 0x20
     };
 };
 CHECK_SIZE(SubItemsReaderOptions, 4);
@@ -402,10 +402,10 @@ struct ItemHeader
 
 // A section's type (TT Lab's magic number), which the item reading it checks: the graphics section's subsections (a kind of
 // graphics resources each) have their own, every other section the default
-enum SectionType : u32
+enum SectionType
 {
     DefaultSectionType = 1,
-    GraphicsKindSectionType = 3,
+    GraphicsKindSectionType = 3
 };
 
 // A section's first word: its type and its version (sections of later versions than 1 aren't read)
@@ -420,7 +420,7 @@ union SectionFormat
 };
 CHECK_SIZE(SectionFormat, 4);
 
-constexpr u32 SectionVersions = 2;
+CONSTEXPR u32 SectionVersions = 2;
 
 // A section's header (0xC bytes): its format, how many items its table (after the header) has and its size
 struct SectionHeader

@@ -3,6 +3,7 @@
 #include "abi.h"
 #include "common.h"
 #include "game/math.h"
+#include <math.h>
 
 struct ObjectPlace;
 
@@ -48,12 +49,12 @@ union PlaceBits
     };
 
     // The bits' masks, for what's tested and changed on one read of the word (as retail does: the changes of several at once)
-    enum Mask : u64
+    enum Mask
     {
         Moved = 0x1,
         Turned = 0x2,
         MatrixMoved = 0x4,
-        MatrixTurned = 0x8,
+        MatrixTurned = 0x8
     };
 };
 CHECK_SIZE(PlaceBits, 8);
@@ -61,7 +62,7 @@ CHECK_SIZE(PlaceBits, 8);
 // An object's place (an instance's, 0x70 bytes): its matrix, its position and its rotation (a quaternion). Either side can change:
 // the bits say which one is newer, the position and the rotation being worked out from the matrix when asked once it moved or
 // turned, the matrix made again from them (RotateAndTranslate) once they changed
-struct alignas(16) ObjectPlace
+struct ALIGN16 ObjectPlace
 {
     Matrix4x4 matrix;
     Vector4 position;
@@ -72,22 +73,22 @@ struct alignas(16) ObjectPlace
     // or the rotation taken from the matrix (the two in step)
     void MarkMoved()
     {
-        bits.value = (bits.value | PlaceBits::Moved) & ~u64{PlaceBits::MatrixMoved};
+        bits.value = (bits.value | PlaceBits::Moved) & ~static_cast<u64>(PlaceBits::MatrixMoved);
     }
 
     void MarkTurned()
     {
-        bits.value = (bits.value | PlaceBits::Turned) & ~u64{PlaceBits::MatrixTurned};
+        bits.value = (bits.value | PlaceBits::Turned) & ~static_cast<u64>(PlaceBits::MatrixTurned);
     }
 
     void MarkPositionSynced()
     {
-        bits.value &= ~u64{PlaceBits::Moved} & ~u64{PlaceBits::MatrixMoved};
+        bits.value &= ~static_cast<u64>(PlaceBits::Moved) & ~static_cast<u64>(PlaceBits::MatrixMoved);
     }
 
     void MarkRotationSynced()
     {
-        bits.value &= ~u64{PlaceBits::Turned} & ~u64{PlaceBits::MatrixTurned};
+        bits.value &= ~static_cast<u64>(PlaceBits::Turned) & ~static_cast<u64>(PlaceBits::MatrixTurned);
     }
 
     // The position taken from the matrix once it moved
@@ -145,7 +146,11 @@ struct alignas(16) ObjectPlace
     // Moved by a vector (x, y and z) unless it's within 5e-05 of none on each axis: whether it moved
     bool MoveBy(const Vector4* move)
     {
+#if defined(__SNC__) || defined(__CELLOS_LV2__)
+        if (fabsf(move->x) <= Epsilon && fabsf(move->y) <= Epsilon && fabsf(move->z) <= Epsilon)
+#else
         if (__builtin_fabsf(move->x) <= Epsilon && __builtin_fabsf(move->y) <= Epsilon && __builtin_fabsf(move->z) <= Epsilon)
+#endif
         {
             return false;
         }

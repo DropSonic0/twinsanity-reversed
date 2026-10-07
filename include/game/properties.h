@@ -3,6 +3,7 @@
 #include "abi.h"
 #include "common.h"
 #include "gcc2.h"
+#include <string.h>
 
 class Stream;
 
@@ -13,15 +14,15 @@ class PropertyHolder;
 // radians (their low 3 bits the tag's). The word also holds the angles the AgentLab gets from them (65536ths of a turn, AngleFrom's)
 struct TaggedValue
 {
-    enum Type : u32
+    enum Type
     {
         TypeInt,
         TypeAngle,
-        TypeFloat,
+        TypeFloat
     };
 
     // The tag's bits, which a float's or an angle's bits leave out
-    static constexpr s32 TagMask = 0x7;
+    static CONSTEXPR s32 TagMask = 0x7;
 
     union
     {
@@ -61,7 +62,10 @@ struct TaggedValue
     // A float's or an angle's value: the word's bits without the tag's
     f32 ValueBits() const
     {
-        return __builtin_bit_cast(f32, raw & ~TagMask);
+        s32 val = raw & ~TagMask;
+        f32 res;
+        memcpy(&res, &val, sizeof(f32));
+        return res;
     }
 
     // The value's bits set (the tag's left out), its type kept, not a property
@@ -117,20 +121,20 @@ CHECK_SIZE(InstanceState, 4);
 
 // The kinds of an instance's properties, which the lists and the extras count in bytes in this order: tagged values, floats,
 // integers
-enum PropertyKind : u32
+enum PropertyKind
 {
     TaggedProperties = 0,
     FloatProperties = 1,
-    IntProperties = 2,
+    IntProperties = 2
 };
 
 // An instance's or an object's properties as an RM2 has them (vtable at 0x20: 1 the destructor): the counts a class's holder
 // goes by (bytes by PropertyKind, the fourth unused), the instance's state flags, and the three arrays
 struct PropertyList
 {
-    enum Slot : u32
+    enum Slot
     {
-        DestroySlot = 1,
+        DestroySlot = 1
     };
 
     u8 counts[4];
@@ -188,7 +192,7 @@ CHECK_SIZE(PropertyExtras, 0x20);
 class PropertyHolder
 {
 public:
-    enum Slots : u32
+    enum Slots
     {
         TaggedReadSlot = 1,
         FloatReadSlot = 2,
@@ -201,7 +205,7 @@ public:
         TaggedCountSlot = 9,
         FloatCountSlot = 10,
         IntCountSlot = 11,
-        ClassSlot = 12,
+        ClassSlot = 12
     };
 
     InstanceState state;
@@ -246,9 +250,9 @@ template <u32 Tagged, u32 Floats, u32 Ints>
 class TypedPropertyHolder : public PropertyHolder
 {
 public:
-    static constexpr u32 KeptTagged = Tagged;
-    static constexpr u32 KeptFloats = Floats;
-    static constexpr u32 KeptInts = Ints;
+    static CONSTEXPR u32 KeptTagged = Tagged;
+    static CONSTEXPR u32 KeptFloats = Floats;
+    static CONSTEXPR u32 KeptInts = Ints;
 
     TaggedValue tagged[Tagged];
     f32 floats[Floats];
@@ -259,18 +263,19 @@ public:
 class CharacterPropertyHolder : public TypedPropertyHolder<1, 6, 3>
 {
 public:
-    static constexpr u32 KeptTagged = 9;
-    static constexpr u32 KeptFloats = 0x38;
-    static constexpr u32 KeptInts = 3;
+    static CONSTEXPR u32 KeptTagged = 9;
+    static CONSTEXPR u32 KeptFloats = 0x38;
+    static CONSTEXPR u32 KeptInts = 3;
 
-    TaggedValue characterTagged[KeptTagged];
-    f32 characterFloats[KeptFloats];
-    s32 characterInts[KeptInts];
+    TaggedValue characterTagged[9];
+    f32 characterFloats[0x38];
+    s32 characterInts[3];
 };
 CHECK_OFFSET(CharacterPropertyHolder, characterTagged, 0x34);
 CHECK_OFFSET(CharacterPropertyHolder, characterInts, 0x138);
 CHECK_SIZE(CharacterPropertyHolder, 0x144);
 
+#if defined(__cpp_alias_templates) || (defined(__cplusplus) && __cplusplus >= 201103L)
 using PickupPropertyHolder = TypedPropertyHolder<0, 1, 2>;
 using CratePropertyHolder = TypedPropertyHolder<0, 3, 2>;
 using CreaturePropertyHolder = TypedPropertyHolder<1, 6, 3>;
@@ -279,6 +284,16 @@ using GrabbablePropertyHolder = TypedPropertyHolder<1, 4, 2>;
 using PayGatePropertyHolder = TypedPropertyHolder<0, 1, 3>;
 using GraplePropertyHolder = TypedPropertyHolder<0, 0x12, 2>;
 using ProjectilePropertyHolder = TypedPropertyHolder<0, 1, 2>;
+#else
+typedef TypedPropertyHolder<0, 1, 2> PickupPropertyHolder;
+typedef TypedPropertyHolder<0, 3, 2> CratePropertyHolder;
+typedef TypedPropertyHolder<1, 6, 3> CreaturePropertyHolder;
+typedef TypedPropertyHolder<0, 1, 2> GenericObjectPropertyHolder;
+typedef TypedPropertyHolder<1, 4, 2> GrabbablePropertyHolder;
+typedef TypedPropertyHolder<0, 1, 3> PayGatePropertyHolder;
+typedef TypedPropertyHolder<0, 0x12, 2> GraplePropertyHolder;
+typedef TypedPropertyHolder<0, 0x12, 2> ProjectilePropertyHolder;
+#endif
 CHECK_SIZE(GraplePropertyHolder, 0x5C);
 
 extern "C"

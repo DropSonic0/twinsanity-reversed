@@ -22,7 +22,7 @@ struct TimeClock;
 // object node, its model, the dynamic scenery's, its rigid body, its attachments, a message trigger's, a camera trigger's, the
 // camera's lens, its shadow, the controls (the pad they're read from), its agent's (by its object's type) and a playable
 // character's follow camera
-enum NodeKind : u32
+enum NodeKind
 {
     NodeMovement = 0x0,
     NodeObject = 0x1,
@@ -46,19 +46,19 @@ enum NodeKind : u32
     NodeProjectile = 0x14,
     // The agents' node of object type 9, which no object is (queries and triggers still ask for it)
     NodeUnusedObjectType = 0x15,
-    NodeFollow = 0x16,
+    NodeFollow = 0x16
 };
 
 // Masks of node kinds (a bit per kind) the instance queries and events take: the object instances (what messages go to); the
 // solid objects (dynamic scenery, crates, creatures, generic objects and pay gates), the solid instances (those and the playable
 // characters) and those and the projectiles, which hold up and block like them; and what damage reaches (the playable characters,
 // crates, pickups, creatures, generic objects and pay gates)
-constexpr u32 ObjectNodeKinds = 1u << NodeObject;
-constexpr u32 SolidObjectNodeKinds =
+CONSTEXPR u32 ObjectNodeKinds = 1u << NodeObject;
+CONSTEXPR u32 SolidObjectNodeKinds =
     1u << NodeDynamicScenery | 1u << NodeCrate | 1u << NodeCreature | 1u << NodeGenericObject | 1u << NodePayGate;
-constexpr u32 SolidNodeKinds = SolidObjectNodeKinds | 1u << NodeCharacter;
-constexpr u32 SolidOrProjectileNodeKinds = SolidNodeKinds | 1u << NodeProjectile;
-constexpr u32 DamageableNodeKinds = 1u << NodeCharacter | 1u << NodeCrate | 1u << NodePickup | 1u << NodeCreature |
+CONSTEXPR u32 SolidNodeKinds = SolidObjectNodeKinds | 1u << NodeCharacter;
+CONSTEXPR u32 SolidOrProjectileNodeKinds = SolidNodeKinds | 1u << NodeProjectile;
+CONSTEXPR u32 DamageableNodeKinds = 1u << NodeCharacter | 1u << NodeCrate | 1u << NodePickup | 1u << NodeCreature |
                                     1u << NodeGenericObject | 1u << NodePayGate;
 
 // A node's flags
@@ -86,7 +86,7 @@ CHECK_SIZE(GameNodeFlags, 2);
 class GameNode
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         HandleEventSlot = 1,
         DestroySlot = 2,
@@ -96,11 +96,11 @@ public:
         LeftChunkSlot = 6,
         StepSlot = 7,
         UpdateSlot = 8,
-        RemovedSlot = 9,
+        RemovedSlot = 9
     };
 
     // A near distance any stamp is within (its updates never thinned out)
-    static constexpr u16 AnyNearDistance = 0xFFFF;
+    static CONSTEXPR u16 AnyNearDistance = 0xFFFF;
 
     InstanceContext* owner;
     GameNodeFlags flags;
@@ -128,7 +128,7 @@ CHECK_SIZE(GameNode, 0x18);
 // An instance's nodes: one of each kind (24 kinds, the kind is the node's vtable function 5), a bit per kind it has
 struct NodeList
 {
-    static constexpr u32 Kinds = 24;
+    static CONSTEXPR u32 Kinds = 24;
 
     u32 mask;
     GameNode* nodes[Kinds];
@@ -168,7 +168,7 @@ CHECK_SIZE(InstancePlacementFlags, 4);
 
 // Where an instance is: its rotation and position, its flags, and the chunk it's in. A character's node of kind 1 has one
 // for where it comes back to
-struct alignas(16) InstancePlacement
+struct ALIGN16 InstancePlacement
 {
     Vector4 rotation;
     Vector4 position;
@@ -196,7 +196,7 @@ extern "C"
 // in last, and the places (8 at most)
 struct InstancePlaces
 {
-    static constexpr u32 MostPlaces = 8;
+    static CONSTEXPR u32 MostPlaces = 8;
 
     u32 count;
     String lastChunk;
@@ -265,7 +265,7 @@ CHECK_SIZE(ChunkInstances, 0x68);
 // (an ID let go is given to the last instance)
 struct InstanceIds
 {
-    static constexpr u32 MostIds = 256;
+    static CONSTEXPR u32 MostIds = 256;
 
     struct Entry
     {
@@ -290,10 +290,10 @@ CHECK_OFFSET(InstanceIds, count, 0x800);
 struct InstanceContext : ReferencedObject
 {
     // The seen stamp from which an instance's sounds aren't played (unless they're followed)
-    static constexpr u32 SoundSeenLimit = 0x1FA4;
+    static CONSTEXPR u32 SoundSeenLimit = 0x1FA4;
     // A new instance's seen stamp (as far as it goes)
-    static constexpr u32 NeverSeen = 0xFFFFFF;
-    static constexpr s32 NoId = -1;
+    static CONSTEXPR u32 NeverSeen = 0xFFFFFF;
+    static CONSTEXPR s32 NoId = -1;
 
     // (0xB4 to 0xC0 is the base's padding: its collision's boxes align it to 16 bytes)
     Vector4 box;
@@ -366,7 +366,7 @@ CHECK_SIZE(MovementNodeBits, 4);
 // its place's matrix a frame before and now (its update moves the one it had into the first)
 struct MovementNode : GameNode
 {
-    static constexpr u32 ClassId = 0x1309;
+    static CONSTEXPR u32 ClassId = 0x1309;
 
     f32 seconds;
     MovementNodeBits bits;
@@ -425,7 +425,7 @@ CHECK_SIZE(ModelNodeBits, 4);
 // drawn) and what its lights are gathered with
 struct ModelNode : GameNode
 {
-    static constexpr u32 ClassId = 0x141E;
+    static CONSTEXPR u32 ClassId = 0x141E;
 
     ModelNodeBits bits;
     GameOGI* ogi;
@@ -522,7 +522,7 @@ union AgentEventFlags
 CHECK_SIZE(AgentEventFlags, 4);
 
 // An instance's ID in its chunk of none (its agent's: the persistent flag slot it was given, which checkpoints find it by)
-constexpr u16 NoInstanceId = 0xFFFF;
+CONSTEXPR u16 NoInstanceId = 0xFFFF;
 
 // What an instance's agent node points at (retail's ObjectInstanceContext classes, game/agents.h: the character, the
 // creature, ... the instance's script runs as): the instance, the behaviour starter its spawn runs, its object ID, its object,
@@ -538,7 +538,7 @@ constexpr u16 NoInstanceId = 0xFFFF;
 class Agent
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         ApplyStateSlot = 1,
         DestroySlot = 2,
@@ -560,12 +560,12 @@ public:
         TouchedSlot = 19,
         AttackedSlot = 20,
         LaunchSlot = 21,
-        FrameSlot = 22,
+        FrameSlot = 22
     };
 
-    static constexpr u32 Counters = 4;
+    static CONSTEXPR u32 Counters = 4;
     // A counter's most (the scripts keep them within 0 and it: a byte)
-    static constexpr s32 CounterMax = 0xFF;
+    static CONSTEXPR s32 CounterMax = 0xFF;
 
     InstanceContext* instance;
     u16 spawnScript;
@@ -786,7 +786,7 @@ extern "C"
 // enters (made the first time, kept by the references to it)
 struct CameraNode : TriggerNode
 {
-    static constexpr u32 TypeId = 0x1C01;
+    static CONSTEXPR u32 TypeId = 0x1C01;
 
     struct MainCamera* camera;
     struct CameraEvent* event;
@@ -812,7 +812,7 @@ CHECK_SIZE(CameraNode, 0x180);
 struct FollowNode;
 
 // RegisterNode's attach: the node attached to its instance too
-constexpr u32 AttachNode = 1;
+CONSTEXPR u32 AttachNode = 1;
 
 extern "C"
 {

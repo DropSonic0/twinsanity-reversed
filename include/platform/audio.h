@@ -6,18 +6,18 @@
 // The values are the PS2's SPU2's: 2 cores of 24 voices (a voice is core * 24 + its number), volumes of 14 bits (0x3FFF full,
 // 0x4000 and up the other phase), pitches of 0x1000 for a sample's own rate, the SPU2's 10 reverb modes. Sounds and music are
 // read on Platform::Stream's channels
-namespace Platform::Audio
-{
-constexpr s32 Voices = 48;
-constexpr s32 VoicesPerCore = 24;
-constexpr s32 Cores = 2;
+namespace Platform {
+namespace Audio {
+CONSTEXPR s32 Voices = 48;
+CONSTEXPR s32 VoicesPerCore = 24;
+CONSTEXPR s32 Cores = 2;
 // A voice's group goes with its number in the top half of a word (voice | group << GroupShift)
-constexpr u32 GroupShift = 16;
+CONSTEXPR u32 GroupShift = 16;
 // A voice's full volume (past it the other phase: InvertedVolumeBase less the volume's size), and a group's volume of 1 (4.12
 // fixed point)
-constexpr s32 MaxVolume = 0x3FFF;
-constexpr s32 InvertedVolumeBase = 0x7FFF;
-constexpr s16 FullGroupVolume = 0x1000;
+CONSTEXPR s32 MaxVolume = 0x3FFF;
+CONSTEXPR s32 InvertedVolumeBase = 0x7FFF;
+CONSTEXPR s16 FullGroupVolume = 0x1000;
 
 // Every voice and setting as when the sound processor started
 void Reset();
@@ -78,4 +78,5 @@ bool IsMusicReady(s32 channel);
 s32 PlayMusic(s32 channel);
 bool IsMusicPlaying(s32 channel);
 void StopMusic(s32 channel);
+}
 }

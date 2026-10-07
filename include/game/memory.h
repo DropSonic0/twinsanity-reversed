@@ -7,7 +7,7 @@
 // (FreeDeferred). The disk manager (game/disk.h) has a pool of its own for the chunks' data.
 
 // Bit 0 of a GCC 2.9x destructor's flags (gcc2.h's DestructorFlags): the object is freed once it's destroyed
-constexpr u32 FreeAfterDestroy = 1;
+CONSTEXPR u32 FreeAfterDestroy = 1;
 
 // A heap block's size: its bytes, and whether it's free
 union HeapBlockSize
@@ -54,8 +54,8 @@ struct FixedAllocatorNode
 };
 CHECK_SIZE(FixedAllocatorNode, 0x20);
 
-constexpr u32 SmallAllocationLimit = 0x1000;
-constexpr u32 SizeClassCount = 63;
+CONSTEXPR u32 SmallAllocationLimit = 0x1000;
+CONSTEXPR u32 SizeClassCount = 63;
 
 // A page's node comes from freeNodes. sizeClasses has the newest page of each size, the older ones behind it
 struct MemoryController
@@ -79,7 +79,7 @@ struct DeferredFree
 };
 CHECK_SIZE(DeferredFree, 8);
 
-constexpr u32 DeferredFrames = 3;
+CONSTEXPR u32 DeferredFrames = 3;
 
 struct HeapManager
 {
@@ -126,8 +126,8 @@ extern "C"
 }
 
 // GCC 2.9x's new[] of a type with a destructor: a cookie of 16 bytes counting the elements before them
-constexpr u32 ArrayCookieSize = 0x10;
-constexpr u32 ArrayCookieWords = ArrayCookieSize / sizeof(u32);
+CONSTEXPR u32 ArrayCookieSize = 0x10;
+CONSTEXPR u32 ArrayCookieWords = ArrayCookieSize / sizeof(u32);
 
 template <typename T>
 T* NewArray(u32 count)

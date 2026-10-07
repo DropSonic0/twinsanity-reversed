@@ -27,22 +27,22 @@ struct TimeClock
 };
 CHECK_SIZE(TimeClock, 0xC);
 
-constexpr u32 GameClockCount = 8;
+CONSTEXPR u32 GameClockCount = 8;
 
 // The game clocks the code picks (instances keep the index of theirs): the first (the particles', the decals', the wind's and
 // the follow camera's), most objects' (also the cutscenes', the dynamic scenery's and the timed play's countdown) and the
 // characters' and graples' (also the time played)
-enum GameClockIndex : u32
+enum GameClockIndex
 {
     FirstClock = 0,
     ObjectClock = 1,
-    CharacterClock = 2,
+    CharacterClock = 2
 };
 
 // The frames a second the game's values per frame are given for (the particles' and decals' lives, the bodies' drags, the
 // pickups' spin): NTSC's 60, whatever the TV's rate, and such a frame's seconds
-constexpr f32 FramesPerSecond = 60.0f;
-constexpr f32 SecondsPerFrame = Rounded(1.0 / 60.0);
+CONSTEXPR f32 FramesPerSecond = 60.0f;
+CONSTEXPR f32 SecondsPerFrame = Rounded(1.0 / 60.0);
 
 // The frames' timing, and the game's clocks (the global clock is apart)
 struct GameTimeController

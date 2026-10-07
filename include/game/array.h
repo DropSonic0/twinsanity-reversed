@@ -293,7 +293,7 @@ struct ElementArrayIterator
         u32 count;
     };
 
-    static constexpr u32 ElementSize = 0xC;
+    static CONSTEXPR u32 ElementSize = 0xC;
 
     const GccVTableEntry* vtable;
     Array* array;

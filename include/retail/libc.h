@@ -29,13 +29,13 @@ s32 Format(char* buffer, const char* format, ...) asm("sprintf");
 s32 ToUpper(s32 character) RETAIL(FUN_002c7020);
 s32 ToLower(s32 character) RETAIL(ToLowerCase);
 // The casing table's bits (newlib's _U and _L): upper and lower case letters
-constexpr u8 CasingUpperCase = 0x1;
-constexpr u8 CasingLowerCase = 0x2;
+CONSTEXPR u8 CasingUpperCase = 0x1;
+CONSTEXPR u8 CasingLowerCase = 0x2;
 // qsort (old BSD's: its order of comparisons and of equal elements)
 void QuickSort(void* items, u32 count, u32 size, s32 (*compare)(const void*, const void*)) RETAIL(FUN_002c7bc0);
 
 // atexit's block of functions (newlib's _ATEXIT_SIZE of them): the first is in the reentrancy block, more get allocated
-constexpr s32 AtExitBlockSize = 32;
+CONSTEXPR s32 AtExitBlockSize = 32;
 
 struct AtExitBlock
 {

@@ -26,7 +26,7 @@ CHECK_SIZE(ButtonBindingFlags, 4);
 // buttons have to be held for it (or not held)
 struct ButtonBinding
 {
-    static constexpr u32 MostButtons = 4;
+    static CONSTEXPR u32 MostButtons = 4;
 
     u8 buttons[MostButtons];
     ButtonBindingFlags flags;
@@ -46,15 +46,19 @@ CHECK_SIZE(AxisBinding, 0x10);
 // The game's button bindings (no vtable): a list of actions' bindings and a second list
 struct ButtonBindings
 {
-    // The dead zone the game's bindings give the sticks' axes
-    static constexpr f32 AxisDeadZone = Rounded(0.3);
-
     // Has's onPress: whether the action is held, or was pressed this frame
-    enum Edge : u32
+    enum Edge
     {
         WhileHeld = 0,
-        OnPress = 1,
+        OnPress = 1
     };
+
+    // The dead zone the game's bindings give the sticks' axes
+#if defined(__SNC__) || defined(__CELLOS_LV2__)
+    #define AxisDeadZone (0.3f)
+#else
+    static CONSTEXPR f32 AxisDeadZone = Rounded(0.3);
+#endif
 
     u8 actionCount;
     u8 axisCount;

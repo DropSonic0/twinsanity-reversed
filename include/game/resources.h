@@ -28,14 +28,14 @@ struct ResourceHeader
     u32 id;
 };
 
-constexpr u32 NoResourceId = 0xFFFFFFFF;
+CONSTEXPR u32 NoResourceId = 0xFFFFFFFF;
 
 // A resource's ID as the tables, slots and lists keep it (an object's, a model's, an animation's, a script's, a sound's: the
 // resource header's ID's low half): the low 15 bits are the resource's place in its table; every bit set is none (UndefinedId in
 // code of any kind's IDs, else each kind's: NoObjectId, NoModelId, NoAnimationId, NoScriptId, NoSoundId)
-constexpr u16 ResourceIndexMask = 0x7FFF;
+CONSTEXPR u16 ResourceIndexMask = 0x7FFF;
 // An ID that's undefined (a resource's in a slot or a list, an element's of a layout): every bit set
-constexpr u16 UndefinedId = 0xFFFF;
+CONSTEXPR u16 UndefinedId = 0xFFFF;
 
 inline ResourceHeader* HeaderOf(void* resource)
 {
@@ -74,7 +74,7 @@ inline void TakeReference(void* resource)
 // ResourcesStep deletes the oldest of one queue a step, a graphics table that lets every resource go deletes all of its own
 struct DeletionQueue
 {
-    static constexpr u32 Size = 0x2FF;
+    static CONSTEXPR u32 Size = 0x2FF;
 
     u16 head;
     u16 count;
@@ -153,10 +153,10 @@ CHECK_SIZE(ResourceTable, 0x18);
 // queue
 struct GameResources
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
-        SetUpCodeModelsSlot = 2,
+        SetUpCodeModelsSlot = 2
     };
 
     u32 languageCount;

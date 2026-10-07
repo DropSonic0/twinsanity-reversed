@@ -11,7 +11,7 @@ class Stream
 {
 public:
     // The vtable's slots (slot 0 is empty)
-    enum Slot : u32
+    enum Slot
     {
         SlotDestroy = 1,
         SlotRead,
@@ -45,7 +45,7 @@ public:
         SlotWriteU64,
         SlotWriteU32,
         SlotWriteBool,
-        SlotWriteF32,
+        SlotWriteF32
     };
 
     const GccVTableEntry* vtable;
@@ -231,18 +231,18 @@ CHECK_SIZE(Stream, 4);
 class File : public Stream
 {
 public:
-    enum Mode : s32
+    enum Mode
     {
         ModeCreate = 0,
         ModeRead = 1,
         ModeWrite = 2,
-        ModeReadWrite = 3,
+        ModeReadWrite = 3
     };
 
     // A closed file's descriptor (any negative one is)
-    static constexpr s32 Closed = -1;
+    static CONSTEXPR s32 Closed = -1;
     // ReadChecked's result when it read nothing
-    static constexpr s32 ReadNothing = -1;
+    static CONSTEXPR s32 ReadNothing = -1;
 
     s32 descriptor;
 
@@ -309,7 +309,7 @@ class MemoryStream : public Stream
 {
 public:
     // The memory of the streams over files' data is aligned to it
-    static constexpr u16 FileAlignment = 0x40;
+    static CONSTEXPR u16 FileAlignment = 0x40;
 
     // What its memory is allocated at
     u16 alignment;

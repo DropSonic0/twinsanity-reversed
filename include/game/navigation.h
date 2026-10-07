@@ -28,7 +28,7 @@ union AiPositionFlags
     };
 
     // The flags' masks: the searches' required and ruled out flags
-    enum Mask : u16
+    enum Mask
     {
         Blocked = 0x1,
         Airborne = 0x2,
@@ -36,7 +36,7 @@ union AiPositionFlags
         ScriptFlag3 = 0x8,
         NeverTaken = 0x10,
         Attached = 0x20,
-        ScriptFlag6 = 0x40,
+        ScriptFlag6 = 0x40
     };
 };
 CHECK_SIZE(AiPositionFlags, 2);
@@ -62,8 +62,8 @@ CHECK_SIZE(AiPositionBits, 4);
 struct AiPosition
 {
     // The cost the routes occupying it raise it to at most, and no step before it
-    static constexpr u32 MostCost = 0xFF;
-    static constexpr u16 NoPrevious = 0xFF;
+    static CONSTEXPR u32 MostCost = 0xFF;
+    static CONSTEXPR u16 NoPrevious = 0xFF;
 
     Vector4 position;
     AiPositionBits bits;
@@ -89,9 +89,6 @@ CHECK_SIZE(AiPosition, 0x20);
 // and 1 together, which nothing reads
 union AiPathFlags
 {
-    // The flags a plain path has none of
-    static constexpr u16 NotPlainMask = 0x1E0;
-
     u16 value;
     struct
     {
@@ -108,7 +105,7 @@ union AiPathFlags
     };
 
     // The flags' masks (the scripts' conditions test one each)
-    enum Mask : u16
+    enum Mask
     {
         NeedsJump = 0x4,
         NeedsLongJump = 0x8,
@@ -116,13 +113,16 @@ union AiPathFlags
         NeedsFlight = 0x20,
         ScriptFlag6 = 0x40,
         ScriptFlag7 = 0x80,
-        ScriptFlag8 = 0x100,
+        ScriptFlag8 = 0x100
     };
+
+    // The flags a plain path has none of
+    static CONSTEXPR u16 NotPlainMask = 0x1E0;
 };
 CHECK_SIZE(AiPathFlags, 2);
 
 // An AI position's index of none (and a chunk's, an AI path's until its chunk's navigation is linked)
-constexpr u16 NoAiIndex = 0xFFFF;
+CONSTEXPR u16 NoAiIndex = 0xFFFF;
 
 // An AI path of a layout (0xA bytes): the two positions it joins (their indexes), its flags, and the chunks the positions are in
 // (the path's own, set when the chunk's navigation is linked)
@@ -142,7 +142,7 @@ CHECK_SIZE(AiPath, 0xA);
 // count of steps (a search's route has 255 at most)
 struct Route
 {
-    static constexpr u32 MostSearchedSteps = 255;
+    static CONSTEXPR u32 MostSearchedSteps = 255;
 
     u16 chunks[256];
     u16 positions[256];
@@ -270,10 +270,10 @@ CHECK_SIZE(SearchEntry, 0x10);
 struct PathFinder
 {
     // The chunks' indexes it keeps a navigation for, and its vtable's step cost, estimate and search
-    static constexpr u32 MostChunks = 128;
-    static constexpr u32 StepCostSlot = 2;
-    static constexpr u32 EstimateSlot = 3;
-    static constexpr u32 FindRouteSlot = 4;
+    static CONSTEXPR u32 MostChunks = 128;
+    static CONSTEXPR u32 StepCostSlot = 2;
+    static CONSTEXPR u32 EstimateSlot = 3;
+    static CONSTEXPR u32 FindRouteSlot = 4;
 
     AiNavigation* navigations[MostChunks];
     u16 count;

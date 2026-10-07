@@ -83,12 +83,12 @@ struct FloatCurve
 class Emitter2D
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         SpawnSlot = 1,
         StepSlot = 2,
         DestroySlot = 3,
-        DrawPlacedSlot = 4,
+        DrawPlacedSlot = 4
     };
 
     SlotPool particles;

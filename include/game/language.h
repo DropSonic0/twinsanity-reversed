@@ -4,11 +4,11 @@
 
 // The game's two text files of each language: Language\Code\<language>.txt (the game's texts) and Language\AgentLab\<language>.txt
 // (the scripts'), a text a line
-enum TextFile : u32
+enum TextFile
 {
     CodeTexts = 0,
     AgentLabTexts = 1,
-    TextFiles = 2,
+    TextFiles = 2
 };
 
 extern "C"

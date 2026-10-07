@@ -14,7 +14,7 @@ struct ScriptPack;
 // (a first word past 16)
 struct ResourceIdList
 {
-    static constexpr u32 BlockIds = 16;
+    static CONSTEXPR u32 BlockIds = 16;
 
     u32 countOrMore;
     u16 ids[BlockIds];
@@ -50,7 +50,7 @@ CHECK_SIZE(ResourceIdIterator, 0x10);
 // The resources a game object names, by kind (0x20 bytes): a bit for each kind it has a list of
 struct ResourceReferences
 {
-    static constexpr u32 KindCount = 7;
+    static CONSTEXPR u32 KindCount = 7;
 
     u32 kinds;
     ResourceIdList* lists[KindCount];
@@ -65,7 +65,7 @@ struct ResourceReferences
 CHECK_SIZE(ResourceReferences, 0x20);
 
 // The kinds of resources the references list, by their list's index (the sixth kind is never loaded or let go of)
-enum ResourceKind : u32
+enum ResourceKind
 {
     ResourceObjects,
     ResourceModels,
@@ -73,7 +73,7 @@ enum ResourceKind : u32
     ResourceCodeModels,
     ResourceScripts,
     ResourceUnused,
-    ResourceSounds,
+    ResourceSounds
 };
 
 // A code model (0x18 bytes, a resource of the game's tables): its resource header, its kind and the slot of the custom pickups or
@@ -82,14 +82,14 @@ enum ResourceKind : u32
 struct CodeModel
 {
     // The kinds that set up a custom slot (the others set up nothing)
-    enum Kind : u8
+    enum Kind
     {
         KindPickup = 0x11,
         KindProjectile = 0x12,
-        KindNone = 0xFF,
+        KindNone = 0xFF
     };
 
-    static constexpr u8 NoSlot = 0xFF;
+    static CONSTEXPR u8 NoSlot = 0xFF;
 
     u32 bits;
     u32 id;
@@ -172,11 +172,11 @@ CHECK_SIZE(TriggerBehaviour, 4);
 
 // An object's ID of none (an empty slot, a node without an object of its own), which also stands for any object where the
 // commands take an object's instances (every one when none is given)
-constexpr u16 NoObjectId = 0xFFFF;
-constexpr u16 AnyObjectId = 0xFFFF;
+CONSTEXPR u16 NoObjectId = 0xFFFF;
+CONSTEXPR u16 AnyObjectId = 0xFFFF;
 
 // A sound slot of an object of none (a script's or a trail's: nothing is played)
-constexpr u16 NoSoundSlot = 0xFFFF;
+CONSTEXPR u16 NoSoundSlot = 0xFFFF;
 
 // The game's objects (0x60 bytes, the RM2's code section's): its resource header (game/resources.h: its references, bits and
 // ID), its header, its name, its properties, the resources it names, its script pack and its slots: its trigger behaviours, then
@@ -184,7 +184,7 @@ constexpr u16 NoSoundSlot = 0xFFFF;
 struct GameObject
 {
     // The types of objects (their agents' classes)
-    enum Type : u32
+    enum Type
     {
         TypeCharacter,
         TypePickup,
@@ -195,7 +195,7 @@ struct GameObject
         TypePayGate,
         TypeGraple,
         TypeProjectile,
-        TypeCount,
+        TypeCount
     };
 
     u32 bits;
