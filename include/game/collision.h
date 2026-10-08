@@ -31,7 +31,7 @@ struct CollisionData
 CHECK_SIZE(CollisionData, 0x28);
 
 // What the collision section's header has: the version and the counts
-constexpr u32 CollisionHeaderSize = offsetof(CollisionData, nodesHandle);
+CONSTEXPR u32 CollisionHeaderSize = offsetof(CollisionData, nodesHandle);
 
 // A node of the collision tree (0x20 bytes, the tools' collision trigger): its box, the index of its first child (a leaf has
 // the bitwise not of its group in both instead) in the min's w and of its second in the max's
@@ -84,8 +84,8 @@ CHECK_SIZE(CollisionHit, 0x40);
 // Hits kept in blocks of 8 (0x210 bytes: the next one, then its hits 16 bytes in)
 struct CollisionHitBlock
 {
-    static constexpr s32 CapacityShift = 3;
-    static constexpr s32 Capacity = 1 << CapacityShift;
+    static CONSTEXPR s32 CapacityShift = 3;
+    static CONSTEXPR s32 Capacity = 1 << CapacityShift;
 
     CollisionHitBlock* next;
     CollisionHit hits[Capacity];
@@ -98,7 +98,7 @@ CHECK_SIZE(CollisionHitBlock, 0x210);
 // index (NotIterated before it starts) and block, the first block
 struct CollisionCache
 {
-    static constexpr u16 NotIterated = 0xFFFF;
+    static CONSTEXPR u16 NotIterated = 0xFFFF;
 
     ReferencedObject* owner;
     u8 unused04[0x10 - 0x4];
@@ -156,7 +156,10 @@ CHECK_OFFSET(FastRayCast, surfaceMask, 0x40);
 // the wanted flags (one of them otherwise). AllWanted is the whole word most queries start with
 union InstanceQueryBits
 {
-    static constexpr u32 AllWanted = 0x2;
+    enum
+    {
+        AllWanted = 0x2
+    };
 
     u32 value;
     struct
@@ -187,7 +190,7 @@ CHECK_OFFSET(InstanceQuery, instance, 0x20);
 
 // The kinds of contact a surface has sounds and particles of (TT Lab's contact kinds): an impact, the two steps, a landing, a
 // hard impact and a scrape; and a surface's sound or particle system of none
-enum SurfaceContactKind : u32
+enum SurfaceContactKind
 {
     ContactImpact = 0,
     ContactStep1 = 1,
@@ -196,10 +199,10 @@ enum SurfaceContactKind : u32
     ContactHardImpact = 4,
     ContactScrape = 5,
 };
-constexpr u16 NoSurfaceEffect = 0xFFFF;
+CONSTEXPR u16 NoSurfaceEffect = 0xFFFF;
 
 // The distance (or the share of the way) a cast or a query gives when it hits nothing
-constexpr f32 NoHitDistance = Infinite;
+CONSTEXPR f32 NoHitDistance = Infinite;
 
 // Reads the collision's header (the section's first 0x14 bytes) and queues its arrays' readers (0x10 bytes): whether the
 // vertexes' reader closes the file once read (never asked), where the section starts, the collision

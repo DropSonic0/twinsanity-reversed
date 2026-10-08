@@ -195,7 +195,7 @@ union GameAnimationBits
 CHECK_SIZE(GameAnimationBits, 4);
 
 // An animation's ID of none (a slot without one)
-constexpr u16 NoAnimationId = 0xFFFF;
+CONSTEXPR u16 NoAnimationId = 0xFFFF;
 
 // An animation as the RM2's code section has it (0x24 bytes, a resource of the game's tables): its resource header's bits
 // (game/resources.h), its ID, its bits and where each data is
@@ -316,7 +316,7 @@ CHECK_SIZE(JointAnimationBits, 4);
 // its bits, the joint, its callbacks, its own animations (else its parent's), its parent and children
 struct JointAnimation
 {
-    static constexpr u32 MostChildren = 12;
+    static CONSTEXPR u32 MostChildren = 12;
 
     Matrix4x4 transform;
     Vector4 scale;
@@ -399,7 +399,7 @@ struct ExitPointAnimation
 CHECK_SIZE(ExitPointAnimation, 0x50);
 
 // A model's (an OGI's) ID of none (a slot without one)
-constexpr u16 NoModelId = 0xFFFF;
+CONSTEXPR u16 NoModelId = 0xFFFF;
 
 // An OGI as the game keeps it (0x90 bytes, a resource of the game's tables read from the RM2's graphics): its resource header
 // (game/resources.h), 16 bytes only the older layout has (read and never used), its bounding box, its counts (joints, exit points,
@@ -410,8 +410,8 @@ struct GameOGI
 {
     // A joint index that names none: a joint without a parent, an exit point or a hull on no joint, an ID without a joint; and an
     // exit point's index that names none (an instance attached at no exit point, a shot or a head at the instance's place)
-    static constexpr u8 NoJoint = 0xFF;
-    static constexpr u8 NoExitPoint = 0xFF;
+    static CONSTEXPR u8 NoJoint = 0xFF;
+    static CONSTEXPR u8 NoExitPoint = 0xFF;
 
     u32 resourceBits;
     u32 id;
@@ -458,7 +458,7 @@ CHECK_SIZE(GameOGI, 0x90);
 // RingFloats floats every instance shares), the weights it had and the ones written this frame
 struct BlendShapeWeights
 {
-    static constexpr u32 RingFloats = 1000;
+    static CONSTEXPR u32 RingFloats = 1000;
 
     u8 count;
     u8 index;
@@ -488,7 +488,7 @@ CHECK_SIZE(OgiAnimatorBits, 4);
 struct OgiAnimator
 {
     // The joint the animation calls name for the root (any other names a react joint)
-    static constexpr u8 RootJoint = 0xFF;
+    static CONSTEXPR u8 RootJoint = 0xFF;
 
     OgiAnimatorBits bits;
     GameOGI* ogi;

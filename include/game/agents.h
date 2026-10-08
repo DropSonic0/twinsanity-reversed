@@ -14,7 +14,7 @@ struct TimeClock;
 // ObjectEventCaller_Methods over D_002F2E98): its kind (the character part's attack kinds)
 struct AttackEvent : GameEvent
 {
-    static constexpr u16 EventId = 0x1801;
+    static CONSTEXPR u16 EventId = 0x1801;
 
     u32 kind;
 
@@ -41,7 +41,7 @@ extern "C"
 // triggered, damaged (a contact message, a hard collision), touched (a collision, an attack of no other kind), headbutted (hit
 // from below), landed on, spin, body slam (and the tied characters' slam) and slide attacked, and hit by a character thrown at
 // it (the tool's "unknown collision"); the crates' slots after them: a fall started (launched without speed) and landed
-enum AgentBehaviourSlot : u32
+enum AgentBehaviourSlot
 {
     OnSpawn = 0,
     OnTrigger = 1,
@@ -131,7 +131,7 @@ CHECK_SIZE(CrateAgentState, 4);
 class CrateAgent : public BasicAgent
 {
 public:
-    enum States : u32
+    enum States
     {
         StateResting = 0,
         StateSettled = 1,
@@ -181,7 +181,7 @@ CHECK_SIZE(CrateAgent, 0x70);
 class CreatureAgent : public BasicAgent
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         FallFrameSlot = 23,
         StartFallingSlot = 24,
@@ -245,7 +245,7 @@ CHECK_SIZE(CharacterLocks, 4);
 // the buttons are pressed (0 to 1; the shoulder buttons R less L)
 struct CharacterButtons
 {
-    static constexpr u32 LockAll = 0xFFFFFFFF;
+    static CONSTEXPR u32 LockAll = 0xFFFFFFFF;
 
     CharacterLocks locked;
     f32 turn;
@@ -306,7 +306,7 @@ class CharacterAgent : public CreatureAgent
 {
 public:
     // Its modes: none, invincible after a hurt (blinking), and hurt
-    enum Mode : u32
+    enum Mode
     {
         ModeNone = 0,
         ModeInvincible = 1,
@@ -316,7 +316,7 @@ public:
 
     // What it stands on: nothing (in the air), the ground (a triangle: groundHit), an instance's hull, a moving instance's hull it
     // rides (its point and matrix kept in the hull's space)
-    enum Standing : u32
+    enum Standing
     {
         StandingNothing = 0,
         StandingGround = 1,
@@ -326,7 +326,7 @@ public:
 
     // Its attacks' movement modes (the part's attack kinds as the agents they touch take them: their properties' state bit of the
     // mode makes them stop it)
-    enum MoveMode : u32
+    enum MoveMode
     {
         MoveNone = 0,
         MoveSlam = 10,
@@ -723,7 +723,7 @@ extern "C"
 inline void QueueAttack(InstanceContext* target, u32 kind, InstanceContext* attacker, u32 kinds)
 {
     Reference* reference = attacker != nullptr ? AddReference(attacker) : nullptr;
-    auto* event = AttackEvent::Construct(static_cast<AttackEvent*>(MemoryAllocate(sizeof(AttackEvent))), kind, &reference, kinds);
+    AttackEvent* event = AttackEvent::Construct(static_cast<AttackEvent*>(MemoryAllocate(sizeof(AttackEvent))), kind, &reference, kinds);
     Reference* handle = event != nullptr ? AddEventReference(event) : nullptr;
     QueueEvent(target, &handle);
 }

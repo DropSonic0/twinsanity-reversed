@@ -49,7 +49,7 @@ struct ChunkLinkData
 {
     // How the linked chunk is drawn: not, always, or (any value from 2 up) while its load wall is in view, through the wall as a
     // portal while it's wholly in view
-    enum Visibility : u32
+    enum Visibility
     {
         VisibilityHidden = 0,
         VisibilityAlways = 1,
@@ -72,7 +72,7 @@ CHECK_OFFSET(ChunkLinkData, loadWall, 0x90);
 CHECK_SIZE(ChunkLinkData, 0xA0);
 
 // A link's load wall (0x90 bytes): its corners, its plane and its edges' planes (inward) as a matrix's columns
-struct alignas(16) LoadWall
+struct ALIGN16 LoadWall
 {
     Vector4 corners[4];
     Vector4 plane;
@@ -100,7 +100,7 @@ CHECK_SIZE(ReverbBits, 4);
 // of 1
 struct ReverbSettings
 {
-    static constexpr u8 NoReverb = 0xFF;
+    static CONSTEXPR u8 NoReverb = 0xFF;
 
     ReverbBits bits;
     f32 delay;
@@ -112,7 +112,7 @@ struct ReverbSettings
 CHECK_SIZE(ReverbSettings, 0x18);
 
 // A chunk's state (ChunkFlags::state)
-enum ChunkState : u32
+enum ChunkState
 {
     // Its files aren't all loaded
     ChunkHidden = 0,
@@ -152,7 +152,7 @@ struct ChunkData
 {
     // The parts of its release queued through the readers (QueueChunkPartRelease): a batch drops a hold first and adds it back
     // last, so its holds aren't 0 while the batch is under way
-    enum Part : u32
+    enum Part
     {
         PartAddHold = 0,
         PartDropHold = 1,
@@ -166,13 +166,13 @@ struct ChunkData
         PartClocks = 10,
     };
 
-    static constexpr u32 MostSoundBoxes = 7;
+    static CONSTEXPR u32 MostSoundBoxes = 7;
     // The lists its instances' collision is sorted into (game/chunkscenery.cpp)
-    static constexpr u32 InstanceCells = 0x301;
-    static constexpr s32 NoParticles = -1;
-    static constexpr s32 NoParticleView = -1;
+    static CONSTEXPR u32 InstanceCells = 0x301;
+    static CONSTEXPR s32 NoParticles = -1;
+    static CONSTEXPR s32 NoParticleView = -1;
     // Its steppedKinds near the focus chunk: every node kind
-    static constexpr s32 EveryKindStepped = -1;
+    static CONSTEXPR s32 EveryKindStepped = -1;
 
     // Its own reference block, like a loader's
     ChunkDataReference* self;

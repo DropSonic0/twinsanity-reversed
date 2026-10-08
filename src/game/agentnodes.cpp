@@ -82,24 +82,24 @@ extern "C"
 namespace
 {
 // The pay gates' number: their third integer, given to their part
-constexpr u32 PayGateNumberIndex = 2;
+CONSTEXPR u32 PayGateNumberIndex = 2;
 
 // The agents' nodes' types
-constexpr u32 CharacterType = 0x9002;
-constexpr u32 CrateType = 0x9003;
-constexpr u32 CreatureType = 0x9004;
-constexpr u32 PickupType = 0x9005;
-constexpr u32 GrabbableType = 0x9008;
-constexpr u32 GenericObjectType = 0x9009;
-constexpr u32 PayGateType = 0x900A;
-constexpr u32 GrapleType = 0x900B;
-constexpr u32 ProjectileType = 0x900C;
+CONSTEXPR u32 CharacterType = 0x9002;
+CONSTEXPR u32 CrateType = 0x9003;
+CONSTEXPR u32 CreatureType = 0x9004;
+CONSTEXPR u32 PickupType = 0x9005;
+CONSTEXPR u32 GrabbableType = 0x9008;
+CONSTEXPR u32 GenericObjectType = 0x9009;
+CONSTEXPR u32 PayGateType = 0x900A;
+CONSTEXPR u32 GrapleType = 0x900B;
+CONSTEXPR u32 ProjectileType = 0x900C;
 // The types of the game nodes' base and of the agents' nodes' base
-constexpr u32 GameNodeType = 0x9001;
-constexpr u32 BaseType = 0x1423;
+CONSTEXPR u32 GameNodeType = 0x9001;
+CONSTEXPR u32 BaseType = 0x1423;
 // A grabbable's first integer: 1 a hook (else how many points it can be landed on from)
-constexpr u32 GrabbableKindIndex = 0;
-constexpr s32 HookGrabbable = 1;
+CONSTEXPR u32 GrabbableKindIndex = 0;
+CONSTEXPR s32 HookGrabbable = 1;
 
 AgentNode* ConstructWith(AgentNode* node, Agent* agent, const GccVTableEntry* vtable)
 {
@@ -118,7 +118,7 @@ void GivePayGateNumber(AgentNode* node)
 {
     Agent* agent = node->agent;
     s32 number = agent->properties->GetInt(PayGateNumberIndex);
-    auto* part = static_cast<PayGatePart*>(agent->part);
+    PayGatePart* part = static_cast<PayGatePart*>(agent->part);
     part->payGate.number = number;
 }
 }
@@ -174,7 +174,7 @@ void AgentNodeHandleEvent(AgentNode* node, Reference** event)
 {
     Agent* agent = node->agent;
     Reference* reference = *event;
-    auto* handled = reference != nullptr ? reinterpret_cast<GameEvent*>(reference->object) : nullptr;
+    GameEvent* handled = reference != nullptr ? reinterpret_cast<GameEvent*>(reference->object) : nullptr;
     Reference* sender = handled->argument;
     ReferencedObject* senderObject = sender != nullptr ? sender->object : nullptr;
     if (handled->id == AttackEvent::EventId)

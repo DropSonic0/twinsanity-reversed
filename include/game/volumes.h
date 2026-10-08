@@ -17,7 +17,7 @@ struct CapsuleVolume;
 // the same, 0 when the segment starts inside, 9 none, 10 where another volume is, 11 a copy moved by a matrix (none of a box), 12
 // another volume of its type made this one moved by a matrix, 13 a contact with another volume, 14 its type, 15 read, 16
 // nothing. Where something is: Volume::Placement
-enum VolumeType : u32
+enum VolumeType
 {
     VolumeTypeBox = 0x1601,
     VolumeTypeSphere = 0x1604,
@@ -27,7 +27,7 @@ enum VolumeType : u32
 };
 
 // What a segment is tested as (slots 6 to 8): a line through its points, a ray from its start, or the segment
-enum SegmentMode : s32
+enum SegmentMode
 {
     SegmentLine = 0,
     SegmentRay = 1,
@@ -36,9 +36,9 @@ enum SegmentMode : s32
 
 // A contact with another volume (slot 13): the plane of a box's face nearest where it touched, or the way from the other sphere's
 // centre to a sphere's (w 1)
-struct alignas(16) VolumeContact
+struct ALIGN16 VolumeContact
 {
-    enum Kind : u32
+    enum Kind
     {
         BoxFace = 1,
         BetweenSpheres = 2,
@@ -49,11 +49,11 @@ struct alignas(16) VolumeContact
 };
 CHECK_OFFSET(VolumeContact, kind, 0x10);
 
-struct alignas(16) Volume
+struct ALIGN16 Volume
 {
     // Where something is against a volume (or a cell's box against what's collected, VolumeHoldsCell): apart, wholly inside it,
     // partly; and another volume of a type it doesn't test
-    enum Placement : s32
+    enum Placement
     {
         Apart = 0,
         Inside = 1,
@@ -76,7 +76,7 @@ CHECK_SIZE(Volume, 0x20);
 
 // A box along the axes (0x50 bytes, type 0x1601): its corners and its half size, the sphere's centre its middle. It moves by a
 // matrix's position alone, and gives no share of a segment. Its vtable adds 17 where a sphere is against a box and 18 and 19, 0
-struct alignas(16) BoundingVolume : Volume
+struct ALIGN16 BoundingVolume : Volume
 {
     Vector4 min;
     Vector4 max;
@@ -129,7 +129,7 @@ CHECK_OFFSET(BoundingVolume, halfSize, 0x40);
 CHECK_SIZE(BoundingVolume, 0x50);
 
 // A sphere (0x30 bytes, type 0x1604): its radius squared
-struct alignas(16) SphereVolume : Volume
+struct ALIGN16 SphereVolume : Volume
 {
     f32 radiusSquared;
 
@@ -159,7 +159,7 @@ CHECK_SIZE(SphereVolume, 0x30);
 
 // A capsule (0x50 bytes, type 0x1606): its radius and the radius squared, half its segment's length and the segment, its sphere
 // round the segment's middle. It gives nothing of segments
-struct alignas(16) CapsuleVolume : Volume
+struct ALIGN16 CapsuleVolume : Volume
 {
     f32 radius;
     f32 radiusSquared;

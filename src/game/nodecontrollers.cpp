@@ -1136,7 +1136,7 @@ void SplineController::Frame(TimeClock*)
     move.y = velocity.y * seconds;
     move.z = velocity.z * seconds;
     // Something holds its moves (it has a kind of motion or of collisions)
-    if ((body->bits.value & ObjectRigidBodyBits::KindsMask) != 0)
+    if ((body->bits.value & RigidBodyKindsMask) != 0)
     {
         HoldRigidBodyMove(body, &move);
     }

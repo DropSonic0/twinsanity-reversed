@@ -27,7 +27,7 @@ struct TimeClock;
 // spin and from a jump (both run it), the gun drawn, put away and shot (with ammo), a vehicle taken and left, the knock-backs'
 // by the angle from its facing to the push (within 45 degrees, past 135, below -45 and above 45) and the gun charged and shot
 // without ammo
-enum CharacterEvent : u32
+enum CharacterEvent
 {
     EventLongDrop = 11,
     EventIdle = 12,
@@ -89,8 +89,8 @@ enum CharacterEvent : u32
 
 // The playable characters (their agent's first int property): Crash, Cortex, a Crash 2 units high without probes, Nina, none and
 // the Mecha-Bandicoot
-constexpr u32 CharacterKindProperty = 0;
-enum PlayableCharacter : s32
+CONSTEXPR u32 CharacterKindProperty = 0;
+enum PlayableCharacter
 {
     CharacterCrash = 0,
     CharacterCortex = 1,
@@ -101,14 +101,14 @@ enum PlayableCharacter : s32
 };
 
 // The next state a controller's frame works out when it stays in its state
-constexpr s32 NoNextState = -1;
+CONSTEXPR s32 NoNextState = -1;
 
 // The attack kinds a playable character's moves give its part (the part's low byte; agentparts.h's CharacterPart): walking into
 // something, landing on it and hitting it from below, spinning, body slamming, sliding, tied to the other character (the second,
 // and the leader's slam), the variant kinds of the spin, the slam and the slide (nothing gives them: the controllers' bits that
 // would are never set), thrown by the other character from a spin and from a jump, and landing on or hitting from below while
 // spinning (both a spin and the kind without it)
-enum CharacterAttack : u32
+enum CharacterAttack
 {
     AttackWalkInto = 3,
     AttackLandOn = 4,
@@ -128,7 +128,7 @@ enum CharacterAttack : u32
 
 // The part's move bits (bits 32-63 of its 64 bits from 0x18) the controllers' frames give that agentparts.h doesn't name: the
 // double jump (and the knee drop), the slide jump, the jump of the unused kind 8, the flying kick, the crawl and the strafe held
-enum CharacterMoveBit : u32
+enum CharacterMoveBit
 {
     MoveDoubleJump = 0x4,
     MoveSlideJump = 0x8,
@@ -140,7 +140,7 @@ enum CharacterMoveBit : u32
 
 // CharacterAgent::FitsAt's kinds: standing (the instances in the way told when there's a normal), crouching, crawling, taking off
 // from a slide and the knee drop (the crouch's hull for crouching, crawling and the knee drop)
-enum CharacterFit : u32
+enum CharacterFit
 {
     FitStanding = 0,
     FitCrouching = 3,
@@ -151,7 +151,7 @@ enum CharacterFit : u32
 
 // Exit points of the playable characters' models: the hand the second of the tied characters slams with, the head, and the feet
 // (footprints are left at them)
-enum CharacterModelExitPoint : u32
+enum CharacterModelExitPoint
 {
     ExitPointHand = 0,
     ExitPointHead = 1,
@@ -160,16 +160,16 @@ enum CharacterModelExitPoint : u32
 };
 
 // The sphere a character splashes into water with (its vehicle's own while it rides one): its radius, 1 above its position
-constexpr f32 CharacterSplashRadius = Rounded(0.9);
-constexpr f32 CharacterSplashRaise = 1.0f;
+CONSTEXPR f32 CharacterSplashRadius = 0.9f;
+CONSTEXPR f32 CharacterSplashRaise = 1.0f;
 
 // Where LiftOntoGround puts a character after a set back and the frame after its state is applied: the ground found up to the
 // reach below its position, cast from the height above it
-constexpr f32 CharacterLiftHeight = 2.0f;
-constexpr f32 CharacterLiftReach = 20.0f;
+CONSTEXPR f32 CharacterLiftHeight = 2.0f;
+CONSTEXPR f32 CharacterLiftReach = 20.0f;
 
 // CharacterAgent's height states: on the ground and in a jump (from every take-off)
-enum CharacterHeightState : s32
+enum CharacterHeightState
 {
     HeightOnGround = 0,
     HeightJumping = 1,
@@ -184,7 +184,7 @@ enum CharacterHeightState : s32
 class JointHook
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         AttachSlot = 2,
@@ -222,7 +222,7 @@ CHECK_SIZE(JointHook, 4);
 // gives the part bit 32 (not standing), 41 (crawling) and AttackSlide while sliding
 struct CrouchController
 {
-    enum State : u8
+    enum State
     {
         StateStanding = 0,
         StateGoingDown = 1,
@@ -251,7 +251,7 @@ struct CrouchController
     };
 
     // Float properties (and the tagged ones' turn rates)
-    enum Property : u32
+    enum Property
     {
         PropCrawlSpeed = 0x28,
         PropCrouchSeconds = 0x29,
@@ -303,7 +303,7 @@ CHECK_SIZE(CrouchController, 0x40);
 // struct). The jump's frame gives the part AttackSlam in the knee drop and bits 33-35, 39 and 40
 struct JumpController
 {
-    enum State : u32
+    enum State
     {
         StateGrounded = 0,
         StateRising = 1,
@@ -331,7 +331,7 @@ struct JumpController
     };
 
     // The kinds of jumps (Start's and the others' kind)
-    enum Kind : u32
+    enum Kind
     {
         KindJump = 2,
         KindTied = 3,
@@ -370,7 +370,7 @@ struct JumpController
         };
     };
 
-    enum Property : u32
+    enum Property
     {
         PropGravity = 1,
         // Written: 0.95 of the flight's seconds
@@ -452,7 +452,7 @@ CHECK_SIZE(JumpController, 0x30);
 // frame gives the part AttackSpin in states 1 and 2
 struct SpinController
 {
-    enum State : u32
+    enum State
     {
         StateNone = 0,
         StateSpinningTied = 1,
@@ -474,7 +474,7 @@ struct SpinController
         };
     };
 
-    enum Property : u32
+    enum Property
     {
         PropSpinSpeed = 9,
         PropSpinSeconds = 10,
@@ -508,7 +508,7 @@ CHECK_SIZE(SpinController, 0x14);
 // 0xAC, 0xA0 bytes, plain struct). The walk's frame gives the part bits 42 (walking), 43 (running) and 44 (strafe held)
 struct WalkController
 {
-    enum State : u32
+    enum State
     {
         StateNone = 1,
         StateIdle = 2,
@@ -537,7 +537,7 @@ struct WalkController
         };
     };
 
-    enum Property : u32
+    enum Property
     {
         PropWalkSpeed = 6,
         PropRunSpeed = 7,
@@ -613,7 +613,7 @@ CHECK_SIZE(WalkController, 0xA0);
 class CharacterLink : public JointHook
 {
 public:
-    enum State : u32
+    enum State
     {
         StateDetached = 0,
         StateTied = 1,
@@ -621,7 +621,7 @@ public:
     };
 
     // The second's gaits as its swing goes
-    enum Gait : u32
+    enum Gait
     {
         GaitNone = 0,
         GaitIdle = 1,
@@ -631,7 +631,7 @@ public:
     };
 
     // How the arms hold: the shoulder not posed yet, its place seen, holding hands
-    enum Hold : u32
+    enum Hold
     {
         HoldNone = 0,
         HoldSeen = 1,
@@ -847,7 +847,7 @@ CHECK_SIZE(TargetEntry, 8);
 // instance's, kind 0)
 struct ClawController
 {
-    enum State : u32
+    enum State
     {
         StateReady = 0,
         StateReaching = 1,
@@ -868,7 +868,7 @@ struct ClawController
         StateNoNext = 14,
     };
 
-    enum Grab : u32
+    enum Grab
     {
         GrabNone = 0,
         GrabHook = 1,
@@ -939,7 +939,7 @@ CHECK_SIZE(ClawController, 0x170);
 // Cortex's and the Mecha-Bandicoot's gun (0x460 bytes, no vtable; the HUD's counter at the bottom right shows its ammo)
 struct Gun
 {
-    enum State : u32
+    enum State
     {
         StatePutAway = 0,
         StateDrawing = 1,
@@ -969,7 +969,7 @@ struct Gun
     };
 
     // Its locks: on foot, in a vehicle, the Mecha-Bandicoot's, Cortex's in area 24
-    enum Lock : u32
+    enum Lock
     {
         LockOnFoot = 0,
         LockVehicle = 1,
@@ -1015,7 +1015,7 @@ CHECK_SIZE(Gun, 0x460);
 // One of the procedural joints (0x90 bytes, no vtable)
 struct ProceduralJoint
 {
-    enum Kind : s32
+    enum Kind
     {
         KindNone = 0,
         KindDangling = 1,
@@ -1184,7 +1184,7 @@ CHECK_SIZE(LookController, 0xD0);
 class SpringSkeleton : public JointHook
 {
 public:
-    enum Blend : u32
+    enum Blend
     {
         BlendedOut = 0,
         BlendingIn = 1,

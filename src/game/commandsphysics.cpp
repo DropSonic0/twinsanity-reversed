@@ -369,7 +369,7 @@ void SetCollisionsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
         body->state.impulseFixed = 1;
     }
 
-    if ((body->bits.value & ObjectRigidBodyBits::KindsMask) == 0)
+    if ((body->bits.value & RigidBodyKindsMask) == 0)
     {
         node->ReleaseRigidBody();
         return;

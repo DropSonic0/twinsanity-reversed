@@ -21,7 +21,7 @@ CHECK_SIZE(Rgba, 4);
 // The indexes of the game's colour table (renderer.h's g_Colours, which GetColor reads), named by their colours: eight colours
 // without alpha, the same eight with alpha 1 (red, green and blue at 192), seven greys from light to dark (their bytes 184,
 // 160, 120, 96, 72, 48 and 24) and black without alpha again (unused)
-enum ColourIndex : s32
+enum ColourIndex
 {
     ColourTransparentBlack = 0,
     ColourTransparentRed = 1,
@@ -52,16 +52,16 @@ enum ColourIndex : s32
 // The UI's shadows (OLEG's widgets'): offset a hundredth of the screen across and down, black at half alpha. The game's header
 // gave every file including it copies of them (and of an up vector, a 0 and 45 degrees), which the start-ups set and only OLEG
 // reads
-constexpr f32 UiShadowOffset = Rounded(0.01);
-constexpr f32 UiShadowAlpha = 0.5f;
+CONSTEXPR f32 UiShadowOffset = 0.01f;
+CONSTEXPR f32 UiShadowAlpha = 0.5f;
 
 namespace Colour
 {
-constexpr f32 ColourFull = 192.0f;
-constexpr f32 AlphaFull = 128.0f;
+CONSTEXPR f32 ColourFull = 192.0f;
+CONSTEXPR f32 AlphaFull = 128.0f;
 // 1/192 and 1/128 as the game has them
-constexpr f32 ColourScale = 0x1.555556p-8f;
-constexpr f32 AlphaScale = 0.0078125f;
+CONSTEXPR f32 ColourScale = 0x1.555556p-8f;
+CONSTEXPR f32 AlphaScale = 0.0078125f;
 
 // A red, green or blue byte as a fraction, and an alpha byte
 inline f32 ColourFraction(u8 byte)

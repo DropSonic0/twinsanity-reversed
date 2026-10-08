@@ -64,7 +64,7 @@ union RendererFlags
     };
 
     // The bits' masks (a renderer starts with all three)
-    enum Mask : u32
+    enum Mask
     {
         Draws = 0x1,
         ClearsColour = 0x10,
@@ -79,7 +79,7 @@ CHECK_SIZE(RendererFlags, 4);
 // in each of six layers (the first and the last of each)
 struct Renderer
 {
-    static constexpr u32 OverlayLayers = 6;
+    static CONSTEXPR u32 OverlayLayers = 6;
 
     GameRendererController* controller;
     RenderView* view;
@@ -161,7 +161,7 @@ extern "C"
 // Its vtable follows 0x1C bytes of members. The base class (D_002F68D0) has the slots the game's controller doesn't replace
 struct GameRendererController
 {
-    enum Slot : u32
+    enum Slot
     {
         BeginFrameSlot = 3,
         UpdateSlot = 4,
@@ -305,7 +305,7 @@ union VideoControllerBits
     };
 
     // The bits' masks: what the constructor clears (it sets relative)
-    enum Mask : u32
+    enum Mask
     {
         Relative = 0x2,
         ConstructorCleared = 0x3FFF,
@@ -323,7 +323,7 @@ CHECK_SIZE(VideoControllerBits, 4);
 // the way to the next frame
 struct VideoController
 {
-    enum State : u32
+    enum State
     {
         StateIdle = 0,
         StateQueued = 1,
@@ -334,10 +334,10 @@ struct VideoController
         StateFinished = 5,
     };
 
-    static constexpr u32 ModelCount = 15;
-    static constexpr u32 TrackCount = 32;
+    static CONSTEXPR u32 ModelCount = 15;
+    static CONSTEXPR u32 TrackCount = 32;
     // The frames waited from which the disc error shows
-    static constexpr u32 DiscErrorFrames = 13;
+    static CONSTEXPR u32 DiscErrorFrames = 13;
 
     void* resourceManager;
     VideoControllerBits bits;
@@ -444,7 +444,7 @@ CHECK_SIZE(SaveCodeResults, 4);
 // flagged, whether a save is due), 7 the destructor, 8 the update with the global clock, 9 the drawing
 struct SaveCode
 {
-    enum Slot : u32
+    enum Slot
     {
         AskSlot = 1,
         ShowChoicesSlot = 2,
@@ -458,7 +458,7 @@ struct SaveCode
 
     // The player's answers to a screen: none, the first choice (on the slots' screens a slot, the bits' chosen), back or no, the
     // third choice
-    enum Answer : u32
+    enum Answer
     {
         AnswerNone = 0,
         AnswerFirst = 1,

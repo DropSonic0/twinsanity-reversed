@@ -6,20 +6,20 @@
 #include "game/reference.h"
 
 // A message of none (trigger messages, the messages scripts and objects send)
-constexpr u16 NoMessage = 0xFFFF;
+CONSTEXPR u16 NoMessage = 0xFFFF;
 
 // A message sent to instances (the retail TriggerEventCaller, 0x14 bytes): the block of its references first (a block made for it
 // owns it), its event's ID (EventId, or the derived event's), the message (its derived events leave it 0), the kinds of nodes it
 // goes to, a reference argument and its vtable (at 0x10: 1 the destructor)
 struct GameEvent
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ApplySlot = 2,
     };
 
-    static constexpr u16 EventId = 0x103;
+    static CONSTEXPR u16 EventId = 0x103;
 
     Reference* reference;
     u16 id;
@@ -47,7 +47,7 @@ struct CameraNode;
 // the node
 struct CameraEvent : GameEvent
 {
-    static constexpr u16 EventId = 0x900;
+    static CONSTEXPR u16 EventId = 0x900;
 
     CameraNode* node;
 
@@ -80,7 +80,7 @@ CHECK_SIZE(ScriptEventBits, 1);
 // and its originator
 struct ScriptEvent : GameEvent
 {
-    static constexpr u16 EventId = 0x100;
+    static CONSTEXPR u16 EventId = 0x100;
 
     u16 starter;
     u8 slot;
@@ -99,7 +99,7 @@ CHECK_SIZE(ScriptEvent, 0x1C);
 // A noise an instance made, which the object nodes around it hear (retail's vtable D_002FD268, 0x18 bytes): how loud it is
 struct NoiseEvent : GameEvent
 {
-    static constexpr u16 EventId = 0x101;
+    static CONSTEXPR u16 EventId = 0x101;
 
     f32 loudness;
 
@@ -128,7 +128,7 @@ inline Reference* AddEventReference(GameEvent* event)
 {
     if (event->reference == nullptr)
     {
-        auto* block = static_cast<Reference*>(MemoryAllocate(sizeof(Reference)));
+        Reference* block = static_cast<Reference*>(MemoryAllocate(sizeof(Reference)));
         ReferenceBits leftover = block->bits;
         block->object = reinterpret_cast<ReferencedObject*>(event);
         leftover.count = 0;

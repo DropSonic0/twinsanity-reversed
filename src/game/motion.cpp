@@ -2384,7 +2384,7 @@ u32 StepGroundChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
     move.y *= elapsed;
     move.z *= elapsed;
     ObjectRigidBody* body = node->rigidBody;
-    if (body != nullptr && (body->bits.value & ObjectRigidBodyBits::KindsMask) != 0)
+    if (body != nullptr && (body->bits.value & RigidBodyKindsMask) != 0)
     {
         HoldRigidBodyMove(body, &move);
     }
@@ -2413,7 +2413,7 @@ u32 StepAirChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
     move.y = move.y * speed * elapsed;
     move.z = move.z * speed * elapsed;
     ObjectRigidBody* body = node->rigidBody;
-    if (body != nullptr && (body->bits.value & ObjectRigidBodyBits::KindsMask) != 0)
+    if (body != nullptr && (body->bits.value & RigidBodyKindsMask) != 0)
     {
         HoldRigidBodyMove(body, &move);
     }
@@ -2649,7 +2649,7 @@ u32 StepClimbingChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
     move.y *= elapsed;
     move.z *= elapsed;
     body = node->rigidBody;
-    if (body != nullptr && (body->bits.value & ObjectRigidBodyBits::KindsMask) != 0)
+    if (body != nullptr && (body->bits.value & RigidBodyKindsMask) != 0)
     {
         HoldRigidBodyMove(body, &move);
     }

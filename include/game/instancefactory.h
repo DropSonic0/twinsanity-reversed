@@ -14,7 +14,10 @@ struct InstanceTemplate;
 union InstanceFactoryFlags
 {
     // No subtype given
-    static constexpr u32 NoSubtype = 0xFF;
+    enum
+    {
+        NoSubtype = 0xFF
+    };
 
     u32 value;
     struct
@@ -43,7 +46,7 @@ CHECK_SIZE(InstanceFactoryFlags, 4);
 struct InstanceFactory
 {
     // The flags of the instances of layouts that aren't the chunk's own
-    static constexpr u32 NotChunkOwn = 0x2000;
+    static CONSTEXPR u32 NotChunkOwn = 0x2000;
 
     u32 creationFlags;
     u32 clearedFlags;

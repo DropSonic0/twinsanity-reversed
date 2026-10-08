@@ -81,7 +81,7 @@ CHECK_SIZE(RigidBodyFlags, 4);
 struct RigidBody : GameNode
 {
     // The movement node's class too
-    static constexpr u32 ClassId = MovementNode::ClassId;
+    static CONSTEXPR u32 ClassId = MovementNode::ClassId;
 
     RigidBodyFlags bodyFlags;
     f32 mass;
@@ -242,7 +242,7 @@ extern "C"
 union DynamicBodyBits
 {
     // For the code that writes the word back with the instance (as retail does)
-    enum Mask : u32
+    enum Mask
     {
         PlacesInstance = 0x1,
     };
@@ -271,7 +271,7 @@ CHECK_SIZE(DynamicBodyBits, 4);
 // rolling), the slot it has in the world and the collision mask its contacts are found with
 struct DynamicBody : RigidBody
 {
-    enum Slots : u32
+    enum Slots
     {
         FloatSlot = 11,
         CollideWithWorldSlot = 12,
@@ -478,7 +478,7 @@ CHECK_SIZE(EllipsoidPair, 0x190);
 // stack, the next one at the count of used slots) and the count
 struct PhysicsWorld
 {
-    static constexpr s32 Slots = 200;
+    static CONSTEXPR s32 Slots = 200;
 
     DynamicBody** bodies;
     s32 capacity;

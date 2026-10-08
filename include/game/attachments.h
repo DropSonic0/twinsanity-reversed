@@ -26,7 +26,7 @@ CHECK_SIZE(AttachmentsPathBits, 4);
 // The attachments hanging on an instance (0x44 bytes): 16 at most, and its bits
 struct AttachmentsPath
 {
-    static constexpr u32 Most = 16;
+    static CONSTEXPR u32 Most = 16;
 
     Attachment* entries[Most];
     AttachmentsPathBits bits;
@@ -67,7 +67,7 @@ union AttachmentLinkFlags
         u8 unused2 : 6;
     };
 
-    enum Mask : u8
+    enum Mask
     {
         Kept = 0x1,
         Marked = 0x2,
@@ -81,10 +81,10 @@ CHECK_SIZE(AttachmentLinkFlags, 1);
 // block's stickiness)
 struct AttachmentsNode : GameNode
 {
-    static constexpr u32 ClassId = 0x130A;
-    static constexpr u32 MostLinked = 16;
+    static CONSTEXPR u32 ClassId = 0x130A;
+    static CONSTEXPR u32 MostLinked = 16;
     // The most the count field holds
-    static constexpr u32 CountMask = 0x1F;
+    static CONSTEXPR u32 CountMask = 0x1F;
 
     AttachmentsNodeBits bits;
     f32 stickiness;
@@ -153,7 +153,7 @@ union AttachFlags
         u32 unused4 : 28;
     };
 
-    enum Mask : u32
+    enum Mask
     {
         WithOffset = 0x1,
         Replaces = 0x2,

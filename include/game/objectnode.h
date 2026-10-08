@@ -31,7 +31,7 @@ struct TimeClock;
 // step's index is the current one's less one), its own instance, the player, the runner's originator, the head tracking's
 // target, the stored position, AgentRef2 and AgentRef1, the route's previous and current step, the focus instance and position,
 // the next and the current key, and none (the receivers' too)
-enum Designator : u32
+enum Designator
 {
     // The first that isn't a receiver's index
     FirstDesignator = 0xDE,
@@ -55,7 +55,7 @@ enum Designator : u32
 
 // What the focus commands give an instance or a position to (the object node's slot 34, ForgetDesignator, forgets them by
 // these): the focus, AgentRef1, AgentRef2, the stored position
-enum DesignatorSlot : u32
+enum DesignatorSlot
 {
     SlotFocus = 0,
     SlotAgentRef1 = 1,
@@ -166,7 +166,7 @@ CHECK_SIZE(PhysicsBits, 4);
 struct Physics
 {
     // The kinds its bits keep
-    enum Kind : u32
+    enum Kind
     {
         KindSpring = 0,
         KindMade = 1,
@@ -193,7 +193,7 @@ CHECK_SIZE(Physics, 0x60);
 // The spaces of a script's positions and moves: the world's, the instance's start, its own place, the target's (the receiver's
 // instance or the designated one), facing from the instance to what its packet tracks, its rigid body's object, none, its
 // stored place
-enum PositionSpace : u32
+enum PositionSpace
 {
     SpaceWorld = 0,
     SpaceStart = 1,
@@ -211,11 +211,14 @@ enum PositionSpace : u32
 // (MotionBlock::Sign), how it rolls along the way it moves (MotionBlock::Roll) and the block's kind (MotionBlock::Kind)
 union MotionBlockMotion
 {
-    static constexpr u32 CycleShift = 3;
-    static constexpr u32 CycleMask = 0x7;
-    static constexpr u32 SignShift = 20;
-    static constexpr u32 SignMask = 0x3;
-    static constexpr u32 RandomPhaseXMask = 0x10000;
+    enum
+    {
+        CycleShift = 3,
+        CycleMask = 0x7,
+        SignShift = 20,
+        SignMask = 0x3,
+        RandomPhaseXMask = 0x10000
+    };
 
     u32 value;
     struct
@@ -260,7 +263,7 @@ CHECK_SIZE(MotionBlockMotion, 4);
 
 // Where a motion block's cycles take their angles from (MotionBlockFlags::cycleSource, TrajectoryBits::cycleSource): their own
 // steps, the focus's trajectory, that of the first instance attached to the node's
-enum CycleSource : u32
+enum CycleSource
 {
     OwnCycles = 0,
     FocusCycles = 1,
@@ -275,7 +278,10 @@ enum CycleSource : u32
 // controller following it asks for its frame while the node isn't updated, and what touches it is sent its touch message
 union MotionBlockFlags
 {
-    static constexpr u32 CyclesAboutXMask = 0x8;
+    enum
+    {
+        CyclesAboutXMask = 0x8
+    };
 
     u32 value;
     struct
@@ -312,7 +318,10 @@ CHECK_SIZE(MotionBlockFlags, 4);
 // it floats by the stiffness. Bit 10 is set with the turn toward the focus and never read
 union MotionBlockBody
 {
-    static constexpr u32 HingesMask = 0x7;
+    enum
+    {
+        HingesMask = 0x7
+    };
 
     u32 value;
     struct
@@ -359,7 +368,7 @@ struct MotionBlock
 {
     // A cycle about an axis: 1 a sine, 2 and 3 a square wave, 4 random, 5 the angle itself (radians, turning amplitude times
     // faster), else none; and its sign: 1 negative, 2 positive, else as it comes
-    enum Cycle : u32
+    enum Cycle
     {
         CycleSine = 1,
         CycleSquare = 2,
@@ -368,7 +377,7 @@ struct MotionBlock
         CycleAngle = 5,
     };
 
-    enum Sign : u32
+    enum Sign
     {
         SignNegative = 1,
         SignPositive = 2,
@@ -377,7 +386,7 @@ struct MotionBlock
     // The kinds, the spaces the cycles move the instance in (its start's turn, its own axes, facing the instance its packet
     // tracks from where it's held, the stored place's axes; the world's for the others) and how it rolls along its move (the
     // turning cycles' spaces: the instance's parent's attachment, its start's, its own, the stored place's)
-    enum Kind : u32
+    enum Kind
     {
         KindCycles = 0,
         KindBody = 1,
@@ -386,7 +395,7 @@ struct MotionBlock
         KindCover = 4,
     };
 
-    enum Roll : u32
+    enum Roll
     {
         RollFaces = 0,
         RollY = 1,
@@ -395,7 +404,7 @@ struct MotionBlock
     };
 
     // A body's constraints: fixed where it is, kept on a line along the axis, on a plane of the normal
-    enum Constraint : u32
+    enum Constraint
     {
         ConstraintFixed = 1,
         ConstraintLine = 2,
@@ -404,7 +413,7 @@ struct MotionBlock
 
     // What SetMotionBlockConstraint takes besides a Constraint: the hinges about the body's own x, y and z, and a constraint kind
     // nothing handles
-    enum GivenKind : u32
+    enum GivenKind
     {
         GivenHingeX = 4,
         GivenHingeY = 5,
@@ -414,8 +423,8 @@ struct MotionBlock
 
     // The search a cover block makes among the positions in a box around the instance, and the mover that's the node's own
     // instance
-    static constexpr u16 SearchInBox = 1;
-    static constexpr u8 MoverOwnInstance = 0xFF;
+    static CONSTEXPR u16 SearchInBox = 1;
+    static CONSTEXPR u8 MoverOwnInstance = 0xFF;
 
     union
     {
@@ -598,7 +607,7 @@ CHECK_SIZE(ParticleTrailsBits, 4);
 // time of the trail being stepped
 struct ParticleTrails
 {
-    static constexpr u32 MostTrails = 8;
+    static CONSTEXPR u32 MostTrails = 8;
 
     struct TrailArguments* trails[MostTrails];
     s32 emitters[MostTrails];
@@ -625,7 +634,7 @@ CHECK_SIZE(ParticleTrails, 0x6C);
 // The kinds of a rigid body's motion and of its collisions with the world (ObjectRigidBodyBits; SetCollisions' keywords pick
 // them): none, plain, an upright cylinder (an upright ellipsoid's collisions), pushed away from the instances around (slid out
 // by its friction), an axis box, then its physics body's: a sphere, hulls sized by the instance's own box, more hulls
-enum RigidBodyKind : u32
+enum RigidBodyKind
 {
     BodyKindNone = 0,
     BodyKindPlain = 1,
@@ -640,11 +649,11 @@ enum RigidBodyKind : u32
 };
 
 // The float property a rigid body's mass comes from (the node's, or its packet's for a body block's body)
-constexpr u32 RigidBodyMassProperty = 0;
+CONSTEXPR u32 RigidBodyMassProperty = 0;
 
 // A rigid body's launch (ObjectRigidBodyBits::launch): none, and the tool's vertical one, which the game tells from none and from
 // a full launch (ObjectRigidBodyBits::Launched) alone
-enum RigidBodyLaunch : u32
+enum RigidBodyLaunch
 {
     NoLaunch = 0,
     VerticalLaunch = 1,
@@ -662,11 +671,15 @@ enum RigidBodyLaunch : u32
 // touches something or nearly rests), it turns, it steers itself, its size is the least slope it stands on and its
 // restitution the rate its contact normal follows (a size and a restitution given while it had no physics body), its own
 // length drag
+// The kinds' bits together: something moves it; the launch a node's launch gives it (its velocity moves it)
+CONSTEXPR u64 RigidBodyKindsMask = static_cast<u64>(0xFF) << 32;
+
 union ObjectRigidBodyBits
 {
-    // The kinds' bits together: something moves it; the launch a node's launch gives it (its velocity moves it)
-    static constexpr u64 KindsMask = u64{0xFF} << 32;
-    static constexpr u32 Launched = 2;
+    enum
+    {
+        Launched = 2
+    };
 
     u64 value;
     struct
@@ -701,14 +714,14 @@ union ObjectRigidBodyBits
 CHECK_SIZE(ObjectRigidBodyBits, 8);
 
 // A rigid body's magnet's ways (ObjectRigidBodyState::magnetWay): from the body toward the position, along its z axis
-enum MagnetWay : u32
+enum MagnetWay
 {
     MagnetFromBody = 0,
     MagnetAlongZAxis = 1,
 };
 
 // The modes of the magnet's strength the keywords set (ObjectRigidBodyState::magnetStrength): MagnetPull pulls with neither
-enum MagnetStrength : u32
+enum MagnetStrength
 {
     MagnetEven = 1,
     MagnetMode2 = 2,
@@ -723,8 +736,11 @@ enum MagnetStrength : u32
 // are set when it's made, 2 and 3 by the physics commands, and none of them read
 union ObjectRigidBodyState
 {
-    static constexpr u32 MostSteps = 0xF;
-    static constexpr u32 RideLostSteps = 5;
+    enum
+    {
+        MostSteps = 0xF,
+        RideLostSteps = 5
+    };
 
     u32 value;
     struct
@@ -759,10 +775,10 @@ CHECK_SIZE(ObjectRigidBodyState, 4);
 // index in each
 struct ObjectRigidBody
 {
-    static constexpr u16 NoFirstIndex = 0xFFFF;
-    static constexpr u8 NoSecondIndex = 0xFF;
+    static CONSTEXPR u16 NoFirstIndex = 0xFFFF;
+    static CONSTEXPR u8 NoSecondIndex = 0xFF;
     // The speed (squared) it rests below
-    static constexpr f32 RestingSpeedSquared = Rounded(0.001);
+    static CONSTEXPR f32 RestingSpeedSquared = 0.001f;
 
     u8 unused00[0x40];
     // The normal of what it touches (eased toward each new one's, back up once it has touched nothing for a while)
@@ -824,7 +840,7 @@ CHECK_SIZE(ObjectRigidBody, 0xE0);
 // (taking one out moves the last into its place, a list takes 255)
 struct ChunkRigidBodies
 {
-    static constexpr u16 MostBodies = 0xFF;
+    static CONSTEXPR u16 MostBodies = 0xFF;
 
     u16 secondCount;
     u16 firstCount;
@@ -859,7 +875,7 @@ CHECK_SIZE(HeadTrackingSettingsBits, 4);
 struct HeadTrackingSettings
 {
     // Its instance steered whole or by its facing alone (either of the bits)
-    enum Steering : u32
+    enum Steering
     {
         SteersInstance = 1,
         SteersFacing = 2,
@@ -885,8 +901,10 @@ CHECK_SIZE(HeadTrackingSettings, 0x48);
 // rest, its joints are hooked. Bit 31 is cleared and never read
 union HeadTrackingState
 {
-    // The limits' bits (limited and the four below and above)
-    static constexpr u32 LimitsMask = 0x1F000000;
+    enum
+    {
+        LimitsMask = 0x1F000000
+    };
 
     u32 value;
     struct
@@ -1002,7 +1020,7 @@ struct PerceptionSense
 {
     // The instances around, a level rising by its decay, its node's speed, and a kind the scripts can give (KeywordUnusedSense)
     // that nothing steps
-    enum Kind : u32
+    enum Kind
     {
         KindInstances = 0,
         KindRising = 1,
@@ -1011,7 +1029,7 @@ struct PerceptionSense
     };
 
     // The share of its decay its level moves by in a step (rising, or falling back while nothing's sensed)
-    static constexpr f32 DecayShare = Rounded(0.3);
+    static CONSTEXPR f32 DecayShare = 0.3f;
 
     PerceptionSenseBits bits;
     f32 divisor;
@@ -1050,7 +1068,7 @@ CHECK_SIZE(PerceptionBits, 8);
 // instances sense pushes it, and its bits
 struct Perception
 {
-    static constexpr u32 MostSenses = 8;
+    static CONSTEXPR u32 MostSenses = 8;
 
     PerceptionSense* senses[MostSenses];
     f32 levels[MostSenses];
@@ -1088,8 +1106,8 @@ CHECK_SIZE(WaypointFlags, 1);
 struct Waypoints
 {
     // A key of none, and a route's step of none (what a step comes to stepped back past 0)
-    static constexpr u8 NoKey = 0xFF;
-    static constexpr u8 NoRouteStep = 0xFF;
+    static CONSTEXPR u8 NoKey = 0xFF;
+    static CONSTEXPR u8 NoRouteStep = 0xFF;
 
     PointerArray<LayoutPosition> positions;
     PointerArray<LayoutPath> paths;
@@ -1142,8 +1160,10 @@ CHECK_SIZE(Waypoints, 0x50);
 // word their own way (pickups)
 union ObjectNodeFlags
 {
-    // The focus instance and focus position bits, cleared together when the node forgets its focus
-    static constexpr u32 FocusMask = 0x3;
+    enum
+    {
+        FocusMask = 0x3
+    };
 
     u32 value;
     struct
@@ -1187,7 +1207,7 @@ CHECK_SIZE(ObjectNodeFlags, 4);
 struct ObjectNodeBase : GameNode
 {
     // Its vtable's functions past the game node's
-    enum Slot : u32
+    enum Slot
     {
         ReleasePartsUnlessUnloadingSlot = 11,
         SetAgentSlot = 12,
@@ -1223,7 +1243,7 @@ struct ObjectNodeBase : GameNode
         StopSoundSlot = 44,
     };
 
-    static constexpr u8 NoRank = 0xFF;
+    static CONSTEXPR u8 NoRank = 0xFF;
 
     u8 unused18[8];
     Vector4 middle;
@@ -1355,9 +1375,9 @@ CHECK_SIZE(ObjectNodeReactions, 8);
 // in, its sounds and a value scripts give it
 struct ObjectNode : ObjectNodeBase
 {
-    static constexpr u32 ClassId = 0x180D;
-    static constexpr u8 NoContactSoundSlot = 0xFF;
-    static constexpr s32 NoSurface = -1;
+    static CONSTEXPR u32 ClassId = 0x180D;
+    static CONSTEXPR u8 NoContactSoundSlot = 0xFF;
+    static CONSTEXPR s32 NoSurface = -1;
 
     Vector4 keyRotation;
     Vector4 storedPosition;
@@ -1730,8 +1750,8 @@ CHECK_OFFSET(ObjectNode, countedValue, 0x174);
 
 // The gravity a launch (the object nodes' slot 26, LaunchNode) or a throw takes when it's given a negative one, and the gravity
 // the callers give for it
-constexpr f32 DefaultLaunchGravity = 30.0f;
-constexpr f32 LaunchWithDefaultGravity = -1.0f;
+CONSTEXPR f32 DefaultLaunchGravity = 30.0f;
+CONSTEXPR f32 LaunchWithDefaultGravity = -1.0f;
 
 extern "C"
 {
@@ -1803,7 +1823,7 @@ extern "C"
     // A chase's speed slowed by the turn it made (by its turn drag, at most by 90%), kept as the motion's speed
     f32 TurnSlowedSpeed(f32 turn, Physics* physics, MotionState* motion) RETAIL_N32(FUN_0020f950);
     // The lean's limit (degrees) the scripts' steering toward a target (SteerTowards, without a lean) is given
-    constexpr f32 SteerMostLean = 90.0f;
+    CONSTEXPR f32 SteerMostLean = 90.0f;
     // An instance's facing turned toward a target over the ground by a share of the way there (all of it at most), leaning into
     // the turn by a factor (in degrees) up to a limit; and turned toward a target in space, its up leaning toward the target by a
     // factor, or kept (or made from the facing alone when asked): how much it turned (1 - the cosine)

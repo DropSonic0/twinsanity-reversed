@@ -11,7 +11,7 @@ struct RigidModel;
 // from a point above it into its chunk's list, which the chunk's draw turns into volumes over the ground beneath
 
 // The shapes shadows are drawn with (the default meshes' kinds, g_ShadowMeshes), named after the development tools' files
-enum ShadowShape : u8
+enum ShadowShape
 {
     ShadowCylinder = 0,
     ShadowCube = 1,
@@ -132,8 +132,8 @@ CHECK_SIZE(ShadowNodeBits, 4);
 // An instance's shadow node (kind 10, class 0x1428): the slot it casts and its four slots
 struct ShadowNode : GameNode
 {
-    static constexpr u32 ClassId = 0x1428;
-    static constexpr u32 Slots = 4;
+    static CONSTEXPR u32 ClassId = 0x1428;
+    static CONSTEXPR u32 Slots = 4;
 
     ShadowNodeBits bits;
     ShadowSlot* slots[Slots];

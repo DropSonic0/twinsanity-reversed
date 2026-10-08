@@ -34,10 +34,10 @@ CHECK_SIZE(CollisionHull, 0x20);
 
 // The room the hull builder has: points, faces (each with a plane and at most one normal), a face's corners, and edges (each with
 // at most one direction); the hulls the game tests take at most as many points
-constexpr s32 MostHullPoints = 64;
-constexpr s32 MostHullFaces = 64;
-constexpr s32 MostFaceCorners = 24;
-constexpr s32 MostHullEdges = 72;
+CONSTEXPR s32 MostHullPoints = 64;
+CONSTEXPR s32 MostHullFaces = 64;
+CONSTEXPR s32 MostFaceCorners = 24;
+CONSTEXPR s32 MostHullEdges = 72;
 
 // How much of a hull the builder has (HullBuilderCounts; the points are counted apart): faces, edge directions, face normals,
 // edges
@@ -152,7 +152,7 @@ extern "C"
 // and how many there are
 struct BoxHullCache
 {
-    static constexpr s32 Capacity = 8;
+    static CONSTEXPR s32 Capacity = 8;
 
     Box boxes[Capacity];
     CollisionHull* hulls[Capacity];

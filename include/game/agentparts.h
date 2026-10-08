@@ -14,7 +14,7 @@
 class AgentPart
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ResetSlot = 2,

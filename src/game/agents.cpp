@@ -35,24 +35,24 @@ extern "C"
 namespace
 {
 // Through which links creatures change chunks
-constexpr u64 CreatureLinkBit = 0x40000;
+CONSTEXPR u64 CreatureLinkBit = 0x40000;
 // The shadows of the crates (a square), and of the creatures and generic objects (their own box's half sizes, kinds of their
 // own); how far each reaches and its strength, the box's raised a little off the ground
-constexpr f32 CrateShadowSize = 0.5f;
-constexpr u8 CrateShadowKind = 1;
-constexpr f32 CrateShadowDistance = 50.0f;
-constexpr f32 CrateShadowStrength = 10.0f;
-constexpr u8 CreatureShadowKind = 4;
-constexpr u8 GenericShadowKind = 5;
-constexpr f32 BoxShadowDistance = 30.0f;
-constexpr f32 BoxShadowStrength = 16.0f;
-constexpr f32 BoxShadowLift = Rounded(0.1);
+CONSTEXPR f32 CrateShadowSize = 0.5f;
+CONSTEXPR u8 CrateShadowKind = 1;
+CONSTEXPR f32 CrateShadowDistance = 50.0f;
+CONSTEXPR f32 CrateShadowStrength = 10.0f;
+CONSTEXPR u8 CreatureShadowKind = 4;
+CONSTEXPR u8 GenericShadowKind = 5;
+CONSTEXPR f32 BoxShadowDistance = 30.0f;
+CONSTEXPR f32 BoxShadowStrength = 16.0f;
+CONSTEXPR f32 BoxShadowLift = 0.1f;
 // A shadow node's slot the agents' shadows take
-constexpr u32 ShadowSlotIndex = 0;
+CONSTEXPR u32 ShadowSlotIndex = 0;
 // An agent's chunk's index of none
-constexpr u16 NoChunkIndex = 0xFFFF;
+CONSTEXPR u16 NoChunkIndex = 0xFFFF;
 // The joint of a playable character's model at its center
-constexpr u32 CharacterCenterJoint = 1;
+CONSTEXPR u32 CharacterCenterJoint = 1;
 
 // The behaviour slot of an attack's kind
 u32 AttackScriptEvent(u32 kind)
@@ -90,12 +90,12 @@ static_assert(offsetof(ReferencedObject, collision) + offsetof(ObjectCollision, 
 
 void DestroyHolder(PropertyHolder* holder)
 {
-    CallVirtual<void>(holder, holder->vtable, PropertyHolder::DestroySlot, u32{DestroyAndFree});
+    CallVirtual<void>(holder, holder->vtable, PropertyHolder::DestroySlot, static_cast<u32>(DestroyAndFree));
 }
 
 void DestroyPart(AgentPart* part)
 {
-    CallVirtual<void>(part, part->vtable, AgentPart::DestroySlot, u32{DestroyAndFree});
+    CallVirtual<void>(part, part->vtable, AgentPart::DestroySlot, static_cast<u32>(DestroyAndFree));
 }
 
 // The message kept (its point, word and reaction) and told the script
@@ -141,12 +141,13 @@ void AddBoxShadow(InstanceContext* instance, u8 kind)
     const Box& box = instance->collision.ownBox;
     f32 width = (box.max.x - box.min.x) * 0.5f;
     f32 depth = (box.max.z - box.min.z) * 0.5f;
-    auto* plain = ShadowPlain::Construct(width, depth, static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain))), kind);
-    auto* shapes = ShadowShapes::ConstructPlain(BoxShadowDistance, 0.0f,
-                                                static_cast<ShadowShapes*>(MemoryAllocate(sizeof(ShadowShapes))), plain);
-    auto* slot = ShadowSlot::Construct(BoxShadowStrength, static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot))), shapes);
-    auto* node = ShadowNode::Construct(static_cast<ShadowNode*>(MemoryAllocate(sizeof(ShadowNode))));
-    plain->offset = {0.0f, BoxShadowLift, 0.0f, 1.0f};
+    ShadowPlain* plain = ShadowPlain::Construct(width, depth, static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain))), kind);
+    ShadowShapes* shapes = ShadowShapes::ConstructPlain(BoxShadowDistance, 0.0f,
+                                                        static_cast<ShadowShapes*>(MemoryAllocate(sizeof(ShadowShapes))), plain);
+    ShadowSlot* slot = ShadowSlot::Construct(BoxShadowStrength, static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot))), shapes);
+    ShadowNode* node = ShadowNode::Construct(static_cast<ShadowNode*>(MemoryAllocate(sizeof(ShadowNode))));
+    Vector4 offset = {0.0f, BoxShadowLift, 0.0f, 1.0f};
+    plain->offset = offset;
     node->SetSlot(ShadowSlotIndex, slot);
     RegisterNode(instance, AttachNode, node);
 }
@@ -250,7 +251,7 @@ void QueueStarter(Agent* agent, const u16* starter, InstanceContext* originator,
 {
     InstanceContext* instance = agent->instance;
     Reference* sender = instance != nullptr ? AddReference(instance) : nullptr;
-    auto* event = static_cast<ScriptEvent*>(MemoryAllocate(sizeof(ScriptEvent)));
+    ScriptEvent* event = static_cast<ScriptEvent*>(MemoryAllocate(sizeof(ScriptEvent)));
     event = ScriptEvent::Construct(event, starter, runner, force, &sender, originator, ObjectNodeKinds);
     Reference* handle = event != nullptr ? AddEventReference(event) : nullptr;
     QueueEvent(agent->instance, &handle);
@@ -265,14 +266,14 @@ void StartAgentBehaviour(Agent* agent, const u16* starter, InstanceContext* orig
 
 void SetAgentModel(Agent* agent, GameResources* resources)
 {
-    auto* node = static_cast<ModelNode*>(GetGameNode(&agent->instance->nodes, NodeModel));
+    ModelNode* node = static_cast<ModelNode*>(GetGameNode(&agent->instance->nodes, NodeModel));
     if (node == nullptr)
     {
         return;
     }
 
     u16 id = agent->object->models.items[0];
-    auto* ogi = id != NoModelId ? static_cast<GameOGI*>(resources->models->items[id & ResourceIndexMask]) : nullptr;
+    GameOGI* ogi = id != NoModelId ? static_cast<GameOGI*>(resources->models->items[id & ResourceIndexMask]) : nullptr;
     GameObject* object = agent->object;
     node->SetOgi(ogi, object->header.reactJoints, object->header.exitPoints);
 }
@@ -314,7 +315,7 @@ void RestartAgent(Agent* agent)
 
 void AgentTakeResources(Agent* agent, GameResources* resources)
 {
-    CallVirtual<void>(agent, agent->vtable, Agent::ApplyStateSlot, u32{0});
+    CallVirtual<void>(agent, agent->vtable, Agent::ApplyStateSlot, static_cast<u32>(0));
     SetAgentModel(agent, resources);
     RestartAgent(agent);
     agent->ClearCounters();
@@ -438,7 +439,7 @@ void BasicAgent::Destroy(u32 destroyFlags)
 void BasicAgent::ApplyState(u32 resetEntry)
 {
     PropertyHolder* holder = properties;
-    auto* basicPart = static_cast<BasicAgentPart*>(part);
+    BasicAgentPart* basicPart = static_cast<BasicAgentPart*>(part);
     CallVirtual<u32>(instance, instance->vtable,
                      holder->state.deactivated != 0 ? InstanceContext::SleepSlot : InstanceContext::WakeSlot);
     instance->flags.collisionActive = holder->state.collisionActive != 0;
@@ -469,7 +470,7 @@ void BasicAgent::Contact(const ContactMessage* message, InstanceContext* sender,
 {
     if (physical != 0 && instance->flags.physicsBody)
     {
-        auto* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
+        GameNode* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
         CallVirtual<void>(node, node->vtable, ObjectNode::PushSlot, sender, message->point.w);
     }
 
@@ -485,7 +486,7 @@ void BasicAgent::Touched(InstanceContext*, const Vector4*)
 
 void BasicAgent::Attacked(const AttackEvent* event, InstanceContext* sender)
 {
-    auto* basicPart = static_cast<BasicAgentPart*>(part);
+    BasicAgentPart* basicPart = static_cast<BasicAgentPart*>(part);
     if (instance->flags.receivesTriggerSignals && basicPart->bits.invulnerable == 0)
     {
         u32 kind = event->kind;
@@ -512,8 +513,8 @@ void BasicAgent::Attacked(const AttackEvent* event, InstanceContext* sender)
     u32 kind = event->kind;
     u32 time = ClockTime(instance);
     basicPart->RecordAttack(kind, &time);
-    auto* node = static_cast<AgentNode*>(GetGameNode(&sender->nodes, NodeCharacter));
-    auto* attacker = static_cast<BasicAgentPart*>(node->agent->part);
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&sender->nodes, NodeCharacter));
+    BasicAgentPart* attacker = static_cast<BasicAgentPart*>(node->agent->part);
     if (attacker->bits.attackKind == AttackWalkInto && kind == AttackWalkInto)
     {
         HitBack(sender);
@@ -541,13 +542,13 @@ void BasicAgent::HitBack(InstanceContext* target)
 
 void BasicAgent::Push(InstanceContext* other)
 {
-    auto* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
+    GameNode* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
     CallVirtual<void>(node, node->vtable, ObjectNode::PushSlot, other, 0.0f);
 }
 
 void BasicAgent::Launch(const Vector4* velocity)
 {
-    auto* body = static_cast<RigidBody*>(GetGameNode(&instance->nodes, NodeRigidBody));
+    RigidBody* body = static_cast<RigidBody*>(GetGameNode(&instance->nodes, NodeRigidBody));
     if (body != nullptr)
     {
         body->SetVelocity(velocity);
@@ -614,7 +615,7 @@ u32 CrateAgent::IsCrate()
 
 void CrateAgent::StartFall()
 {
-    auto* cratePart = static_cast<CratePart*>(part);
+    CratePart* cratePart = static_cast<CratePart*>(part);
     if (cratePart->crate.resting != 0 || cratePart->crate.inAir != 0)
     {
         return;
@@ -653,7 +654,7 @@ void CrateAgent::Launch(const Vector4* velocity)
 void CrateAgent::ApplyState(u32 resetEntry)
 {
     // The state it's in when made, which no frame takes for one (all its bits set)
-    constexpr u32 NoCurrentState = 0xF;
+    CONSTEXPR u32 NoCurrentState = 0xF;
     BasicAgent::ApplyState(resetEntry);
     launchSpeed = 0.0f;
     // Resting, after no state
@@ -666,21 +667,21 @@ void CrateAgent::ApplyState(u32 resetEntry)
         return;
     }
 
-    auto* plain = ShadowPlain::ConstructSquare(CrateShadowSize, static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain))),
+    ShadowPlain* plain = ShadowPlain::ConstructSquare(CrateShadowSize, static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain))),
                                                CrateShadowKind);
-    auto* shapes = ShadowShapes::ConstructPlain(CrateShadowDistance, 0.0f,
+    ShadowShapes* shapes = ShadowShapes::ConstructPlain(CrateShadowDistance, 0.0f,
                                                 static_cast<ShadowShapes*>(MemoryAllocate(sizeof(ShadowShapes))), plain);
-    auto* slot = ShadowSlot::Construct(CrateShadowStrength, static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot))), shapes);
-    auto* node = ShadowNode::Construct(static_cast<ShadowNode*>(MemoryAllocate(sizeof(ShadowNode))));
+    ShadowSlot* slot = ShadowSlot::Construct(CrateShadowStrength, static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot))), shapes);
+    ShadowNode* node = ShadowNode::Construct(static_cast<ShadowNode*>(MemoryAllocate(sizeof(ShadowNode))));
     node->SetSlot(ShadowSlotIndex, slot);
     RegisterNode(instance, AttachNode, node);
 }
 
 u32 CrateAgent::Collided(void* other, const Vector4*, const Vector4* impulse)
 {
-    constexpr f32 Steep = Rounded(0.707);
-    constexpr f32 BreakingSquared = 25.0f;
-    constexpr f32 HardSquared = 5.0f;
+    CONSTEXPR f32 Steep = 0.707f;
+    CONSTEXPR f32 BreakingSquared = 25.0f;
+    CONSTEXPR f32 HardSquared = 5.0f;
     f32 squared = impulse->x * impulse->x + impulse->y * impulse->y + impulse->z * impulse->z;
     Vector4 direction = *impulse;
     f32 inverse = InverseLength(&direction, LengthEpsilon);
@@ -718,7 +719,7 @@ u32 CrateAgent::Collided(void* other, const Vector4*, const Vector4* impulse)
 
 void CrateAgent::Frame(TimeClock* clock)
 {
-    constexpr u32 NotAsked = 0xFFFFFFFF;
+    CONSTEXPR u32 NotAsked = 0xFFFFFFFF;
     u32 asked = NotAsked;
     u32 next = state.asked;
     if (next != StateNone)
@@ -756,8 +757,8 @@ void CrateAgent::Frame(TimeClock* clock)
 
 u32 CrateAgent::Fall(TimeClock* clock)
 {
-    constexpr f32 Gravity = 50.0f;
-    auto* cratePart = static_cast<CratePart*>(part);
+    CONSTEXPR f32 Gravity = 50.0f;
+    CratePart* cratePart = static_cast<CratePart*>(part);
     ObjectPlace* place = instance->place;
     place->SyncPosition();
     f32 seconds = static_cast<f32>(static_cast<s32>(clock->advance)) * g_SecondsPerClockUnit;
@@ -815,8 +816,8 @@ u32 CrateAgent::Fall(TimeClock* clock)
 
 void CrateAgent::CheckGround(TimeClock*, u32* asked)
 {
-    constexpr u16 MostFound = 32;
-    constexpr f32 CastHeight = Rounded(0.9);
+    CONSTEXPR u16 MostFound = 32;
+    CONSTEXPR f32 CastHeight = 0.9f;
     u32 wait = state.wait;
     if (wait != 0)
     {
@@ -828,7 +829,7 @@ void CrateAgent::CheckGround(TimeClock*, u32* asked)
     void* found[MostFound];
     InstanceQuery query;
     StartQuery(&query, found, MostFound);
-    auto* cratePart = static_cast<CratePart*>(part);
+    CratePart* cratePart = static_cast<CratePart*>(part);
     ObjectPlace* place = instance->place;
     place->SyncPosition();
     Vector4 from = place->position;
@@ -847,7 +848,7 @@ void CrateAgent::CheckGround(TimeClock*, u32* asked)
 
 void CrateAgent::StartFalling()
 {
-    auto* cratePart = static_cast<CratePart*>(part);
+    CratePart* cratePart = static_cast<CratePart*>(part);
     if (cratePart->crate.resting != 0 || cratePart->crate.inAir != 0)
     {
         return;
@@ -879,7 +880,7 @@ void CreatureAgent::Bumped(InstanceContext*, const Vector4*, const Vector4*)
 
 void CreatureAgent::Contact(const ContactMessage* message, InstanceContext* sender, u32 physical)
 {
-    auto* basicPart = static_cast<BasicAgentPart*>(part);
+    BasicAgentPart* basicPart = static_cast<BasicAgentPart*>(part);
     if (physical != 0 && instance->flags.physicsBody)
     {
         Push(sender);
@@ -932,8 +933,8 @@ void CreatureAgent::Land(u32)
 
 void CreatureAgent::ApplyState(u32 resetEntry)
 {
-    constexpr u32 HitPointsProperty = 2;
-    auto* creature = static_cast<CreaturePart*>(part);
+    CONSTEXPR u32 HitPointsProperty = 2;
+    CreaturePart* creature = static_cast<CreaturePart*>(part);
     PropertyHolder* holder = properties;
     BasicAgent::ApplyState(resetEntry);
     creature->flags.snapsToGround = holder->state.snapsToGround != 0;
@@ -951,8 +952,8 @@ void CreatureAgent::ApplyState(u32 resetEntry)
 
 u32 CreatureAgent::Collided(void* other, const Vector4*, const Vector4* impulse)
 {
-    constexpr f32 HardSquared = 200.0f;
-    constexpr f32 SoftSquared = 10.0f;
+    CONSTEXPR f32 HardSquared = 200.0f;
+    CONSTEXPR f32 SoftSquared = 10.0f;
     f32 squared = impulse->x * impulse->x + impulse->y * impulse->y + impulse->z * impulse->z;
     // Retail works out the impulse's direction and never uses it
     Vector4 direction = *impulse;
@@ -972,8 +973,8 @@ u32 CreatureAgent::Collided(void* other, const Vector4*, const Vector4* impulse)
 
 void CreatureAgent::Frame(TimeClock* clock)
 {
-    constexpr u32 FallSpeedProperty = 3;
-    auto* creature = static_cast<CreaturePart*>(part);
+    CONSTEXPR u32 FallSpeedProperty = 3;
+    CreaturePart* creature = static_cast<CreaturePart*>(part);
     if (creature->flags.falling != 0)
     {
         CallVirtual<void>(this, vtable, FallFrameSlot, clock);
@@ -995,12 +996,12 @@ void CreatureAgent::Frame(TimeClock* clock)
 
 u32 CreatureAgent::SnapToGround()
 {
-    constexpr f32 Reach = 7.0f;
-    constexpr f32 CastHeight = 1.0f;
-    constexpr u32 LiftProperty = 5;
-    auto* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
+    CONSTEXPR f32 Reach = 7.0f;
+    CONSTEXPR f32 CastHeight = 1.0f;
+    CONSTEXPR u32 LiftProperty = 5;
+    ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
     PropertyHolder* holder = properties;
-    auto* creature = static_cast<CreaturePart*>(part);
+    CreaturePart* creature = static_cast<CreaturePart*>(part);
     Vector4 way = {0.0f, -Reach, 0.0f, 1.0f};
     ObjectPlace* place = instance->place;
     place->SyncPosition();
@@ -1240,11 +1241,11 @@ void GrapleAgent::Frame(TimeClock* clock)
 
 void GrapleAgent::Swing(TimeClock* clock)
 {
-    constexpr u16 MostFound = 32;
-    constexpr f32 ShortOfHit = 0.5f;
-    constexpr f32 NearestHit = Rounded(0.51);
-    constexpr f32 Least = Rounded(0.01);
-    constexpr f32 BoxMargin = 0.5f;
+    CONSTEXPR u16 MostFound = 32;
+    CONSTEXPR f32 ShortOfHit = 0.5f;
+    CONSTEXPR f32 NearestHit = 0.51f;
+    CONSTEXPR f32 Least = 0.01f;
+    CONSTEXPR f32 BoxMargin = 0.5f;
     void* found[MostFound];
     InstanceQuery query;
     StartQuery(&query, found, MostFound);
@@ -1339,8 +1340,8 @@ void ProjectileAgent::Frame(TimeClock*)
 
 void CharacterAgent::StartInvincibility(u32 kind)
 {
-    constexpr f32 LongSeconds = 8.0f;
-    auto* creature = static_cast<BasicAgentPart*>(part);
+    CONSTEXPR f32 LongSeconds = 8.0f;
+    BasicAgentPart* creature = static_cast<BasicAgentPart*>(part);
     if (creature->bits.invulnerable != 0)
     {
         return;
@@ -1360,7 +1361,7 @@ void CharacterAgent::StartInvincibility(u32 kind)
 
 void InitAgentsModule(u32 initialize, u32 priority)
 {
-    constexpr f32 GrapleGravity = -25.0f;
+    CONSTEXPR f32 GrapleGravity = -25.0f;
     if (priority != DefaultInitPriority || initialize == 0)
     {
         return;

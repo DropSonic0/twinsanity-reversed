@@ -15,7 +15,7 @@ EABI_EXPORT(FUN_00140308, &CharacterPart::RequestScale);
 namespace
 {
 // What the constructors pass their part's Reset
-constexpr u32 Made = 1;
+CONSTEXPR u32 Made = 1;
 
 // The basic part's construction, which pickups' and pay gates' have inline
 void StartBasicPart(BasicAgentPart* part)

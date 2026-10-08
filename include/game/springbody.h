@@ -43,7 +43,7 @@ CHECK_SIZE(Spring, 0x14);
 class SpringChain
 {
 public:
-    static constexpr u32 DestroySlot = 1;
+    static CONSTEXPR u32 DestroySlot = 1;
 
     PointerArray<Spring> springs;
     const GccVTableEntry* vtable;

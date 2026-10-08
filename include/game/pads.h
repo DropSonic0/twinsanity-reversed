@@ -8,7 +8,7 @@
 // frame into 24 buttons (the platform layer's pads are DualShock 2s, see platform/pads.h)
 
 // The game's buttons: the pressure sensitive ones, the sticks' directions, and the others
-enum PadButton : u32
+enum PadButton
 {
     PadUp = 0,
     PadDown = 1,
@@ -38,7 +38,7 @@ enum PadButton : u32
 };
 
 // The analog axes, -1 to 1: the sticks, and the directional buttons as a stick
-enum PadAxis : u32
+enum PadAxis
 {
     PadAxisLeftX = 0,
     PadAxisLeftY = 1,
@@ -181,13 +181,13 @@ struct VibrationRequest
 };
 CHECK_SIZE(VibrationRequest, 8);
 
-constexpr u32 MaxPads = 8;
+CONSTEXPR u32 MaxPads = 8;
 
 // The frame loop's side of the pad controller: its vtable's
 class PadControllerInterface
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         UpdateSlot = 2,
         DestroySlot = 4,

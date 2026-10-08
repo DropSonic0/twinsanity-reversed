@@ -38,7 +38,7 @@ struct Attachment
     // How it follows (game/attachments.h's UpdateAttachment): placed at the holder's matrix, moved to its position (an AI
     // position too), hanging from there turned toward it, on a spring, keeping the holder where it is, joining the holder; none
     // past 6
-    enum Follow : u32
+    enum Follow
     {
         FollowsPlace = 0,
         FollowsPosition = 1,
@@ -49,7 +49,7 @@ struct Attachment
     };
 
     // What it is: an instance held, on an AI position, a spring
-    enum Kind : u32
+    enum Kind
     {
         KindInstance = 0,
         KindPosition = 1,

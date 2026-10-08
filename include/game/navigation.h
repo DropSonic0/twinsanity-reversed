@@ -113,11 +113,9 @@ union AiPathFlags
         NeedsFlight = 0x20,
         ScriptFlag6 = 0x40,
         ScriptFlag7 = 0x80,
-        ScriptFlag8 = 0x100
+        ScriptFlag8 = 0x100,
+        NotPlainMask = 0x1E0
     };
-
-    // The flags a plain path has none of
-    static CONSTEXPR u16 NotPlainMask = 0x1E0;
 };
 CHECK_SIZE(AiPathFlags, 2);
 

@@ -81,11 +81,11 @@ CHECK_SIZE(CutsceneCameraTrack, 0x20);
 // tracks of instances, sounds and emitters, its camera's track and its tracks
 struct Cutscene
 {
-    static constexpr u32 PartFrames = 150;
-    static constexpr u32 FramesPerSecond = 25;
+    static CONSTEXPR u32 PartFrames = 150;
+    static CONSTEXPR u32 FramesPerSecond = 25;
     // The frame a track plays its values at the end at (skipping the cutscene)
-    static constexpr u16 EndFrame = 0xFFFF;
-    static constexpr u16 NoNumber = 0xFFFF;
+    static CONSTEXPR u16 EndFrame = 0xFFFF;
+    static CONSTEXPR u16 NoNumber = 0xFFFF;
 
     u16 frames;
     u16 partFrames;
