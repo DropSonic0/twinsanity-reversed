@@ -46,8 +46,8 @@ void ReadVector(Stream* stream, Vector4* vector)
 }
 
 // A new spline camera's offset along its spline, a new second point camera's share of the way
-constexpr f32 SplineCameraOffset = 6.0f;
-constexpr f32 HalfWay = 0.5f;
+CONSTEXPR f32 SplineCameraOffset = 6.0f;
+CONSTEXPR f32 HalfWay = 0.5f;
 
 // What every subtype's read starts with
 void ReadBase(CameraSubtype* camera, Stream* stream)
@@ -366,7 +366,7 @@ f32 BossCamera::HeightAt(const Vector4* place)
 
 void BossCamera::LimitTurn(f32 radius, Vector4* place)
 {
-    constexpr f32 NoLimit = Epsilon;
+    CONSTEXPR f32 NoLimit = Epsilon;
     f32 limit = turnLimit;
     if (limit < -NoLimit || NoLimit < limit)
     {
@@ -449,7 +449,7 @@ u32 CameraSplineCamera::Type()
 void CameraSplineCamera::Read(Stream* stream)
 {
     ReadBase(this, stream);
-    auto* made = static_cast<CameraSpline*>(MemoryAllocate(sizeof(CameraSpline)));
+    CameraSpline* made = static_cast<CameraSpline*>(MemoryAllocate(sizeof(CameraSpline)));
     made->searchSegment = -1;
     made->vtable = g_CameraSplineVTable;
     made->samples = nullptr;
@@ -544,7 +544,7 @@ void CameraSplineCamera::KeyOffsetAt(u32 index, f32* offset, u32* found, u32 bac
 // (Without a key the last W walked past stays in the key, the index found unset)
 void CameraSplineCamera::KeyAt(u32 index, u32* key, u32* found, u32 backwards)
 {
-    constexpr s32 Stride = CameraSpline::VectorsPerSample;
+    CONSTEXPR s32 Stride = CameraSpline::VectorsPerSample;
     const CameraSpline* followed = spline;
     u32 at = backwards != 0 ? index : index + Stride;
     u32 end = (followed->count + 1) * Stride;
@@ -553,7 +553,7 @@ void CameraSplineCamera::KeyAt(u32 index, u32* key, u32* found, u32 backwards)
     while (at < end)
     {
         CameraSplineKey read;
-        read.value = __builtin_bit_cast(u32, samples[at].w);
+        read.value = *reinterpret_cast<const u32*>(&samples[at].w);
         *key = read.value;
         if (read.passedOver == 0)
         {
@@ -567,8 +567,8 @@ void CameraSplineCamera::KeyAt(u32 index, u32* key, u32* found, u32 backwards)
 
 f32 KeyShare(const u32* key)
 {
-    constexpr f32 ShareUnit = 0x1.4p-5f;
-    constexpr f32 LeastShare = -5.0f;
+    CONSTEXPR f32 ShareUnit = 0x1.4p-5f;
+    CONSTEXPR f32 LeastShare = -5.0f;
     CameraSplineKey read;
     read.value = *key;
     return static_cast<f32>(read.towardTarget) * ShareUnit + LeastShare;
@@ -576,8 +576,8 @@ f32 KeyShare(const u32* key)
 
 f32 KeyOffset(const u32* key)
 {
-    constexpr f32 OffsetUnit = 0x1.9p-10f;
-    constexpr f32 LeastOffset = -50.0f;
+    CONSTEXPR f32 OffsetUnit = 0x1.9p-10f;
+    CONSTEXPR f32 LeastOffset = -50.0f;
     CameraSplineKey read;
     read.value = *key;
     return static_cast<f32>(read.offset) * OffsetUnit + LeastOffset;
@@ -603,7 +603,7 @@ f32 SplineArmCamera::At(const Vector4* target, CameraTarget*, Vector4* out)
 
 void SplineArmCamera::AtParameter(f32 along, Vector4* out)
 {
-    constexpr f32 ArmLength = 5.0f;
+    CONSTEXPR f32 ArmLength = 5.0f;
     f32 at = Clamped(along + offset / spline.lengths[spline.count - 1]);
     f32 into;
     s32 segment = SplineSegmentAt(at * (static_cast<f32>(spline.count) * spline.step), &spline, &into);
@@ -826,7 +826,7 @@ void KeyedCamera::Read(Stream*)
 
 u32 KeyedCamera::Play(TimeClock* clock, Vector4* position, Vector4* rotation)
 {
-    constexpr f32 Speed = 20.0f;
+    CONSTEXPR f32 Speed = 20.0f;
     if (playing == 0)
     {
         playing = 1;
@@ -895,7 +895,7 @@ CameraSubtype* MakeCameraSubtype(void*, u32 type)
         return CameraPoint::Construct(static_cast<CameraPoint*>(MemoryAllocate(sizeof(CameraPoint))));
     case CameraSubtype::TypeBoss:
     {
-        auto* camera = static_cast<BossCamera*>(CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(BossCamera)))));
+        BossCamera* camera = static_cast<BossCamera*>(CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(BossCamera)))));
         camera->curves = 0;
         camera->vtable = g_BossCameraVTable;
         camera->turnLimit = 0.0f;
@@ -904,7 +904,7 @@ CameraSubtype* MakeCameraSubtype(void*, u32 type)
     }
     case CameraSubtype::TypeSpline:
     {
-        auto* camera = static_cast<CameraSplineCamera*>(
+        CameraSplineCamera* camera = static_cast<CameraSplineCamera*>(
             CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(CameraSplineCamera)))));
         camera->vtable = g_CameraSplineCameraVTable;
         camera->offset = SplineCameraOffset;
@@ -914,7 +914,7 @@ CameraSubtype* MakeCameraSubtype(void*, u32 type)
     }
     case CameraSubtype::TypeSplineArm:
     {
-        auto* camera = static_cast<SplineArmCamera*>(
+        SplineArmCamera* camera = static_cast<SplineArmCamera*>(
             CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(SplineArmCamera)))));
         camera->rotations.keys = nullptr;
         camera->vtable = g_SplineArmCameraVTable;
@@ -930,7 +930,7 @@ CameraSubtype* MakeCameraSubtype(void*, u32 type)
     }
     case CameraSubtype::TypePoint2:
     {
-        auto* camera = static_cast<CameraPoint2*>(CameraPoint::Construct(static_cast<CameraPoint*>(MemoryAllocate(sizeof(CameraPoint2)))));
+        CameraPoint2* camera = static_cast<CameraPoint2*>(CameraPoint::Construct(static_cast<CameraPoint*>(MemoryAllocate(sizeof(CameraPoint2)))));
         camera->vtable = g_CameraPoint2VTable;
         camera->distance = HalfWay;
         camera->mode = CameraPoint2::ModeShareOfTheWay;
@@ -950,7 +950,7 @@ CameraSubtype* MakeCameraSubtype(void*, u32 type)
     }
     case CameraSubtype::TypeKeyed:
     {
-        auto* camera = static_cast<KeyedCamera*>(CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(KeyedCamera)))));
+        KeyedCamera* camera = static_cast<KeyedCamera*>(CameraSubtype::Construct(static_cast<CameraSubtype*>(MemoryAllocate(sizeof(KeyedCamera)))));
         camera->spline = nullptr;
         camera->vtable = g_KeyedCameraVTable;
         camera->keys.keys = nullptr;
@@ -993,7 +993,7 @@ f32 EaseInOut(f32 share, const f32* sharpness)
 
 Vector4* RotationAt(Vector4* out, const CameraRotationKeys* keys, f32 along)
 {
-    constexpr f32 Sharpness = Rounded(0.9);
+    CONSTEXPR f32 Sharpness = Rounded(0.9);
     if (1.0f <= along)
     {
         *out = keys->keys[0].rotation;
@@ -1078,7 +1078,7 @@ u32 MainCamera::NearerBlendIn(const s32* yaw)
 
 void MainCamera::Read(Stream* stream)
 {
-    constexpr s32 MadeByAnyFactory = -1;
+    CONSTEXPR s32 MadeByAnyFactory = -1;
     if (g_ObjectBuilder == nullptr)
     {
         g_ObjectBuilder = ObjectBuilder::Construct(static_cast<ObjectBuilder*>(MemoryAllocate(sizeof(ObjectBuilder))));
@@ -1119,7 +1119,7 @@ void MainCamera::Read(Stream* stream)
             continue;
         }
 
-        auto* made = static_cast<CameraSubtype*>(builder->Build(types[index], MadeByAnyFactory));
+        CameraSubtype* made = static_cast<CameraSubtype*>(builder->Build(types[index], MadeByAnyFactory));
         *subtypes[index] = made;
         made->ReadVirtual(stream);
     }

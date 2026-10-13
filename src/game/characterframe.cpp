@@ -23,8 +23,8 @@
 #include "game/reference.h"
 #include "game/vehicles.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 extern "C"
 {
@@ -37,31 +37,31 @@ EABI_EXPORT(FUN_00136800, &CharacterAgent::LiftOntoGround);
 namespace
 {
 // The pickups' code model kind
-constexpr u32 PickupCodeModel = 0x11;
+CONSTEXPR u32 PickupCodeModel = 0x11;
 // A pickup's state flying to its focus, and the event the other instances near the player run
-constexpr u32 PickupFliesToFocus = 6;
-constexpr u32 NearPlayerEvent = 1;
+CONSTEXPR u32 PickupFliesToFocus = 6;
+CONSTEXPR u32 NearPlayerEvent = 1;
 
 // The character's hull that kicks (its hits are spins)
-constexpr s32 KickHull = 7;
+CONSTEXPR s32 KickHull = 7;
 // The most hulls the character's own are gathered for, and the most instances the queries find
-constexpr s32 HullsMost = 24;
-constexpr u16 MostHits = 0xB4;
-constexpr u16 MostGround = 0x40;
-constexpr u16 MostHullHits = 0x100;
+CONSTEXPR s32 HullsMost = 24;
+CONSTEXPR u16 MostHits = 0xB4;
+CONSTEXPR u16 MostGround = 0x40;
+CONSTEXPR u16 MostHullHits = 0x100;
 // The kinds of nodes the attacks look for (projectiles too, besides what damage reaches) and the touches (the pickups)
-constexpr u32 AttackHitKinds = DamageableNodeKinds | 1u << NodeProjectile;
-constexpr u32 PickupKinds = 1u << NodePickup;
+CONSTEXPR u32 AttackHitKinds = DamageableNodeKinds | 1u << NodeProjectile;
+CONSTEXPR u32 PickupKinds = 1u << NodePickup;
 // The contact message a splash into water sends (its hit kinds and damage)
-constexpr u32 SplashKinds = HitBurning;
-constexpr u8 SplashDamage = 1;
+CONSTEXPR u32 SplashKinds = HitBurning;
+CONSTEXPR u8 SplashDamage = 1;
 
-static_assert(offsetof(CharacterAgent, triggers) == 0x110);
-static_assert(offsetof(CharacterAgent, cache) == 0x2B0);
-static_assert(offsetof(CharacterBody, standingHull) == 0x14);
-static_assert(offsetof(LookController, freeLookX) == 0x34);
-static_assert(offsetof(FollowNode, camera) + offsetof(FollowCamera, lensRig) == 0x750);
-static_assert(offsetof(ObjectNode, agentRef2) == 0x11C);
+CHECK_OFFSET(CharacterAgent, triggers, 0x110);
+CHECK_OFFSET(CharacterAgent, cache, 0x2B0);
+CHECK_OFFSET(CharacterBody, standingHull, 0x14);
+CHECK_OFFSET(LookController, freeLookX, 0x34);
+CHECK_OFFSET(FollowNode, camera, 0x30);
+CHECK_OFFSET(ObjectNode, agentRef2, 0x11C);
 
 // The attack kind (the part's bits' low byte, which retail reads and writes as a byte)
 u8& AttackKind(AgentPart* part)
@@ -137,17 +137,32 @@ void Scale(Vector4* vector, f32 scale)
 // The sum and a vector scaled (w 1)
 Vector4 Sum(const Vector4& a, const Vector4& b)
 {
-    return {a.x + b.x, a.y + b.y, a.z + b.z, 1.0f};
+    Vector4 result;
+    result.x = a.x + b.x;
+    result.y = a.y + b.y;
+    result.z = a.z + b.z;
+    result.w = 1.0f;
+    return result;
 }
 
 Vector4 Scaled(const Vector4& vector, f32 scale)
 {
-    return {vector.x * scale, vector.y * scale, vector.z * scale, 1.0f};
+    Vector4 result;
+    result.x = vector.x * scale;
+    result.y = vector.y * scale;
+    result.z = vector.z * scale;
+    result.w = 1.0f;
+    return result;
 }
 
 Vector4 Cross(const Vector4& a, const Vector4& b, f32 w)
 {
-    return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x, w};
+    Vector4 result;
+    result.x = a.y * b.z - a.z * b.y;
+    result.y = a.z * b.x - a.x * b.z;
+    result.z = a.x * b.y - a.y * b.x;
+    result.w = w;
+    return result;
 }
 
 // The object node's AgentRef2 (an asleep one forgotten unless the node keeps it)
@@ -178,10 +193,10 @@ void MoveInstance(InstanceContext* instance, const Vector4* position)
 // to both), its axes made unit long and square again
 void PlaceLinkMarker(CharacterAgent* character)
 {
-    constexpr f32 FarHand = 1000.0f;
-    constexpr f32 Turned = Epsilon;
+    CONSTEXPR f32 FarHand = 1000.0f;
+    CONSTEXPR f32 Turned = Epsilon;
 
-    auto* node = static_cast<ObjectNode*>(GetGameNode(NodesOf(character->instance), NodeObject));
+    ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(NodesOf(character->instance), NodeObject));
     if (node == nullptr || CallVirtual<u32>(node, node->vtable, ObjectNode::TakesPacketsSlot) == 0)
     {
         return;
@@ -335,20 +350,20 @@ void CharacterAgent::SpinFrame(TimeClock* clock, CharacterPart* part)
 
 void CharacterAgent::LinkFrame(TimeClock* clock, CharacterPart* part)
 {
-    constexpr f32 CircleAfter = 0.5f;
-    constexpr f32 GroundProbe = 1.0f;
+    CONSTEXPR f32 CircleAfter = 0.5f;
+    CONSTEXPR f32 GroundProbe = 1.0f;
     // Thrown from a spin: put a step ahead (0.4 up; it must fit half a step ahead, 0.2 up), launched forward; from a jump: put
     // above (2.25 up; it must fit at 1.125 up), launched up
-    constexpr Vector4 SpinThrowRaise = {0.0f, Rounded(0.4), 0.0f, 1.0f};
-    constexpr Vector4 SpinThrowCheckRaise = {0.0f, Rounded(0.2), 0.0f, 1.0f};
-    constexpr Vector4 SpinThrowLift = {0.0f, 10.5f, 0.0f, 1.0f};
-    constexpr f32 SpinThrowSpeed = 33.0f;
-    constexpr f32 SpinThrowStrength = 25.0f;
-    constexpr Vector4 JumpThrowRaise = {0.0f, 2.25f, 0.0f, 1.0f};
-    constexpr Vector4 JumpThrowCheckRaise = {0.0f, 1.125f, 0.0f, 1.0f};
-    constexpr Vector4 JumpThrowLift = {0.0f, 16.0f, 0.0f, 1.0f};
-    constexpr f32 JumpThrowSpeed = 19.0f;
-    constexpr f32 JumpThrowStrength = 40.0f;
+    Vector4 SpinThrowRaise; SpinThrowRaise.x = 0.0f; SpinThrowRaise.y = Rounded(0.4); SpinThrowRaise.z = 0.0f; SpinThrowRaise.w = 1.0f;
+    Vector4 SpinThrowCheckRaise; SpinThrowCheckRaise.x = 0.0f; SpinThrowCheckRaise.y = Rounded(0.2); SpinThrowCheckRaise.z = 0.0f; SpinThrowCheckRaise.w = 1.0f;
+    Vector4 SpinThrowLift; SpinThrowLift.x = 0.0f; SpinThrowLift.y = 10.5f; SpinThrowLift.z = 0.0f; SpinThrowLift.w = 1.0f;
+    CONSTEXPR f32 SpinThrowSpeed = 33.0f;
+    CONSTEXPR f32 SpinThrowStrength = 25.0f;
+    Vector4 JumpThrowRaise; JumpThrowRaise.x = 0.0f; JumpThrowRaise.y = 2.25f; JumpThrowRaise.z = 0.0f; JumpThrowRaise.w = 1.0f;
+    Vector4 JumpThrowCheckRaise; JumpThrowCheckRaise.x = 0.0f; JumpThrowCheckRaise.y = 1.125f; JumpThrowCheckRaise.z = 0.0f; JumpThrowCheckRaise.w = 1.0f;
+    Vector4 JumpThrowLift; JumpThrowLift.x = 0.0f; JumpThrowLift.y = 16.0f; JumpThrowLift.z = 0.0f; JumpThrowLift.w = 1.0f;
+    CONSTEXPR f32 JumpThrowSpeed = 19.0f;
+    CONSTEXPR f32 JumpThrowStrength = 40.0f;
 
     if (link == nullptr)
     {
@@ -496,7 +511,10 @@ void CharacterAgent::WalkFrame(TimeClock* clock, CharacterPart* part)
             strafe = buttons.shoulders;
         }
 
-        stick = {buttons.moveZ, 0.0f, buttons.moveX, 1.0f};
+        stick.x = buttons.moveZ;
+        stick.y = 0.0f;
+        stick.z = buttons.moveX;
+        stick.w = 1.0f;
         turn = buttons.turn;
     }
 
@@ -513,7 +531,7 @@ void CharacterAgent::LookFrame(TimeClock* clock)
         return;
     }
 
-    auto* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
+    ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
     Vector4 point = {0.0f, 0.0f, 0.0f, 1.0f};
     u32 hasPoint = 0;
     HeadTracking* tracking = node->headTracking;
@@ -527,7 +545,7 @@ void CharacterAgent::LookFrame(TimeClock* clock)
             CharacterAgent* character = CharacterAgentOf(target);
             if (character != nullptr)
             {
-                auto* model = static_cast<ModelNode*>(GetGameNode(&character->instance->nodes, NodeModel));
+                ModelNode* model = static_cast<ModelNode*>(GetGameNode(&character->instance->nodes, NodeModel));
                 SizedArray<ExitPointAnimation*>* exitPoints = model->animator->exitPoints;
                 ExitPointAnimation* head = exitPoints != nullptr ? exitPoints->data[ExitPointHead] : nullptr;
                 hasPoint = 1;
@@ -542,8 +560,8 @@ void CharacterAgent::LookFrame(TimeClock* clock)
     }
 
     look->SetLookPoint(&point, hasPoint);
-    auto* follow = static_cast<FollowNode*>(GetGameNode(&instance->nodes, NodeFollow));
-    auto* character = static_cast<CharacterPart*>(part);
+    FollowNode* follow = static_cast<FollowNode*>(GetGameNode(&instance->nodes, NodeFollow));
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     f32 lookX = 0.0f;
     f32 lookY = 0.0f;
     if (follow != nullptr)
@@ -576,8 +594,8 @@ void CharacterAgent::LookFrame(TimeClock* clock)
 void CharacterAgent::LinkedHits()
 {
     // A box at the hand the second of the tied characters slams with
-    constexpr Vector4 HandMin = {Rounded(-0.4), Rounded(-0.65), Rounded(-0.4), 1.0f};
-    constexpr Vector4 HandMax = {Rounded(0.4), 0.0f, Rounded(0.8), 1.0f};
+    Vector4 HandMin; HandMin.x = Rounded(-0.4); HandMin.y = Rounded(-0.65); HandMin.z = Rounded(-0.4); HandMin.w = 1.0f;
+    Vector4 HandMax; HandMax.x = Rounded(0.4); HandMax.y = 0.0f; HandMax.z = Rounded(0.8); HandMax.w = 1.0f;
 
     if (static_cast<CharacterPart*>(part)->moveBits.linkedSecond == 0 || link->MidSlam() == 0)
     {
@@ -607,7 +625,7 @@ void CharacterAgent::LinkedHits()
 
 void CharacterAgent::AttackHits()
 {
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     if (!IsSpinning(AttackKind(character)) && AttackKind(character) != AttackThrownFromSpin)
     {
         return;
@@ -645,8 +663,8 @@ void CharacterAgent::AttackHits()
 
 void CharacterAgent::TouchHits(TimeClock* clock)
 {
-    constexpr f32 TouchRadius = 1.0f;
-    constexpr f32 AttractRadius = 1.5f;
+    CONSTEXPR f32 TouchRadius = 1.0f;
+    CONSTEXPR f32 AttractRadius = 1.5f;
 
     Vector4 sphere = MiddleOf(instance->CollisionBox());
     u32 kind = AttackKind(part);
@@ -708,8 +726,8 @@ void CharacterAgent::Splash()
 
 void CharacterAgent::TellTrigger(FollowCamera* camera, InstanceContext* trigger, u32 entered)
 {
-    auto* node = static_cast<MessageTriggerNode*>(GetGameNode(NodesOf(trigger), NodeMessageTrigger));
-    auto* cameraNode = static_cast<CameraNode*>(GetGameNode(NodesOf(trigger), NodeCameraTrigger));
+    MessageTriggerNode* node = static_cast<MessageTriggerNode*>(GetGameNode(NodesOf(trigger), NodeMessageTrigger));
+    CameraNode* cameraNode = static_cast<CameraNode*>(GetGameNode(NodesOf(trigger), NodeCameraTrigger));
     if (node != nullptr)
     {
         // Only the triggers that aren't polled are checked by the characters inside
@@ -737,7 +755,7 @@ void CharacterAgent::TellTrigger(FollowCamera* camera, InstanceContext* trigger,
 
 void CharacterAgent::CheckTriggers()
 {
-    auto* follow = static_cast<FollowNode*>(GetGameNode(&instance->nodes, NodeFollow));
+    FollowNode* follow = static_cast<FollowNode*>(GetGameNode(&instance->nodes, NodeFollow));
     u32 played = g_AgentsGameController->progress.play.character;
     s32 character = properties->GetInt(CharacterKindProperty);
     // A character of no kind only checks them while it's the one played
@@ -756,8 +774,8 @@ void CharacterAgent::CheckTriggers()
     TakeChosenCamera(camera);
     while (!old.AtEnd() && !fresh.AtEnd())
     {
-        auto* was = static_cast<InstanceContext*>(old.Object());
-        auto* is = static_cast<InstanceContext*>(fresh.Object());
+        InstanceContext* was = static_cast<InstanceContext*>(old.Object());
+        InstanceContext* is = static_cast<InstanceContext*>(fresh.Object());
         if (was == nullptr)
         {
             old.Step();
@@ -786,7 +804,7 @@ void CharacterAgent::CheckTriggers()
 
     while (!old.AtEnd())
     {
-        auto* was = static_cast<InstanceContext*>(old.Object());
+        InstanceContext* was = static_cast<InstanceContext*>(old.Object());
         if (was != nullptr)
         {
             TellTrigger(camera, was, 0);
@@ -809,11 +827,11 @@ void CharacterAgent::CheckTriggers()
 
 void CharacterAgent::HurtFrame(TimeClock* clock)
 {
-    constexpr f32 HurtSeconds = Rounded(0.3);
-    constexpr f32 BlinkSeconds = Rounded(0.2);
-    constexpr f32 BlinksPerSecond = 5.0f;
-    constexpr f32 ShownShare = Rounded(0.8);
-    constexpr u32 SteadyHitPoints = 3;
+    CONSTEXPR f32 HurtSeconds = Rounded(0.3);
+    CONSTEXPR f32 BlinkSeconds = Rounded(0.2);
+    CONSTEXPR f32 BlinksPerSecond = 5.0f;
+    CONSTEXPR f32 ShownShare = Rounded(0.8);
+    CONSTEXPR u32 SteadyHitPoints = 3;
 
     u32 mode = ModeHurt;
     if (state.mode != ModeHurt)
@@ -829,7 +847,7 @@ void CharacterAgent::HurtFrame(TimeClock* clock)
         return;
     }
 
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     s32 elapsed = clock->time - modeStart;
     if (character->moveBits.hurt != 0 && elapsed >= static_cast<s32>(g_ClockUnitsPerSecond * HurtSeconds))
     {
@@ -877,9 +895,9 @@ void CharacterAgent::HurtFrame(TimeClock* clock)
 
 void CharacterAgent::FindGroundPoint()
 {
-    constexpr Vector4 Cast = {0.0f, -8.0f, 0.0f, 1.0f};
-    constexpr f32 CastRaise = 0.25f;
-    constexpr f32 AboveGround = Rounded(0.02);
+    Vector4 Cast; Cast.x = 0.0f; Cast.y = -8.0f; Cast.z = 0.0f; Cast.w = 1.0f;
+    CONSTEXPR f32 CastRaise = 0.25f;
+    CONSTEXPR f32 AboveGround = Rounded(0.02);
 
     void* results[MostGround];
     InstanceQuery query;
@@ -923,12 +941,12 @@ void CharacterAgent::RefreshCache()
     ObjectPlace* place = instance->place;
     RotateAndTranslate(place);
     // The box around its place the cache holds the collision of: so far across, above and below (the Mecha-Bandicoot's bigger)
-    constexpr f32 CacheAcross = 2.0f;
-    constexpr f32 CacheAbove = 3.0f;
-    constexpr f32 CacheBelow = 1.0f;
-    constexpr f32 MechaCacheAcross = 12.0f;
-    constexpr f32 MechaCacheAbove = 13.0f;
-    constexpr f32 MechaCacheBelow = 3.0f;
+    CONSTEXPR f32 CacheAcross = 2.0f;
+    CONSTEXPR f32 CacheAbove = 3.0f;
+    CONSTEXPR f32 CacheBelow = 1.0f;
+    CONSTEXPR f32 MechaCacheAcross = 12.0f;
+    CONSTEXPR f32 MechaCacheAbove = 13.0f;
+    CONSTEXPR f32 MechaCacheBelow = 3.0f;
 
     Box box = {*RowOf(&place->matrix, 3), *RowOf(&place->matrix, 3)};
     f32 across;
@@ -980,8 +998,8 @@ void CharacterAgent::HullHits()
 
         for (s32 index = 0; index < count; index++)
         {
-            auto* other = static_cast<InstanceContext*>(query.results[index]);
-            auto* otherCollision = reinterpret_cast<ObjectCollision*>(reinterpret_cast<std::uintptr_t>(other)
+            InstanceContext* other = static_cast<InstanceContext*>(query.results[index]);
+            ObjectCollision* otherCollision = reinterpret_cast<ObjectCollision*>(reinterpret_cast<std::uintptr_t>(other)
                                                                        + offsetof(InstanceContext, collision));
             for (s32 hullIndex = 0; hullIndex < GetHullCount(otherCollision); hullIndex++)
             {
@@ -1026,7 +1044,7 @@ void CharacterAgent::HullHits()
 
 void CharacterAgent::Frame(TimeClock* clock)
 {
-    constexpr f32 TopSpeed = 60.0f;
+    CONSTEXPR f32 TopSpeed = 60.0f;
 
     // The frame after its state was applied it's lifted onto the ground under it
     if (state.previousMode == ModeApplied && properties->GetInt(CharacterKindProperty) != CharacterNone && body != nullptr)
@@ -1040,7 +1058,7 @@ void CharacterAgent::Frame(TimeClock* clock)
     }
 
     RefreshCache();
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     u32 onGround = character->flags.onGround != 0;
     bool frozen = character->bits.frozen != 0;
     if (properties->GetInt(CharacterKindProperty) == CharacterMecha)
@@ -1101,7 +1119,7 @@ void CharacterAgent::Frame(TimeClock* clock)
         return;
     }
 
-    auto* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
+    ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
     bool scripted = node->flags.moves;
     if (frozen || !instance->flags.collisionActive || scripted)
     {
@@ -1201,8 +1219,8 @@ void CharacterAgent::AttractPickups(TimeClock* clock, const InstanceQuery* query
 {
     for (u32 index = 0; index < query->count; index++)
     {
-        auto* found = static_cast<InstanceContext*>(query->results[index]);
-        auto* node = static_cast<ObjectNode*>(GetGameNode(NodesOf(found), NodeObject));
+        InstanceContext* found = static_cast<InstanceContext*>(query->results[index]);
+        ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(NodesOf(found), NodeObject));
         if (CallVirtual<u32>(node, node->vtable, ObjectNode::CodeModelKindSlot) != PickupCodeModel)
         {
             RunAgentEvent(node->agent, NearPlayerEvent, 0, 0, 0);

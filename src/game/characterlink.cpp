@@ -13,8 +13,8 @@
 #include "game/properties.h"
 #include "game/reference.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 extern "C"
 {
@@ -30,10 +30,10 @@ EABI_EXPORT(FUN_0015f968, &CharacterLink::SetStretch);
 
 namespace
 {
-constexpr u32 ArmChainLinks = 5;
+CONSTEXPR u32 ArmChainLinks = 5;
 // The points the arms' chain is solved into: the leader's elbow and hand, the second's hand and elbow, and the end (the
 // second's shoulder); and the solver's steps
-enum ArmChainPoint : u32
+enum ArmChainPoint
 {
     ChainLeaderElbow = 0,
     ChainLeaderHand = 1,
@@ -41,48 +41,46 @@ enum ArmChainPoint : u32
     ChainSecondElbow = 3,
     ChainEnd = 4,
 };
-constexpr u32 ArmChainSteps = 2;
+CONSTEXPR u32 ArmChainSteps = 2;
 
 // The joints the link poses: the spine, and the arm holding the other's hand (the leader's right, the second's left)
-constexpr u32 SpineFirst = 2;
-constexpr u32 SpineCount = 3;
-constexpr u32 LeaderShoulder = 0x11;
-constexpr u32 LeaderElbow = 0x12;
-constexpr u32 LeaderHand = 0x13;
-constexpr u32 SecondShoulder = 0xD;
-constexpr u32 SecondElbow = 0xE;
-constexpr u32 SecondHand = 0xF;
-constexpr u32 PosedJoints[] = {SpineFirst, SpineFirst + 1, SpineFirst + 2, LeaderShoulder, LeaderElbow, LeaderHand,
+CONSTEXPR u32 SpineFirst = 2;
+CONSTEXPR u32 SpineCount = 3;
+CONSTEXPR u32 LeaderShoulder = 0x11;
+CONSTEXPR u32 LeaderElbow = 0x12;
+CONSTEXPR u32 LeaderHand = 0x13;
+CONSTEXPR u32 SecondShoulder = 0xD;
+CONSTEXPR u32 SecondElbow = 0xE;
+CONSTEXPR u32 SecondHand = 0xF;
+CONSTEXPR u32 PosedJoints[] = {SpineFirst, SpineFirst + 1, SpineFirst + 2, LeaderShoulder, LeaderElbow, LeaderHand,
                                SecondShoulder, SecondElbow, SecondHand};
 
 // A shoulder not seen yet (its x)
-constexpr f32 Unseen = 1e10f;
+CONSTEXPR f32 Unseen = 1e10f;
 // The stretch: how far the second's swing length is past 1.1, full at 1.45
-constexpr f32 StretchStart = Rounded(1.1);
-constexpr f32 StretchScale = 0x1.6db6dcp+1f;
-constexpr f32 BlendInPerSecond = 10.0f;
+CONSTEXPR f32 StretchStart = Rounded(1.1);
+CONSTEXPR f32 StretchScale = 0x1.6db6dcp+1f;
+CONSTEXPR f32 BlendInPerSecond = 10.0f;
 // The slam: over after a second, then a quarter second before the next; the spine leans fully after a quarter second and
 // back from 0.75, the arms are posed again from 0.75, and the part of it MidSlam tells LinkedHits of
-constexpr f32 SlamSeconds = 1.0f;
-constexpr f32 SlamCooldown = 0.25f;
-constexpr f32 SlamLeanIn = 0.25f;
-constexpr f32 SlamLeanOut = 0.75f;
-constexpr f32 MidSlamFrom = Rounded(0.2);
-constexpr f32 MidSlamTo = Rounded(0.99);
+CONSTEXPR f32 SlamSeconds = 1.0f;
+CONSTEXPR f32 SlamCooldown = 0.25f;
+CONSTEXPR f32 SlamLeanIn = 0.25f;
+CONSTEXPR f32 SlamLeanOut = 0.75f;
+CONSTEXPR f32 MidSlamFrom = Rounded(0.2);
+CONSTEXPR f32 MidSlamTo = Rounded(0.99);
 // The hand's length along the forearm (the leader's, the second's), and its point in the hand's space
-constexpr f32 LeaderHandLength = Rounded(0.3);
-constexpr f32 SecondHandLength = Rounded(0.256);
-constexpr Vector4 CrashHandPoint = {Rounded(0.2), Rounded(0.11), Rounded(-0.05), 1.0f};
-constexpr Vector4 OtherHandPoint = {Rounded(-0.1), Rounded(-0.05), Rounded(-0.05), 1.0f};
+CONSTEXPR f32 LeaderHandLength = Rounded(0.3);
+CONSTEXPR f32 SecondHandLength = Rounded(0.256);
 // The second's gait: walking past 2 a second, running past 4 (back under 3), idle under 0.5 (0.2 shuffling), shuffling while
 // its motion is off the leader's facing (a cosine under 0.6; back over 0.8)
-constexpr f32 GaitWalkSpeed = 2.0f;
-constexpr f32 GaitRunSpeed = 4.0f;
-constexpr f32 GaitRunEndSpeed = 3.0f;
-constexpr f32 GaitStopSpeed = 0.5f;
-constexpr f32 GaitShuffleSpeed = Rounded(0.2);
-constexpr f32 GaitShuffleCosine = Rounded(0.6);
-constexpr f32 GaitShuffleEndCosine = Rounded(0.8);
+CONSTEXPR f32 GaitWalkSpeed = 2.0f;
+CONSTEXPR f32 GaitRunSpeed = 4.0f;
+CONSTEXPR f32 GaitRunEndSpeed = 3.0f;
+CONSTEXPR f32 GaitStopSpeed = 0.5f;
+CONSTEXPR f32 GaitShuffleSpeed = Rounded(0.2);
+CONSTEXPR f32 GaitShuffleCosine = Rounded(0.6);
+CONSTEXPR f32 GaitShuffleEndCosine = Rounded(0.8);
 
 // A character's link as retail reads it, also when there's no character (the word at 0xB0 then)
 CharacterLink* LinkOf(const CharacterAgent* agent)
@@ -112,7 +110,7 @@ ObjectPlace* PlaceOf(const ReferencedObject* object)
 // The character agent of a handle's instance (none without one)
 CharacterAgent* CharacterOf(const Reference* handle)
 {
-    auto* instance = static_cast<InstanceContext*>(ObjectOf(handle));
+    InstanceContext* instance = static_cast<InstanceContext*>(ObjectOf(handle));
     if (instance == nullptr)
     {
         return nullptr;
@@ -283,9 +281,9 @@ void CharacterLink::Destroy(u32 destroyFlags)
 
 void CharacterLink::Attach(OgiAnimator* animator)
 {
-    for (u32 joint : PosedJoints)
+    for (u32 i = 0; i < sizeof(PosedJoints) / sizeof(PosedJoints[0]); i++)
     {
-        AddJointCallback(animator, joint, this);
+        AddJointCallback(animator, PosedJoints[i], this);
     }
 
     bits.state = StateTied;
@@ -293,9 +291,9 @@ void CharacterLink::Attach(OgiAnimator* animator)
 
 void CharacterLink::Detach(OgiAnimator* animator)
 {
-    for (u32 joint : PosedJoints)
+    for (u32 i = 0; i < sizeof(PosedJoints) / sizeof(PosedJoints[0]); i++)
     {
-        RemoveJointCallback(animator, joint, this);
+        RemoveJointCallback(animator, PosedJoints[i], this);
     }
 
     bits.state = StateDetached;
@@ -418,7 +416,7 @@ u32 CharacterLink::StartSlam(const s32* time)
 void CharacterLink::Frame(f32 circle, TimeClock* clock)
 {
     CharacterAgent* second = Second();
-    auto* part = static_cast<CharacterPart*>(character->part);
+    CharacterPart* part = static_cast<CharacterPart*>(character->part);
     f32 stretch = (SwingLengthOf(this) - StretchStart) * StretchScale;
     if (1.0f < stretch)
     {
@@ -571,7 +569,7 @@ s32 CharacterLink::SolveChain(const Vector4* start, const Vector4* end)
             angles[i] = g_ArmChainAngles[i];
         }
 
-        auto* made = static_cast<IkChain*>(MemoryAllocate(sizeof(IkChain)));
+        IkChain* made = static_cast<IkChain*>(MemoryAllocate(sizeof(IkChain)));
         ConstructIkSolver(&made->solver);
         ikChain = made;
         SetIkLinks(made, ArmChainLinks, lengths, angles);
@@ -625,11 +623,11 @@ void CharacterLink::SolveArms()
     secondLink->bits.hold = HoldHands;
     // The chain's second half moved to end at the second's shoulder: the arms' segments
     const Vector4& chainEnd = chain[ChainEnd];
-    Vector4 shift = {end.x - chainEnd.x, end.y - chainEnd.y, end.z - chainEnd.z, 1.0f};
+    Vector4 shift; shift.x = end.x - chainEnd.x; shift.y = end.y - chainEnd.y; shift.z = end.z - chainEnd.z; shift.w = 1.0f;
     const Vector4& leaderElbow = chain[ChainLeaderElbow];
     const Vector4& leaderHand = chain[ChainLeaderHand];
     upperArm = leaderElbow;
-    forearm = {leaderHand.x - leaderElbow.x, leaderHand.y - leaderElbow.y, leaderHand.z - leaderElbow.z, 1.0f};
+    forearm.x = leaderHand.x - leaderElbow.x; forearm.y = leaderHand.y - leaderElbow.y; forearm.z = leaderHand.z - leaderElbow.z; forearm.w = 1.0f;
     secondLink = LinkOf(second);
     for (u32 i = ChainSecondHand; i <= ChainSecondElbow; i++)
     {
@@ -640,13 +638,13 @@ void CharacterLink::SolveArms()
 
     const Vector4& secondHand = chain[ChainSecondHand];
     const Vector4& secondElbow = chain[ChainSecondElbow];
-    secondLink->upperArm = {secondElbow.x - end.x, secondElbow.y - end.y, secondElbow.z - end.z, 1.0f};
-    secondLink->forearm = {secondHand.x - secondElbow.x, secondHand.y - secondElbow.y, secondHand.z - secondElbow.z, 1.0f};
-    for (Vector4& point : chain)
+    secondLink->upperArm.x = secondElbow.x - end.x; secondLink->upperArm.y = secondElbow.y - end.y; secondLink->upperArm.z = secondElbow.z - end.z; secondLink->upperArm.w = 1.0f;
+    secondLink->forearm.x = secondHand.x - secondElbow.x; secondLink->forearm.y = secondHand.y - secondElbow.y; secondLink->forearm.z = secondHand.z - secondElbow.z; secondLink->forearm.w = 1.0f;
+    for (u32 i = 0; i < sizeof(chain) / sizeof(chain[0]); i++)
     {
-        point.x = point.x + shoulder.x;
-        point.y = point.y + shoulder.y;
-        point.z = point.z + shoulder.z;
+        chain[i].x = chain[i].x + shoulder.x;
+        chain[i].y = chain[i].y + shoulder.y;
+        chain[i].z = chain[i].z + shoulder.z;
     }
 
     elbow = leaderElbow;
@@ -734,8 +732,8 @@ u32 CharacterLink::PoseJoint(JointAnimator* animator, Matrix4x4* matrix)
 
         ArmRows(&posed, &upperArm, CharacterKindOf(character));
         const Vector4* at = RowOf(matrix, 3);
-        shoulderShift = {at->x - shoulder.x, at->y - shoulder.y, at->z - shoulder.z, 1.0f};
-        *RowOf(&posed, 3) = {shoulder.x + shoulderShift.x, shoulder.y + shoulderShift.y, shoulder.z + shoulderShift.z, 1.0f};
+        shoulderShift.x = at->x - shoulder.x; shoulderShift.y = at->y - shoulder.y; shoulderShift.z = at->z - shoulder.z; shoulderShift.w = 1.0f;
+        RowOf(&posed, 3)->x = shoulder.x + shoulderShift.x; RowOf(&posed, 3)->y = shoulder.y + shoulderShift.y; RowOf(&posed, 3)->z = shoulder.z + shoulderShift.z; RowOf(&posed, 3)->w = 1.0f;
     }
     else if (joint == elbowJoint)
     {
@@ -745,11 +743,11 @@ u32 CharacterLink::PoseJoint(JointAnimator* animator, Matrix4x4* matrix)
         }
 
         ArmRows(&posed, &forearm, CharacterKindOf(character));
-        *RowOf(&posed, 3) = {elbow.x + shoulderShift.x, elbow.y + shoulderShift.y, elbow.z + shoulderShift.z, 1.0f};
+        RowOf(&posed, 3)->x = elbow.x + shoulderShift.x; RowOf(&posed, 3)->y = elbow.y + shoulderShift.y; RowOf(&posed, 3)->z = elbow.z + shoulderShift.z; RowOf(&posed, 3)->w = 1.0f;
     }
     else if (joint == handJoint)
     {
-        Vector4 along = {hand.x - elbow.x, hand.y - elbow.y, hand.z - elbow.z, 1.0f};
+        Vector4 along; along.x = hand.x - elbow.x; along.y = hand.y - elbow.y; along.z = hand.z - elbow.z; along.w = 1.0f;
         Normalize(&along);
         f32 length = second != nullptr ? LeaderHandLength : SecondHandLength;
         along.z = along.z * length;
@@ -760,8 +758,10 @@ u32 CharacterLink::PoseJoint(JointAnimator* animator, Matrix4x4* matrix)
             // The hand at the forearm's end, its point taken into the world
             Matrix4x4 rows;
             ArmRows(&rows, &forearm, CharacterKindOf(character));
-            Vector4 point = {elbow.x + along.x, elbow.y + along.y, elbow.z + along.z, 1.0f};
-            *RowOf(&rows, 3) = {point.x + shoulderShift.x, point.y + shoulderShift.y, point.z + shoulderShift.z, 1.0f};
+            Vector4 point; point.x = elbow.x + along.x; point.y = elbow.y + along.y; point.z = elbow.z + along.z; point.w = 1.0f;
+            RowOf(&rows, 3)->x = point.x + shoulderShift.x; RowOf(&rows, 3)->y = point.y + shoulderShift.y; RowOf(&rows, 3)->z = point.z + shoulderShift.z; RowOf(&rows, 3)->w = 1.0f;
+            Vector4 CrashHandPoint; CrashHandPoint.x = Rounded(0.2); CrashHandPoint.y = Rounded(0.11); CrashHandPoint.z = Rounded(-0.05); CrashHandPoint.w = 1.0f;
+            Vector4 OtherHandPoint; OtherHandPoint.x = Rounded(-0.1); OtherHandPoint.y = Rounded(-0.05); OtherHandPoint.z = Rounded(-0.05); OtherHandPoint.w = 1.0f;
             handPoint = CharacterKindOf(character) == CharacterCrash ? CrashHandPoint : OtherHandPoint;
             if (bits.state != StateSlamming)
             {

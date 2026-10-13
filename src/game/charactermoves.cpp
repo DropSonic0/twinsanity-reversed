@@ -11,8 +11,8 @@
 #include "game/properties.h"
 #include "game/reference.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 extern "C"
 {
@@ -34,33 +34,33 @@ namespace
 {
 // The characters' sizes: most stand 1.8 high and crouch to 0.75, their radius 0.29 either way (the tall Crash stands 2 high),
 // the Mecha-Bandicoot stands 9 high and crouches to 5.5, its radius 1.6, and an agent without a character 1 high, its radius 0.5
-constexpr f32 StandingHeight = Rounded(1.8);
-constexpr f32 CrouchHeight = 0.75f;
-constexpr f32 BodyRadius = Rounded(0.29);
-constexpr f32 TallCrashHeight = 2.0f;
-constexpr f32 MechaHeight = 9.0f;
-constexpr f32 MechaCrouchHeight = 5.5f;
-constexpr f32 MechaRadius = Rounded(1.6);
-constexpr f32 NoCharacterHeight = 1.0f;
-constexpr f32 NoCharacterRadius = 0.5f;
+CONSTEXPR f32 StandingHeight = Rounded(1.8);
+CONSTEXPR f32 CrouchHeight = 0.75f;
+CONSTEXPR f32 BodyRadius = Rounded(0.29);
+CONSTEXPR f32 TallCrashHeight = 2.0f;
+CONSTEXPR f32 MechaHeight = 9.0f;
+CONSTEXPR f32 MechaCrouchHeight = 5.5f;
+CONSTEXPR f32 MechaRadius = Rounded(1.6);
+CONSTEXPR f32 NoCharacterHeight = 1.0f;
+CONSTEXPR f32 NoCharacterRadius = 0.5f;
 // The most instances a ray of the spin finds (the solid objects, no characters, with collision on)
-constexpr u16 MostSwept = 20;
+CONSTEXPR u16 MostSwept = 20;
 // Presses and the ends of states count from 1 / EarlyDivisor of the clock's last advance early
-constexpr s32 EarlyDivisor = 8;
+CONSTEXPR s32 EarlyDivisor = 8;
 // Seconds before circle crouches again once it stood up
-constexpr f32 StandCooldown = Rounded(0.2);
+CONSTEXPR f32 StandCooldown = Rounded(0.2);
 // The speed scale an air attack asks for
-constexpr f32 AirAttackScale = 3.0f;
+CONSTEXPR f32 AirAttackScale = 3.0f;
 // Within this of 0: none (a property's time, a speed)
-constexpr f32 NoValue = Epsilon;
+CONSTEXPR f32 NoValue = Epsilon;
 
-static_assert(offsetof(CharacterAgent, link) == 0xB0);
-static_assert(offsetof(CharacterAgent, proceduralJoints) == 0xB4);
-static_assert(offsetof(CharacterAgent, moveInput) == 0xE0);
-static_assert(offsetof(CharacterAgent, standingOn) == 0x200);
-static_assert(offsetof(InstanceContext, nodes) == 0xD4);
-static_assert(offsetof(ProceduralJoints, elements) == 0xC);
-static_assert(offsetof(ProceduralJoint, motion) == 0x10);
+CHECK_OFFSET(CharacterAgent, link, 0xB0);
+CHECK_OFFSET(CharacterAgent, proceduralJoints, 0xB4);
+CHECK_OFFSET(CharacterAgent, moveInput, 0xE0);
+CHECK_OFFSET(CharacterAgent, standingOn, 0x200);
+CHECK_OFFSET(InstanceContext, nodes, 0xD4);
+CHECK_OFFSET(ProceduralJoints, elements, 0xC);
+CHECK_OFFSET(ProceduralJoint, motion, 0x10);
 
 bool IsNone(f32 value)
 {
@@ -96,11 +96,11 @@ InstanceContext* ObjectOf(const Reference* handle)
 
 // When a press came against a window from a start, the times an eighth of the clock's last advance early: before the start,
 // within the window, after it
-enum PressTiming : u32
+enum PressTiming
 {
     PressBefore = 0,
     PressWithinWindow = 1,
-    PressAfter = 2,
+    PressAfter = 2
 };
 
 u32 PressWithin(const TimeClock* clock, s32 pressTime, s32 start, s32 window)
@@ -118,7 +118,7 @@ u32 PressWithin(const TimeClock* clock, s32 pressTime, s32 start, s32 window)
 // seconds)
 void SolveFlight(JumpController* jump)
 {
-    constexpr f32 FlightShare = Rounded(0.95);
+    CONSTEXPR f32 FlightShare = Rounded(0.95);
 
     f32 rise = jump->upSpeed / jump->gravity;
     PropertyHolder* properties = jump->agent->properties;
@@ -166,7 +166,7 @@ CharacterAgent* SecondAgentOf(const CharacterLink* link)
 // An agent's procedural joints as retail reads them, also without an agent (the word at 0xB4 then)
 ProceduralJoints* RetailJointsOf(const CharacterAgent* agent)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(agent) + offsetof(CharacterAgent, proceduralJoints);
+    uintptr_t address = reinterpret_cast<uintptr_t>(agent) + offsetof(CharacterAgent, proceduralJoints);
     return *reinterpret_cast<ProceduralJoints* const*>(address);
 }
 
@@ -174,14 +174,14 @@ ProceduralJoints* RetailJointsOf(const CharacterAgent* agent)
 // (at least 0.3)
 void PushBack(CharacterAgent* agent, const Vector4* way, const Vector4* end, const Vector4* hit, f32 pushBack)
 {
-    constexpr f32 LeastLeft = Rounded(0.3);
+    CONSTEXPR f32 LeastLeft = Rounded(0.3);
 
     f32 dx = hit->x - end->x;
     f32 dy = hit->y - end->y;
     f32 dz = hit->z - end->z;
     f32 left = __builtin_sqrtf(dx * dx + dy * dy + dz * dz);
     f32 scale = pushBack * (left < LeastLeft ? LeastLeft : left);
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     part->push.x += way->x * scale;
     part->push.y += way->y * scale;
     part->push.z += way->z * scale;
@@ -200,7 +200,10 @@ void SetProbe(CharacterBody* body, s32 probe, s32 exitPoint, f32 weight, f32 y, 
 {
     body->probeExitPoints[probe] = exitPoint;
     body->probeWeights[probe] = weight;
-    body->probeOffsets[probe] = {0.0f, y, z, 1.0f};
+    body->probeOffsets[probe].x = 0.0f;
+    body->probeOffsets[probe].y = y;
+    body->probeOffsets[probe].z = z;
+    body->probeOffsets[probe].w = 1.0f;
 }
 
 void SetSize(CharacterBody* body, f32 height, f32 radius, f32 crouchHeight, f32 crouchRadius)
@@ -242,9 +245,9 @@ void CrouchController::Reset()
 void CrouchController::Stand(u32 circle, s32* next)
 {
     // Running faster than this (squared, a second) slides
-    constexpr f32 SlideSpeedSquared = 1.0f;
+    CONSTEXPR f32 SlideSpeedSquared = 1.0f;
 
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     if (circle == 0 || cooldown != 0.0f || agent->FitsAt(FitCrouching, 1, nullptr, nullptr) == 0)
     {
         return;
@@ -292,7 +295,7 @@ void CrouchController::Stand(u32 circle, s32* next)
 
 void CrouchController::Slide(f32 turn, s32 time, u32, s32* next)
 {
-    constexpr f32 SlowSpeed = Rounded(0.2);
+    CONSTEXPR f32 SlowSpeed = Rounded(0.2);
 
     PropertyHolder* properties = agent->properties;
     s32 steerTicks = TicksOf(properties->GetFloat(PropSlideSteerSeconds));
@@ -345,7 +348,7 @@ void CrouchController::Slide(f32 turn, s32 time, u32, s32* next)
     }
 
     s32 slideTurn = *MultiplyAngle(&rate, turn);
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     slideSpeed *= part->moveShare;
     part->RequestForward(speed * slideFade);
     part->RequestSideways(0.0f);
@@ -366,7 +369,7 @@ void CrouchController::SlideEnd(f32 turn, s32 time, u32 circle, s32* next)
         f32 speed = properties->GetFloat(PropSlideSpeed);
         s32 rate = TaggedProperty(properties, TaggedSlideTurn);
         s32 slideTurn = *MultiplyAngle(&rate, turn);
-        auto* part = static_cast<CharacterPart*>(agent->part);
+        CharacterPart* part = static_cast<CharacterPart*>(agent->part);
         slideSpeed *= part->moveShare;
         part->RequestForward(speed * slideFade);
         part->RequestSideways(0.0f);
@@ -392,7 +395,7 @@ void CrouchController::SlideEnd(f32 turn, s32 time, u32 circle, s32* next)
     }
 
     slideFade = 0.0f;
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     slideSpeed *= part->moveShare;
     part->RequestForward(0.0f);
     part->RequestSideways(0.0f);
@@ -403,10 +406,10 @@ void CrouchController::SlideEnd(f32 turn, s32 time, u32 circle, s32* next)
 u32 CrouchController::Frame(f32 circle, f32 stick, f32 turn, TimeClock* clock)
 {
     // The stick's size past which it crawls
-    constexpr f32 CrawlStick = Rounded(0.6);
+    CONSTEXPR f32 CrawlStick = Rounded(0.6);
 
     s32 next = NoNextState;
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     u32 kind = part->bits.attackKind;
     u32 pressed = 0.0f < circle;
     s32 time = clock->time;
@@ -656,7 +659,7 @@ f32 JumpController::KindGravity(PropertyHolder* properties, u32 kind, u32 fallin
 
 u32 JumpController::KindEvent(u32 kind, u32 maxed)
 {
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     u32 attack = part->bits.attackKind;
     if (attack == AttackSlide || attack == AttackSlideVariant)
     {
@@ -701,7 +704,7 @@ u32 JumpController::KindEvent(u32 kind, u32 maxed)
 
 s32 JumpController::Fall(u32 kind, u32 tellFall)
 {
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     gravity = KindGravity(agent->properties, kind, 1);
     upSpeed = 0.0f;
     part->gravity = gravity;
@@ -737,9 +740,9 @@ s32 JumpController::Fall(u32 kind, u32 tellFall)
 s32 JumpController::Start(TimeClock* clock, u32 kind, u32 maxed, u32 midFall)
 {
     // The tied jump's speed and share of the turn, and the share of its speed a double jump loses at the end of the fall
-    constexpr f32 TiedSpeed = 10.0f;
-    constexpr f32 TiedTurnShare = Rounded(0.2);
-    constexpr f32 LateDoubleLoss = 0.5f;
+    CONSTEXPR f32 TiedSpeed = 10.0f;
+    CONSTEXPR f32 TiedTurnShare = Rounded(0.2);
+    CONSTEXPR f32 LateDoubleLoss = 0.5f;
 
     PropertyHolder* properties = agent->properties;
     u32 event = KindEvent(kind, maxed);
@@ -840,7 +843,7 @@ s32 JumpController::Start(TimeClock* clock, u32 kind, u32 maxed, u32 midFall)
     airTurn = turn;
     airSpeed = air;
     gravity = KindGravity(properties, kind, 0);
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     if (event != EventNone)
     {
         RunAgentEvent(agent, event, 0, 0, 0);
@@ -853,7 +856,7 @@ s32 JumpController::Start(TimeClock* clock, u32 kind, u32 maxed, u32 midFall)
 s32 JumpController::AirAttack(u32 kind)
 {
     // What the radial blast costs of the gun's count
-    constexpr u32 BlastCost = 5;
+    CONSTEXPR u32 BlastCost = 5;
 
     bits.mayDoubleJump = 0;
     bits.mayAttack = 0;
@@ -904,9 +907,9 @@ s32 JumpController::AirAttack(u32 kind)
 void JumpController::Grounded(TimeClock* clock, u32 mayJump, u32 cross, s32* next)
 {
     // A jump is still allowed this long after leaving the ground
-    constexpr f32 LateJumpSeconds = Rounded(0.11);
+    CONSTEXPR f32 LateJumpSeconds = Rounded(0.11);
 
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     u32 kind = part->bits.attackKind;
     bool sliding = kind == AttackSlide || kind == AttackSlideVariant;
     bool canJump;
@@ -960,10 +963,10 @@ void JumpController::Grounded(TimeClock* clock, u32 mayJump, u32 cross, s32* nex
 void JumpController::Rise(TimeClock* clock, u32 kind, s32* next)
 {
     // Cross pressed this close to the top makes the double jump the maxed one
-    constexpr f32 MaxedSeconds = Rounded(0.15);
+    CONSTEXPR f32 MaxedSeconds = Rounded(0.15);
 
     PropertyHolder* properties = agent->properties;
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     f32 doubleSpeed = properties->GetFloat(PropDoubleSpeed);
     s32 start = stateStart;
     u32 doublePhase = PressBefore;
@@ -1012,7 +1015,7 @@ void JumpController::Rise(TimeClock* clock, u32 kind, s32* next)
 void JumpController::Hang(TimeClock* clock, u32 kind, u32, s32* next)
 {
     PropertyHolder* properties = agent->properties;
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     WalkController* walk = agent->walk;
     gravity = 0.0f;
     upSpeed = 0.0f;
@@ -1054,9 +1057,9 @@ void JumpController::Hang(TimeClock* clock, u32 kind, u32, s32* next)
 void JumpController::FallFrame(TimeClock* clock, u32 kind, s32* next)
 {
     // Cross pressed this soon after the top starts a weaker double jump
-    constexpr f32 LateDoubleSeconds = Rounded(0.4);
+    CONSTEXPR f32 LateDoubleSeconds = Rounded(0.4);
 
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     if (part->flags.onGround != 0)
     {
         *next = StateGrounded;
@@ -1097,7 +1100,7 @@ void JumpController::FallFrame(TimeClock* clock, u32 kind, s32* next)
 
 void JumpController::Frame(f32 cross, f32 circle, TimeClock* clock, u32 mayJump)
 {
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     u32 crossDown = 0.0f < cross;
     u32 circleDown = 0.0f < circle;
     s32 next = NoNextState;
@@ -1181,7 +1184,7 @@ void JumpController::Frame(f32 cross, f32 circle, TimeClock* clock, u32 mayJump)
             break;
         case StateKneeDrop:
         {
-            auto* dropping = static_cast<CharacterPart*>(agent->part);
+            CharacterPart* dropping = static_cast<CharacterPart*>(agent->part);
             if (dropping->flags.onGround != 0)
             {
                 PropertyHolder* properties = agent->properties;
@@ -1269,9 +1272,9 @@ void SpinController::Sweep(f32 reach, f32 pushBack)
 {
     // The rays (four, a quarter turn (radians) apart), their turn a frame and a full turn (65536ths), their height above the
     // character's position
-    constexpr s32 SweepRays = 4;
-    constexpr s32 SweepStep = 0x21D1;
-    constexpr f32 SweepHeight = 0x1.ee41b4p-1f;
+    CONSTEXPR s32 SweepRays = 4;
+    CONSTEXPR s32 SweepStep = 0x21D1;
+    CONSTEXPR f32 SweepHeight = 0x1.ee41b4p-1f;
 
     sweepAngle += SweepStep;
     if (FullTurnAngle < sweepAngle)
@@ -1286,11 +1289,11 @@ void SpinController::Sweep(f32 reach, f32 pushBack)
         f32 cosine;
         f32 sine;
         CosSin16(&rayAngle, &cosine, &sine);
-        Vector4 way = {cosine * reach, 0.0f, sine * reach, 1.0f};
+        Vector4 way; way.x = cosine * reach; way.y = 0.0f; way.z = sine * reach; way.w = 1.0f;
         Vector4 start;
         agent->Position(&start);
         start.y += SweepHeight;
-        Vector4 end = {start.x + way.x, start.y + way.y, start.z + way.z, 1.0f};
+        Vector4 end; end.x = start.x + way.x; end.y = start.y + way.y; end.z = start.z + way.z; end.w = 1.0f;
         Vector4 hit;
         if (GetCollisionCheck(agent->instance->chunk, &start, &end, SurfaceFlags::SolidToPlayerProbes, nullptr, &hit, nullptr)
             != 0)
@@ -1316,7 +1319,7 @@ void SpinController::Sweep(f32 reach, f32 pushBack)
         }
 
         // Touched (without a normal), and pushed back by the solid ones
-        auto* other = static_cast<InstanceContext*>(query.instance);
+        InstanceContext* other = static_cast<InstanceContext*>(query.instance);
         agent->TouchedNothing(other);
         AgentNode* node = AgentNodeOf(other);
         if (node == nullptr || node->agent->properties->state.solidToSpin != 0)
@@ -1389,12 +1392,12 @@ u32 SpinController::End(u32)
 void SpinController::Frame(f32 button, f32, f32 stick, TimeClock* clock)
 {
     // The sweep's reach and push-back, tied and alone
-    constexpr f32 TiedReach = Rounded(1.4);
-    constexpr f32 TiedPushBack = -Rounded(0.8);
-    constexpr f32 Reach = 1.0f;
-    constexpr f32 PushBackFactor = -Rounded(1.3);
+    CONSTEXPR f32 TiedReach = Rounded(1.4);
+    CONSTEXPR f32 TiedPushBack = -Rounded(0.8);
+    CONSTEXPR f32 Reach = 1.0f;
+    CONSTEXPR f32 PushBackFactor = -Rounded(1.3);
 
-    auto* part = static_cast<CharacterPart*>(agent->part);
+    CharacterPart* part = static_cast<CharacterPart*>(agent->part);
     u32 kind = part->bits.attackKind;
     // Walking into things and its own attack kinds keep it going
     bool ownKind = kind == AttackWalkInto || kind == AttackSpin || kind == AttackSpinVariant;
@@ -1428,7 +1431,7 @@ void SpinController::Frame(f32 button, f32, f32 stick, TimeClock* clock)
         case StateSpinning:
         {
             bool tied = bits.state == StateSpinningTied;
-            auto* spinning = static_cast<CharacterPart*>(agent->part);
+            CharacterPart* spinning = static_cast<CharacterPart*>(agent->part);
             if (static_cast<s32>(clock->time) - stateStart >= stateTicks)
             {
                 next = End(0);
@@ -1480,8 +1483,8 @@ void ProceduralJoint::Settle(CharacterAgent* agent)
 {
     ObjectPlace* place = agent->instance->place;
     RotateAndTranslate(place);
-    Vector4 xAxis = {1.0f, 0.0f, 0.0f, 1.0f};
-    Vector4 origin = {0.0f, 0.0f, 0.0f, 1.0f};
+    Vector4 xAxis; xAxis.x = 1.0f; xAxis.y = 0.0f; xAxis.z = 0.0f; xAxis.w = 1.0f;
+    Vector4 origin; origin.x = 0.0f; origin.y = 0.0f; origin.z = 0.0f; origin.w = 1.0f;
     VuRotateVector(&place->matrix, &xAxis, &motion);
     VuRotateVector(&place->matrix, &origin, &slowMotion);
 }
@@ -1566,10 +1569,10 @@ void CharacterBody::SetSizes()
     }
 
     // Boxes from the ground up, as wide as long
-    Vector4 min = {-radius, 0.0f, -radius, 1.0f};
-    Vector4 max = {radius, height, radius, 1.0f};
+    Vector4 min; min.x = -radius; min.y = 0.0f; min.z = -radius; min.w = 1.0f;
+    Vector4 max; max.x = radius; max.y = height; max.z = radius; max.w = 1.0f;
     BuildBoxHull(&standingHull, &min, &max);
-    min = {-crouchRadius, 0.0f, -crouchRadius, 1.0f};
-    max = {crouchRadius, crouchHeight, crouchRadius, 1.0f};
+    min.x = -crouchRadius; min.y = 0.0f; min.z = -crouchRadius; min.w = 1.0f;
+    max.x = crouchRadius; max.y = crouchHeight; max.z = crouchRadius; max.w = 1.0f;
     BuildBoxHull(&crouchHull, &min, &max);
 }

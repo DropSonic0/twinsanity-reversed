@@ -47,13 +47,14 @@ FUN_001966b0:
     .size FUN_001966b0, . - FUN_001966b0
     .popsection
 )");
+#endif
 
 namespace
 {
 // How far a joining attachment's instance and holder are from each other (squared) once they have met, and how much of the
 // way to the holder's up its instance's up turns each time when it hangs
-constexpr f32 JoinedDistanceSquared = Rounded(0.1);
-constexpr f32 UpTurn = Rounded(0.1);
+CONSTEXPR f32 JoinedDistanceSquared = Rounded(0.1);
+CONSTEXPR f32 UpTurn = Rounded(0.1);
 
 InstanceContext* AttachedInstance(const Attachment* attachment)
 {
@@ -187,8 +188,8 @@ void AttachmentAnchor(Attachment* attachment, Vector4* out)
 
 void HoldAttachmentOnSpring(Attachment* attachment, f32 strength, f32 stiffness)
 {
-    constexpr f32 SlowRate = Rounded(0.15);
-    constexpr f32 SlowSeconds = Rounded(0.02);
+    CONSTEXPR f32 SlowRate = Rounded(0.15);
+    CONSTEXPR f32 SlowSeconds = Rounded(0.02);
     attachment->length = 0.0f;
     attachment->stiffness = stiffness;
     attachment->damping = strength;
@@ -199,7 +200,7 @@ void HoldAttachmentOnSpring(Attachment* attachment, f32 strength, f32 stiffness)
     AttachedInstance(attachment)->collision.leftOut = attachment->holder;
     attachment->holder->collision.leftOut = AttachedInstance(attachment);
     attachment->bits.joined = 0;
-    auto* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
+    RigidBody* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
     HandOnVelocity(attachment);
     if (body != nullptr)
     {
@@ -209,7 +210,7 @@ void HoldAttachmentOnSpring(Attachment* attachment, f32 strength, f32 stiffness)
 
 void HandOnVelocity(Attachment* attachment)
 {
-    auto* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
+    RigidBody* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
     Vector4 velocity;
     if (body != nullptr)
     {
@@ -363,7 +364,7 @@ u32 UpdateAttachment(Attachment* attachment)
         return 1;
     case Attachment::FollowsPinned:
     {
-        auto* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
+        RigidBody* body = static_cast<RigidBody*>(NodeOf(attachment->holder, NodeRigidBody));
         if (body != nullptr)
         {
             body->SetMatrix(&attachment->offset);
@@ -390,7 +391,11 @@ u32 UpdateAttachment(Attachment* attachment)
             InstanceContext* holderInstance = attachment->holder;
             Vector4 meeting = MiddleOf(holderInstance);
             // The instance's middle meets the holder's at the distance along the holder's z
-            Vector4 offset = {0.0f, 0.0f, attachment->damping, 1.0f};
+            Vector4 offset;
+            offset.x = 0.0f;
+            offset.y = 0.0f;
+            offset.z = attachment->damping;
+            offset.w = 1.0f;
             ObjectPlace* place = holderInstance->place;
             RotateAndTranslate(place);
             const Vector4* rowX = RowOf(&place->matrix, 0);
@@ -490,7 +495,11 @@ u32 UpdateHanging(Attachment* attachment, const Matrix4x4* holder)
     up.y = forward.z * side.x - forward.x * side.z;
     up.z = forward.x * side.y - forward.y * side.x;
     up.w = 1.0f;
-    Vector4 origin = {0.0f, 0.0f, 0.0f, 1.0f};
+    Vector4 origin;
+    origin.x = 0.0f;
+    origin.y = 0.0f;
+    origin.z = 0.0f;
+    origin.w = 1.0f;
     MatrixFromRows(&placed, &side, &up, &forward, &origin);
     InstanceContext* instance = AttachedInstance(attachment);
     place = instance->place;
@@ -514,7 +523,7 @@ u32 UpdateHanging(Attachment* attachment, const Matrix4x4* holder)
 
 u32 UpdateSpring(Attachment* attachment, const Matrix4x4* holder)
 {
-    auto* node = static_cast<ObjectNode*>(NodeOf(attachment->holder, NodeObject));
+    ObjectNode* node = static_cast<ObjectNode*>(NodeOf(attachment->holder, NodeObject));
     if (CallVirtual<u32>(node, node->vtable, ObjectNode::TakesPacketsSlot) == 0)
     {
         return 1;
@@ -541,7 +550,10 @@ u32 UpdateSpring(Attachment* attachment, const Matrix4x4* holder)
         Vector4 local;
         if (!attachment->bits.keepsOffset && attachment->exitPoint == nullptr)
         {
-            local = {0.0f, 0.0f, 0.0f, 1.0f};
+            local.x = 0.0f;
+            local.y = 0.0f;
+            local.z = 0.0f;
+            local.w = 1.0f;
         }
         else
         {
@@ -631,7 +643,7 @@ u32 AddToPath(AttachmentsPath* path, Attachment* attachment)
         Append(path, attachment);
         if (instance != nullptr)
         {
-            auto* node = static_cast<ObjectNode*>(NodeOf(instance, NodeObject));
+            ObjectNode* node = static_cast<ObjectNode*>(NodeOf(instance, NodeObject));
             if (node != nullptr && CallVirtual<u32>(node, node->vtable, ObjectNode::TakesPacketsSlot) != 0)
             {
                 node->motion->Stop();
@@ -661,7 +673,7 @@ u32 AddToPath(AttachmentsPath* path, Attachment* attachment)
 
 s32 PathIndexOf(void* path, InstanceContext* instance)
 {
-    auto* attachments = static_cast<AttachmentsPath*>(path);
+    AttachmentsPath* attachments = static_cast<AttachmentsPath*>(path);
     u32 count = attachments->Count();
     for (u32 index = 0; index < count; index++)
     {
@@ -730,7 +742,7 @@ InstanceContext* UnslottedAttachment(void* path)
 
 InstanceContext* SlottedAttachment(void* path, u32 slot)
 {
-    auto* attachments = static_cast<AttachmentsPath*>(path);
+    AttachmentsPath* attachments = static_cast<AttachmentsPath*>(path);
     u32 count = attachments->Count();
     for (u32 index = 0; index < count; index++)
     {

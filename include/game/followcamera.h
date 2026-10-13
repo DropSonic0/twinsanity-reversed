@@ -18,7 +18,7 @@ class KeyedCamera;
 
 // The follow camera's four probes, in the order they're cast in: above and below the view, to its left and to its right (the
 // order of the probes' ends)
-enum FollowProbe : u32
+enum FollowProbe
 {
     ProbeAbove = 0,
     ProbeBelow = 1,
@@ -48,7 +48,7 @@ CHECK_SIZE(ProbeHits, 4);
 
 // The curve the follow camera's positioner blends to its trigger's place by, and its target to its trigger's point: even, or a
 // cube of the time's share. Nothing sets one: the blends are even
-enum FollowBlendCurve : u32
+enum FollowBlendCurve
 {
     FollowCurveEven = 0,
     FollowCurveCubic = 2,
@@ -176,8 +176,10 @@ CHECK_SIZE(FollowPositionerState, 4);
 class FollowCameraPositioner : public CameraPositioner
 {
 public:
-    // Its vtable's function past the positioners'
-    static constexpr u32 TiltSlot = 7;
+    enum TiltConstant
+    {
+        TiltSlot = 7
+    };
 
     FollowPositionerBits bits;
     FollowPositionerState state;
@@ -482,7 +484,7 @@ extern "C"
 class PadCameraRig : public CameraRig
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         ClearInputSlot = 8,
         ReadPadSlot = 9,
@@ -566,7 +568,7 @@ class FollowCameraRig : public PadCameraRig
 public:
     // pressures[]: action 0 (L1, L2, R1, R2: the yaw's rate scale while the character stands), 1 and 2 (no buttons: the pitch's
     // and the distance's rate scales)
-    enum Pressure : u32
+    enum Pressure
     {
         PressureShoulders = 0,
         PressurePitch = 1,
@@ -574,7 +576,7 @@ public:
     };
 
     // axes[]: the right stick's x and y, nothing bound (the distance's input), the left stick's (and the d-pad's) y and x
-    enum Axis : u32
+    enum Axis
     {
         AxisLookX = 0,
         AxisLookY = 1,
@@ -666,7 +668,7 @@ union FollowCameraBits
     };
 
     // The settings a restart keeps
-    enum Mask : u32
+    enum Mask
     {
         Smoothed = 0x1,
         Steers = 0x2,

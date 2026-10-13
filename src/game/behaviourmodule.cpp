@@ -66,11 +66,11 @@ void ScriptEvent::Apply(ObjectNodeBase* node, GameResources* resources)
 {
     ResourceTable* scripts = resources->scripts;
     u16 index = starter;
-    auto* found = index != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[index & ResourceIndexMask]) : nullptr;
+    ScriptStarter* found = index != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[index & ResourceIndexMask]) : nullptr;
     if (found != nullptr)
     {
-        CallVirtual<u32>(node, node->vtable, ObjectNode::StartBehaviourSlot, found, originator, u32{bits.forced},
-                         u32{slot});
+        CallVirtual<u32>(node, node->vtable, ObjectNode::StartBehaviourSlot, found, originator, static_cast<u32>(bits.forced),
+                         static_cast<u32>(slot));
     }
 }
 

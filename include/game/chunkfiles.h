@@ -103,7 +103,7 @@ class Sm2Reader : public ItemInterface
 {
 public:
     // The chunk's other files FilePath makes the paths of
-    enum FileKind : u32
+    enum FileKind
     {
         FileSn = 0,
         FileLvl = 2,
@@ -155,10 +155,13 @@ CHECK_SIZE(Rm2ReaderBits, 4);
 class Rm2Reader : public ItemInterface
 {
 public:
-    static constexpr u32 Layouts = 8;
+    enum LayoutConstant
+    {
+        Layouts = 8
+    };
 
     // The chunk's other files FilePath makes the paths of
-    enum FileKind : u32
+    enum FileKind
     {
         FileMa2,
         FileMc2,

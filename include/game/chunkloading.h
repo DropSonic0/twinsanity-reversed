@@ -25,7 +25,7 @@ struct InstanceContext;
 // game/gamechunkmanager.cpp's)
 struct PersistentFlags
 {
-    enum Slot : u32
+    enum Slot
     {
         WordsToReadSlot = 1,
         WordsSlot = 2,
@@ -33,7 +33,7 @@ struct PersistentFlags
         CountSlot = 4,
         DestroySlot = 5,
         ReadSlot = 6,
-        WriteSlot = 7,
+        WriteSlot = 7
     };
 
     const GccVTableEntry* vtable;
@@ -94,11 +94,11 @@ struct LoaderReference
 class WantPolicy
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         WantsSlot = 2,
-        DoesNotWantSlot = 3,
+        DoesNotWantSlot = 3
     };
 
     const GccVTableEntry* vtable;
@@ -147,7 +147,7 @@ public:
 class ChunkLoaderBase
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         StartLoadingSlot = 2,
@@ -157,10 +157,10 @@ public:
         HoldsSlot = 6,
         StepSlot = 7,
         IsWantedSlot = 8,
-        IsUnwantedSlot = 9,
+        IsUnwantedSlot = 9
     };
 
-    enum State : s32
+    enum State
     {
         None = 0,
         Queued = 1,
@@ -169,7 +169,7 @@ public:
         Loaded = 4,
         WaitingToUnload = 5,
         Unloading = 6,
-        Unloaded = 7,
+        Unloaded = 7
     };
 
     ChunkLoader* loader;
@@ -302,14 +302,17 @@ CHECK_SIZE(ChunkManagerFlags, 2);
 // members: 1 a chunk's entry (made when there's none), 2 a chunk unloaded, 3 the destructor
 struct ChunkManager
 {
-    enum Slot : u32
+    enum Slot
     {
         AddChunkSlot = 1,
-        RemoveChunkSlot = 2,
+        RemoveChunkSlot = 2
     };
 
-    static constexpr u32 MaxChunks = 0x200;
-    static constexpr u32 Counters = 1000;
+    enum ChunkManagerConstants
+    {
+        MaxChunks = 0x200,
+        Counters = 1000
+    };
 
     // How many chunks it has and the chunks
     u16 count;
@@ -474,7 +477,10 @@ CHECK_SIZE(LinkHullFlags, 4);
 struct LinkHullList
 {
     // The item type the chunk links' builder makes it for
-    static constexpr u32 TypeId = 0x1D02;
+    enum TypeConstant
+    {
+        TypeId = 0x1D02
+    };
 
     LinkHullFlags flags;
     LinkHullList* next;
@@ -540,9 +546,11 @@ CHECK_SIZE(ChunkLoaderBits, 4);
 struct ChunkLoader
 {
     // The depth of a chunk the links didn't reach: not wanted at all
-    static constexpr u32 NoDepth = 0xF;
-    // A file is wanted at the depths below it: the focus chunk's (0) and its links' (1)
-    static constexpr u32 WantedDepths = 2;
+    enum DepthConstants
+    {
+        NoDepth = 0xF,
+        WantedDepths = 2
+    };
 
     LoaderReference* self;
     ChunkLoaderBits bits;
@@ -565,7 +573,7 @@ CHECK_OFFSET(ChunkLoader, next, 0x2C);
 
 // How the chunks load (the loading manager's mode: the game context's bits 9-12 when its bit 8 is set, else LoadingStreamed).
 // Only the last one unloads
-enum ChunkLoadingMode : u32
+enum ChunkLoadingMode
 {
     // The links aren't followed: only the chunks queued load, a second after they're wanted
     LoadingQueuedOnly = 0,
@@ -577,7 +585,7 @@ enum ChunkLoadingMode : u32
     // A second after they're wanted
     LoadingDelayed = 4,
     // The game's: a second after they're wanted, unloaded 4 seconds after they aren't and forgotten
-    LoadingStreamed = 5,
+    LoadingStreamed = 5
 };
 
 // The chunk loading manager's bits

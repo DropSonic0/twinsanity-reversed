@@ -85,7 +85,7 @@ u32 CharacterAgent::Controlled()
         return 1;
     }
 
-    auto* controls = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
+    ControlsNode* controls = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
     if (controls == nullptr)
     {
         return 0;
@@ -96,7 +96,7 @@ u32 CharacterAgent::Controlled()
 
 CharacterAgent* CharacterAgentOf(InstanceContext* instance)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     return node != nullptr ? static_cast<CharacterAgent*>(node->agent) : nullptr;
 }
 
@@ -157,7 +157,7 @@ void CharacterAgent::SplashPoint(Vector4* point, f32* radius)
 void CharacterAgent::SetFloorSurface(CollisionSurface* surface)
 {
     floorSurface = surface;
-    auto* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
+    ObjectNode* node = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
     node->surface = surface != nullptr ? surface->surfaceId : ObjectNode::NoSurface;
     if (static_cast<CharacterPart*>(part)->moveBits.linkedFirst != 0)
     {

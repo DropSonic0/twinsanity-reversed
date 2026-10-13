@@ -6,7 +6,9 @@ struct Matrix4x4;
 struct Vector4;
 
 // Maths the game's results depend on to the last bit, which the PS2 does on vector unit 0
-namespace Platform::Math
+namespace Platform
+{
+namespace Math
 {
 // The sines and cosines of two angles in radians: sin first, cos first, sin second, cos second. The PS2 runs the game's VU0
 // microprogram (0xF0 of the .vutext chain the start-up loads into VU0), which SinCosPolynomial does on the CPU: on the PS2 they
@@ -64,12 +66,12 @@ bool FinishRayTriangle(Vector4* hit);
 // a quarter turn
 inline f32 CosinePolynomial(f32 radians)
 {
-    constexpr f32 MinusInverseTurn = -0x1.45F30Ep-3f;
-    constexpr f32 Term1 = 0x1.921FB4p+2f;
-    constexpr f32 Term3 = -0x1.4ABBC0p+5f;
-    constexpr f32 Term5 = 0x1.4668AEp+6f;
-    constexpr f32 Term7 = -0x1.324CC2p+6f;
-    constexpr f32 Term9 = 0x1.3DAF6Ep+5f;
+    CONSTEXPR f32 MinusInverseTurn = -0x1.45F30Ep-3f;
+    CONSTEXPR f32 Term1 = 0x1.921FB4p+2f;
+    CONSTEXPR f32 Term3 = -0x1.4ABBC0p+5f;
+    CONSTEXPR f32 Term5 = 0x1.4668AEp+6f;
+    CONSTEXPR f32 Term7 = -0x1.324CC2p+6f;
+    CONSTEXPR f32 Term9 = 0x1.3DAF6Ep+5f;
     f32 angle = __builtin_fabsf(radians);
     // The fraction of a turn: VU0 took the whole turns off by adding and taking away 1.5 * 2^23, which its rounding towards zero
     // makes the floor
@@ -91,10 +93,11 @@ inline f32 CosinePolynomial(f32 radians)
 inline void SinCosPolynomial(f32 first, f32 second, f32* out)
 {
     // The microprogram's π/2, a few bits below the float nearest it
-    constexpr f32 ProgramHalfPi = 0x1.921FB0p+0f;
+    CONSTEXPR f32 ProgramHalfPi = 0x1.921FB0p+0f;
     out[0] = CosinePolynomial(first - ProgramHalfPi);
     out[1] = CosinePolynomial(first);
     out[2] = CosinePolynomial(second - ProgramHalfPi);
     out[3] = CosinePolynomial(second);
+}
 }
 }

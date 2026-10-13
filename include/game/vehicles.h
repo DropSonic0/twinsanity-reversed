@@ -21,9 +21,12 @@ struct ScreenModel;
 
 // A trail of skid marks (no vtable, 0x1E0 bytes; the Rollerbrawl's and the Humiliskate's two each): the last point, the colours the
 // next strip starts with, a ring of 100 marks (screen models), how many frames went by without a mark and the trail's length
-struct alignas(16) SkidMarks
+struct ALIGN16 SkidMarks
 {
-    static constexpr s32 MarkCount = 100;
+    enum MarkConstant
+    {
+        MarkCount = 100
+    };
 
     u8 active;
     u8 unused01[0xF];
@@ -96,7 +99,7 @@ class Vehicle
 {
 public:
     // The kinds (2 and 4 none of them: conditions 595 and 597 test them)
-    enum Kind : u32
+    enum Kind
     {
         KindRollerbrawl = 1,
         KindUnused2 = 2,
@@ -108,7 +111,7 @@ public:
         KindPassenger = 8,
     };
 
-    enum Slots : u32
+    enum Slots
     {
         SlotStart = 1,
         SlotPlace = 2,
@@ -304,7 +307,7 @@ inline void PlaceRiders(Vehicle* vehicle)
 class RollerbrawlVehicle : public Vehicle
 {
 public:
-    enum State : s32
+    enum State
     {
         StateRolling = 0,
         StateStopped = 1,
@@ -408,7 +411,7 @@ CHECK_SIZE(RollerbrawlVehicle, 0x5A0);
 class HumiliskateVehicle : public Vehicle
 {
 public:
-    enum Trick : s32
+    enum Trick
     {
         TrickRiding = 0,
         TrickSpin = 1,
@@ -619,7 +622,7 @@ CHECK_SIZE(HoverboardVehicle, 0x110);
 class WrestleVehicle : public Vehicle
 {
 public:
-    enum State : s32
+    enum State
     {
         StateRolling = 0,
         StateCharacterOnTop = 1,
@@ -628,7 +631,7 @@ public:
         StateCreaturePins = 4,
     };
 
-    enum Tactic : s32
+    enum Tactic
     {
         TacticNone = 0,
         TacticHeadHome = 1,
@@ -637,9 +640,11 @@ public:
         TacticPress = 4,
     };
 
-    // The struggle's rounds (the last one presses)
-    static constexpr s32 Rounds = 6;
-    static constexpr s32 LastRound = Rounds - 1;
+    enum RoundsConstant
+    {
+        Rounds = 6,
+        LastRound = Rounds - 1
+    };
 
     s32 state;
     s32 tactic;

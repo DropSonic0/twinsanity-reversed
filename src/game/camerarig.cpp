@@ -64,8 +64,8 @@ CameraShake* ConstructCameraShake(CameraShake* shake)
 
 void PushCameraShake(CameraShake* shake, const Vector4* from, f32 strength, f32 falloff)
 {
-    constexpr f32 NoFalloff = Rounded(1e-4);
-    constexpr f32 Jitter = Rounded(0.2);
+    CONSTEXPR f32 NoFalloff = Rounded(1e-4);
+    CONSTEXPR f32 Jitter = Rounded(0.2);
     ObjectPlace* place = CentrePlace(shake);
     if (place == nullptr)
     {
@@ -94,7 +94,7 @@ void PushCameraShake(CameraShake* shake, const Vector4* from, f32 strength, f32 
 
 void PushCameraShakeAxes(CameraShake* shake, const Vector4* from, f32 xStrength, f32 yStrength, f32 zStrength, f32 falloff)
 {
-    constexpr f32 NoFalloff = Rounded(1e-4);
+    CONSTEXPR f32 NoFalloff = Rounded(1e-4);
     ObjectPlace* place = CentrePlace(shake);
     if (place == nullptr)
     {
@@ -200,11 +200,11 @@ void CameraShakeOffset(const CameraShake* shake, Vector4* offset)
 
 void VibrateForShake(f32 strength)
 {
-    constexpr u32 FirstPad = 1;
-    constexpr f32 MotorPerStrength = 1024.0f;
-    constexpr s32 Weakest = 20;
-    constexpr s32 Strongest = 255;
-    constexpr f32 Seconds = Rounded(0.4);
+    CONSTEXPR u32 FirstPad = 1;
+    CONSTEXPR f32 MotorPerStrength = 1024.0f;
+    CONSTEXPR s32 Weakest = 20;
+    CONSTEXPR s32 Strongest = 255;
+    CONSTEXPR f32 Seconds = Rounded(0.4);
     s32 motor = static_cast<s32>(strength * MotorPerStrength);
     if (motor > Strongest)
     {
@@ -227,7 +227,7 @@ void VibrateForShake(f32 strength)
 
 CameraPointFollower* CameraPointFollower::Construct(CameraPointFollower* follower)
 {
-    constexpr f32 OwnRate = 5.0f;
+    CONSTEXPR f32 OwnRate = 5.0f;
     follower->vtable = g_CameraPointFollowerVTable;
     follower->ownRate = OwnRate;
     follower->rate = OwnRate;
@@ -270,7 +270,7 @@ void CameraPointFollower::Reset()
 
 void CameraPointFollower::Step(TimeClock* clock, const Vector4*, Vector4* to)
 {
-    constexpr f32 MostKeptRate = 100.0f;
+    CONSTEXPR f32 MostKeptRate = 100.0f;
     if (clock->flags.running == 0)
     {
         return;
@@ -667,10 +667,10 @@ s32* CameraRigPlace(s32* fov, CameraRig* rig, const Matrix4x4* matrix, Vector4* 
 CameraLensNode* CameraLensNode::Construct(CameraLensNode* node)
 {
     // 45 degrees in radians
-    constexpr f32 Fov = QuarterPi;
-    constexpr f32 NearPlane = Rounded(0.1);
-    constexpr f32 FarPlane = 1500.0f;
-    constexpr f32 NtscPixelAspect = Rounded(0.96);
+    CONSTEXPR f32 Fov = QuarterPi;
+    CONSTEXPR f32 NearPlane = Rounded(0.1);
+    CONSTEXPR f32 FarPlane = 1500.0f;
+    CONSTEXPR f32 NtscPixelAspect = Rounded(0.96);
     GameNode::Construct(node);
     node->rig = nullptr;
     node->next = nullptr;
@@ -1055,7 +1055,7 @@ void GameCameraRig::Destroy(u32 destroyFlags)
 
 void GameCameraRig::Prepare(InstanceContext*)
 {
-    constexpr f32 OwnRate = 6.0f;
+    CONSTEXPR f32 OwnRate = 6.0f;
     ownCameraFollower.ownRate = OwnRate;
     ownTargetFollower.bits.ownWay = CameraPointFollower::WaySquareRoot;
     ownCameraFollower.bits.ownWay = CameraPointFollower::WayLinear;
@@ -1115,7 +1115,7 @@ void GameCameraRig::ClearSecondPlace()
 
 namespace
 {
-constexpr f32 PathStart = Rounded(1e-4);
+CONSTEXPR f32 PathStart = Rounded(1e-4);
 
 Vector4 OriginPoint()
 {

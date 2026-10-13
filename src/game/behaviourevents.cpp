@@ -90,7 +90,7 @@ void NoiseEvent::Apply(ObjectNodeBase* target, GameResources*)
         return;
     }
 
-    auto* node = static_cast<ObjectNode*>(target);
+    ObjectNode* node = static_cast<ObjectNode*>(target);
     HeadTracking* tracking = node->headTracking;
     if (tracking != nullptr && !tracking->flags.ignoredByLook && tracking->flags.tracking)
     {
@@ -104,7 +104,7 @@ void NoiseEvent::Apply(ObjectNodeBase* target, GameResources*)
 
     InstanceContext* instance = node->owner;
     Reference* handle = CopyHandle(argument);
-    auto* event = static_cast<GameEvent*>(MemoryAllocate(sizeof(GameEvent)));
+    GameEvent* event = static_cast<GameEvent*>(MemoryAllocate(sizeof(GameEvent)));
     event = GameEvent::Construct(event, static_cast<u16>(node->reactions.noiseMessage), &handle, ObjectNodeKinds);
     Queue(instance, event);
 }
@@ -113,7 +113,7 @@ void NoiseEvent::Apply(ObjectNodeBase* target, GameResources*)
 // argument
 void SendImpact(f32 radius, f32 strength, InstanceContext* source, const Vector4* position)
 {
-    constexpr u16 MostFound = 0x80;
+    CONSTEXPR u16 MostFound = 0x80;
     void* found[MostFound];
     InstanceQuery query;
     query.results = found;

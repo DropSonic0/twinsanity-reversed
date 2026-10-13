@@ -14,9 +14,9 @@ extern "C"
 
 namespace
 {
-constexpr const char* HostPrefix = "HOST0:";
+CONSTEXPR const char* HostPrefix = "HOST0:";
 // The buffer the table's paths are copied through
-constexpr u32 PathBufferSize = 0x400;
+CONSTEXPR u32 PathBufferSize = 0x400;
 
 void ConstructStrings(String* strings, u32 count)
 {
@@ -107,7 +107,7 @@ extern "C"
         StringConstruct(&dataPath, path);
         StringAppend(&tablePath, ".BH");
         StringAppend(&dataPath, ".BD");
-        auto* tableReader = static_cast<ArchiveSectionReader*>(MemoryAllocate(sizeof(ArchiveSectionReader)));
+        ArchiveSectionReader* tableReader = static_cast<ArchiveSectionReader*>(MemoryAllocate(sizeof(ArchiveSectionReader)));
         String copy;
         StringConstruct(&copy, path);
         tableReader->archive = archive;

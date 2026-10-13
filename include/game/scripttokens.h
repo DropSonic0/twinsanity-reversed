@@ -14,7 +14,7 @@ struct TaggedValue;
 // The AgentLab tool's tags (its LABTAGs, the arguments' names), named as the tool's lists name them where they fit what the game
 // does with them (the lists stop at 0x9E and 0x230; their abbreviations spelt out) and the game's own after what they set. The
 // Unused ones only fill fields nothing reads
-enum ScriptTag : u16
+enum ScriptTag
 {
     // The tool's list
     TagX = 0x0,
@@ -423,12 +423,12 @@ enum ScriptTag : u16
     TagFirstCharacter = 0x249,
 
     // A bare value (a keyword or a number) without a tag
-    TagNone = 0xFFFF,
+    TagNone = 0xFFFF
 };
 
 // The AgentLab tool's keywords (its LABVALs), a token's value when its type is TokenKeyword, named the same way (the tool's lists
 // stop at 0x73 and 0x215)
-enum ScriptKeyword : u32
+enum ScriptKeyword
 {
     // The tool's list
     KeywordOn = 0x0,
@@ -829,25 +829,25 @@ enum ScriptKeyword : u32
     KeywordMaskController = 0x29B,
     KeywordSplineController = 0x29C,
     KeywordSkateController = 0x29D,
-    KeywordMecha = 0x29E,
+    KeywordMecha = 0x29E
 };
 
 // What a token's value is
-enum ScriptTokenType : u8
+enum ScriptTokenType
 {
     TokenFloat = 0,
     TokenInt = 1,
     TokenKeyword = 4,
     // An instance property's index
-    TokenProperty = 10,
+    TokenProperty = 10
 };
 
 // The commands' two bit switches a token turns on or off (3 leaves them as well)
-enum SwitchSetting : u32
+enum SwitchSetting
 {
     SwitchLeft = 0,
     SwitchOn = 1,
-    SwitchOff = 2,
+    SwitchOff = 2
 };
 
 struct ScriptToken

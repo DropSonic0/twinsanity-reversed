@@ -10,7 +10,7 @@
 // start toward its end
 
 // How far off a unit pair a link's sine and cosine may get (turned, or a limit's) before they're made one again
-constexpr f32 IkTurnTolerance = 0x1.0624dep-11f;
+CONSTEXPR f32 IkTurnTolerance = 0x1.0624dep-11f;
 
 // A link (0x44 bytes, vtable 0x40 bytes in: 1 the destructor): the next link and the one before (none for the first), where it
 // starts in the plane, its length, its angle from the one before's (cosine and sine) and in the plane, whether it has limits and
@@ -18,7 +18,10 @@ constexpr f32 IkTurnTolerance = 0x1.0624dep-11f;
 // nothing sets them)
 struct IkLink
 {
-    static constexpr u32 DestroySlot = 1;
+    enum DestroySlotConstant
+    {
+        DestroySlot = 1
+    };
 
     IkLink* next;
     IkLink* previous;

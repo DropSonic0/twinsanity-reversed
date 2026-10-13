@@ -44,7 +44,7 @@ void InitCharacterControllerGlobals(u32 initialize, u32 priority)
     }
 
     AngleFrom(&g_ControllersAngle45, QuarterPi, AngleRadians);
-    g_JumpUp = {0.0f, 1.0f, 0.0f, 1.0f};
+    g_JumpUp.x = 0.0f; g_JumpUp.y = 1.0f; g_JumpUp.z = 0.0f; g_JumpUp.w = 1.0f;
     g_ControllersShadowX = UiShadowOffset;
     g_ControllersShadowY = UiShadowOffset;
     ColourSet(&g_ControllersShadowColour, 0.0f, 0.0f, 0.0f, UiShadowAlpha);
@@ -55,10 +55,10 @@ void InitCharacterControllerGlobals(u32 initialize, u32 priority)
     AngleFrom(&g_RigYawInputSpeed, 120.0f, AngleDegrees);
     AngleFrom(&g_RigPitchLowest, -45.0f, AngleDegrees);
     AngleFrom(&g_RigPitchHighest, 75.0f, AngleDegrees);
-    g_RigTargetBoxLow = {0.0f, 1.5f, 0.0f, 1.0f};
-    g_RigTargetBoxHigh = {0.0f, 3.5f, 0.0f, 1.0f};
+    g_RigTargetBoxLow.x = 0.0f; g_RigTargetBoxLow.y = 1.5f; g_RigTargetBoxLow.z = 0.0f; g_RigTargetBoxLow.w = 1.0f;
+    g_RigTargetBoxHigh.x = 0.0f; g_RigTargetBoxHigh.y = 3.5f; g_RigTargetBoxHigh.z = 0.0f; g_RigTargetBoxHigh.w = 1.0f;
     AngleFrom(&g_RigStartPitch, 7.0f, AngleDegrees);
-    g_UnreadRigBack = {0.0f, 0.0f, -1.0f, 1.0f};
+    g_UnreadRigBack.x = 0.0f; g_UnreadRigBack.y = 0.0f; g_UnreadRigBack.z = -1.0f; g_UnreadRigBack.w = 1.0f;
     AngleFrom(&g_RigYawSpeed, 180.0f, AngleDegrees);
     AngleFrom(&g_RigPitchSpeed, 90.0f, AngleDegrees);
     AngleFrom(&g_RigTiltYawSpeed, 10.0f, AngleDegrees);
@@ -70,17 +70,17 @@ void InitCharacterControllerGlobals(u32 initialize, u32 priority)
     AngleFrom(&g_UnreadRigAngle75, 75.0f, AngleDegrees);
     AngleFrom(&g_MechaFieldOfView, 60.0f, AngleDegrees);
     AngleFrom(&g_MechaPitch, 40.0f, AngleDegrees);
-    g_MechaTargetBox = {0.0f, 11.0f, 0.0f, 1.0f};
-    g_CrouchUp = {0.0f, 1.0f, 0.0f, 1.0f};
-    g_ClawLockOffset = {0.0f, Rounded(0.9), 0.0f, 1.0f};
-    g_ClawGrabOffset = {0.0f, Rounded(-4.8), Rounded(14.4), 1.0f};
-    g_GunOnFootLockOffset = {0.0f, Rounded(0.9), 0.0f, 1.0f};
-    g_GunVehicleLockOffset = {0.0f, Rounded(0.9), 0.0f, 1.0f};
-    g_GunMechaLockOffset = {0.0f, 5.0f, 5.0f, 1.0f};
-    g_GunArea24LockOffset = {0.0f, Rounded(0.9), 0.0f, 1.0f};
-    for (TargetEntry& entry : g_Targets)
+    g_MechaTargetBox.x = 0.0f; g_MechaTargetBox.y = 11.0f; g_MechaTargetBox.z = 0.0f; g_MechaTargetBox.w = 1.0f;
+    g_CrouchUp.x = 0.0f; g_CrouchUp.y = 1.0f; g_CrouchUp.z = 0.0f; g_CrouchUp.w = 1.0f;
+    g_ClawLockOffset.x = 0.0f; g_ClawLockOffset.y = Rounded(0.9); g_ClawLockOffset.z = 0.0f; g_ClawLockOffset.w = 1.0f;
+    g_ClawGrabOffset.x = 0.0f; g_ClawGrabOffset.y = Rounded(-4.8); g_ClawGrabOffset.z = Rounded(14.4); g_ClawGrabOffset.w = 1.0f;
+    g_GunOnFootLockOffset.x = 0.0f; g_GunOnFootLockOffset.y = Rounded(0.9); g_GunOnFootLockOffset.z = 0.0f; g_GunOnFootLockOffset.w = 1.0f;
+    g_GunVehicleLockOffset.x = 0.0f; g_GunVehicleLockOffset.y = Rounded(0.9); g_GunVehicleLockOffset.z = 0.0f; g_GunVehicleLockOffset.w = 1.0f;
+    g_GunMechaLockOffset.x = 0.0f; g_GunMechaLockOffset.y = 5.0f; g_GunMechaLockOffset.z = 5.0f; g_GunMechaLockOffset.w = 1.0f;
+    g_GunArea24LockOffset.x = 0.0f; g_GunArea24LockOffset.y = Rounded(0.9); g_GunArea24LockOffset.z = 0.0f; g_GunArea24LockOffset.w = 1.0f;
+    for (u32 index = 0; index < sizeof(g_Targets) / sizeof(g_Targets[0]); index++)
     {
-        entry.instance = nullptr;
+        g_Targets[index].instance = nullptr;
     }
 }
 

@@ -116,10 +116,12 @@ CHECK_SIZE(BehaviourRunnerFlags, 4);
 // and its levels
 struct BehaviourRunner
 {
-    static constexpr u32 Levels = 8;
-    static constexpr u8 NoLevel = 0xFF;
-    // The designator of the originator (those below it are the receivers' indexes)
-    static constexpr u32 OriginatorDesignator = 0xFF;
+    enum Constants
+    {
+        Levels = 8,
+        NoLevel = 0xFF,
+        OriginatorDesignator = 0xFF
+    };
 
     BehaviourRunnerFlags flags;
     GameNode* agentNode;
@@ -198,7 +200,7 @@ CHECK_OFFSET(BehaviourRunner, levels, 0x2C);
 CHECK_SIZE(BehaviourRunner, 0x60);
 
 // The global agents' indexes (a byte)
-constexpr u32 GlobalAgentSlots = 0x100;
+CONSTEXPR u32 GlobalAgentSlots = 0x100;
 
 extern "C"
 {

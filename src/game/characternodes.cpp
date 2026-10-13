@@ -11,8 +11,8 @@
 #include "game/player.h"
 #include "game/reference.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // A playable character's own nodes: the controls (kind 0xB, the pad read into the character's controls, or the instance's motion
 // driving them while it's held) and the follow camera (kind 0x16, the camera's instance it makes in the character's chunk)
@@ -29,8 +29,8 @@ extern "C"
 
 namespace
 {
-constexpr u32 ControlsType = 0x9006;
-constexpr u32 FollowType = 0x9007;
+CONSTEXPR u32 ControlsType = 0x9006;
+CONSTEXPR u32 FollowType = 0x9007;
 
 // The instance's move this frame (its object node's vector at 0xC0)
 const Vector4* FrameMove(InstanceContext* instance)
@@ -43,7 +43,7 @@ void DestroyReplacement(ControlsNode* node)
     ControlsHandler* replacement = node->replacement;
     if (replacement != nullptr)
     {
-        CallVirtual<void>(replacement, replacement->vtable, ControlsHandler::DestroySlot, u32{DestroyAndFree});
+        CallVirtual<void>(replacement, replacement->vtable, ControlsHandler::DestroySlot, static_cast<u32>(DestroyAndFree));
     }
 }
 
@@ -81,7 +81,7 @@ void RestartCamera(FollowNode* node, ChunkData* chunk)
 
 ControlsNode* ConstructControlsNode(void* memory)
 {
-    auto* node = static_cast<ControlsNode*>(memory);
+    ControlsNode* node = static_cast<ControlsNode*>(memory);
     GameNode::Construct(node);
     node->pad = nullptr;
     node->vtable = g_ControlsNodeVTable;
@@ -136,7 +136,7 @@ u32 ControlsNode::Update(TimeClock* clock)
         }
         else if (pad != nullptr)
         {
-            auto* follow = static_cast<FollowNode*>(GetGameNode(&owner->nodes, NodeFollow));
+            FollowNode* follow = static_cast<FollowNode*>(GetGameNode(&owner->nodes, NodeFollow));
             ControlsHandler* controls = replacement != nullptr ? replacement : &handler;
             controls->FrameVirtual(clock, pad, owner);
             controls->ReadButtons(pad, owner);
@@ -165,7 +165,7 @@ FollowNode* ConstructFollowNode(FollowNode* node, ChunkEntry* chunk)
 
 void RestoreCameraDefaults(FollowNode* node)
 {
-    auto* player = static_cast<PlayerNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
+    PlayerNode* player = static_cast<PlayerNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
     RestoreFollowCameraDefaults(&node->camera, player->character);
 }
 
@@ -216,7 +216,7 @@ u32 FollowNode::CanChangeChunk(ChunkData*, ChunkLinkData* link)
 
     // The camera's flags (at address 4 without a camera): one that moves between chunks by itself (ShowCamera clears it) doesn't
     // follow the character into another chunk
-    std::uintptr_t followed = reinterpret_cast<std::uintptr_t>(FollowedOf(this));
+    uintptr_t followed = reinterpret_cast<uintptr_t>(FollowedOf(this));
     if (reinterpret_cast<const ReferencedObjectFlags*>(followed + offsetof(ReferencedObject, flags))->movesBetweenChunks)
     {
         return 0;
@@ -259,7 +259,7 @@ u32 FollowNode::Update(TimeClock* clock)
         return GameNode::Update(clock);
     }
 
-    auto* playerNode = static_cast<PlayerNode*>(GetGameNode(&owner->nodes, NodeCharacter));
+    PlayerNode* playerNode = static_cast<PlayerNode*>(GetGameNode(&owner->nodes, NodeCharacter));
     PlayerCharacter* character = playerNode->character;
     if (clock->flags.running == 0)
     {

@@ -12,7 +12,7 @@ struct ChunkData;
 // the emitters' runtimes (384) the frames run. Times are frames of 1/60 s, angles 65536ths of a turn
 
 // The generators a system's genSort picks (TT Lab's GenSortType; the retail data uses 0, 6, 7, 8, 9 and 11)
-enum ParticleGenSort : u8
+enum ParticleGenSort
 {
     GenSortBox = 0,
     GenSortBox2 = 1,
@@ -31,7 +31,7 @@ enum ParticleGenSort : u8
 
 // A system's blend mode, the material of its page it draws with (TT Lab's ParticleBlendModes): additive, subtractive, the page
 // material's own first shader and cutout (4-6 take the next page's IDs for a material), and 7 the hexagons distorting the frame
-enum ParticleBlendMode : u8
+enum ParticleBlendMode
 {
     BlendAdditive = 0,
     BlendSubtractive = 1,
@@ -42,15 +42,15 @@ enum ParticleBlendMode : u8
 
 // A system's draw list: list 0 is drawn (its blend modes 3, 2, 1, 0 in turn), list 1 never, list 2 the distorting hexagons' (every
 // system of mode 7 goes there)
-enum ParticleDrawList : u8
+enum ParticleDrawList
 {
     DrawListParticles = 0,
     DrawListDistortion = 2,
 };
-constexpr u32 ParticleDrawListCount = 4;
+CONSTEXPR u32 ParticleDrawListCount = 4;
 
 // The emitter runtimes a system has slots for (nothing ever puts one in them: they stay -1)
-constexpr u32 SystemEmitterSlots = 4;
+CONSTEXPR u32 SystemEmitterSlots = 4;
 
 // A key of a curve over a particle's life: the share of the life and the value. A curve has 8
 struct ParticleKey
@@ -58,7 +58,7 @@ struct ParticleKey
     f32 time;
     f32 value;
 };
-constexpr u32 ParticleCurveKeys = 8;
+CONSTEXPR u32 ParticleCurveKeys = 8;
 
 // A key of the colour curve: the share of the life and the colour (128 leaves the texture as it is)
 struct ParticleColourKey
@@ -71,7 +71,7 @@ struct ParticleColourKey
 CHECK_SIZE(ParticleColourKey, 0x10);
 
 // A particle system's ID of none (a trail's, a decal's, a controller's, a script's)
-constexpr u16 NoParticleSystem = 0xFFFF;
+CONSTEXPR u16 NoParticleSystem = 0xFFFF;
 
 // A loaded system: its name, the section it came from (its kind, which nothing reads, and its slot), its rate (particles a
 // frame, negative one every that many frames), the particles it keeps at most (worked out at load), its on/off cycle (frames,
@@ -206,17 +206,17 @@ struct CollisionSphere
 };
 
 // The blocks of particles a runtime can have, and the collision spheres it has room for
-constexpr s16 MaxEmitterBlocks = 32;
-constexpr u32 EmitterCollisionSpheres = 8;
+CONSTEXPR s16 MaxEmitterBlocks = 32;
+CONSTEXPR u32 EmitterCollisionSpheres = 8;
 
 struct EmitterRuntime;
 struct ParticleRecord;
 
 // A generator: a runtime's next particle made (its start, velocity and spawn time written into the next slot of its blocks, its
 // ghosts after it). Returns it (none when the generator can't make the system's particles)
-using ParticleGenerator = ParticleRecord* (*)(EmitterRuntime* runtime, ParticleSystem* system);
+typedef ParticleRecord* (*ParticleGenerator)(EmitterRuntime* runtime, ParticleSystem* system);
 // A velocity rule: a new particle's velocity made from its start
-using ParticleVelocityRule = void (*)(EmitterRuntime* runtime, ParticleSystem* system, ParticleRecord* record);
+typedef void (*ParticleVelocityRule)(EmitterRuntime* runtime, ParticleSystem* system, ParticleRecord* record);
 
 // An emitter's runtime (0x200 bytes): its blocks of particles, its gravity's and emission's matrices, the blocks it has, its
 // system, whether it runs, the particles its blocks hold, the slot the next particle goes in, the blocks it wants and the particles
@@ -228,7 +228,7 @@ struct EmitterRuntime
 {
     // Its states: free or the game's own (KillParticles lets those go, it keeps the states from 100 up), or a chunk's (a section's
     // emitter, or one moved into another chunk)
-    enum State : s16
+    enum State
     {
         StateLoose = -1,
         StateKeptFrom = 100,
@@ -236,7 +236,7 @@ struct EmitterRuntime
     };
 
     // How the camera turns it on and off: never, by its distance (the only one retail sets) or always on
-    enum CameraSwitch : u8
+    enum CameraSwitch
     {
         CameraNeverOn = 0,
         CameraByDistance = 1,
@@ -300,7 +300,7 @@ CHECK_OFFSET(EmitterRuntime, chunk, 0x1E8);
 CHECK_SIZE(EmitterRuntime, 0x200);
 
 // The frames of the particles' wheels: the runtimes and the events due in each of the frames to come
-constexpr u32 ParticleWheelFrames = 32;
+CONSTEXPR u32 ParticleWheelFrames = 32;
 
 // An event of a block, due on a frame of the wheel: the block, the frames still to wait past that frame, its kind, the runtime (a
 // block taken from it), the next event of its frame, and a bounce's particle, time (seconds into its life), system, vertical
@@ -309,7 +309,7 @@ struct ParticleEvent
 {
     // A block of particles or of hexagons off its draw list (then its chain ended, then made free), a block taken from its runtime
     // (nothing queues it), a particle's bounce off the plane and off the vertical plane
-    enum Kind : s32
+    enum Kind
     {
         DropParticleDraw = 0,
         BlockTaken = 1,
@@ -373,23 +373,23 @@ struct ParticleRecord
     f32 lifeScale;
 };
 CHECK_SIZE(ParticleRecord, 0x20);
-constexpr u32 ParticleBlockHeader = 0x20;
+CONSTEXPR u32 ParticleBlockHeader = 0x20;
 
-constexpr u32 MaxParticleSystems = 300;
-constexpr u32 MaxParticleEmitters = 0x300;
-constexpr u32 MaxEmitterRuntimes = 0x180;
-constexpr u32 ParticleSectionSlots = 16;
+CONSTEXPR u32 MaxParticleSystems = 300;
+CONSTEXPR u32 MaxParticleEmitters = 0x300;
+CONSTEXPR u32 MaxEmitterRuntimes = 0x180;
+CONSTEXPR u32 ParticleSectionSlots = 16;
 // The sections' kinds: the default chunk's (its systems) and a level's (its systems and emitters)
-enum ParticleSectionKind : s8
+enum ParticleSectionKind
 {
     SectionDefault = 0,
     SectionLevel = 1,
 };
 // The section slots: the default particles' and the levels' first (2-15)
-constexpr s8 DefaultParticleSlot = 0;
-constexpr s8 FirstLevelParticleSlot = 2;
+CONSTEXPR s8 DefaultParticleSlot = 0;
+CONSTEXPR s8 FirstLevelParticleSlot = 2;
 // An emitter read but not made yet
-constexpr s32 EmitterNotMade = 99999;
+CONSTEXPR s32 EmitterNotMade = 99999;
 
 // A texture page the particles (and the decals) draw with (0x1C bytes): its texture's and material's IDs, the material, and the
 // platform's materials of its blend modes 0-3 (additive, subtractive, the page material's own, cutout)
@@ -401,7 +401,7 @@ struct ParticlePage
     struct Material* materials[4];
 };
 CHECK_SIZE(ParticlePage, 0x1C);
-constexpr u32 ParticlePageCount = 3;
+CONSTEXPR u32 ParticlePageCount = 3;
 
 extern "C"
 {
@@ -544,7 +544,10 @@ extern "C"
     // room for on the retail stack) and the frame they're for
     struct ParticleViews
     {
-        static constexpr u32 MostChunks = 18;
+        enum MostChunksConstant
+        {
+            MostChunks = 18
+        };
 
         s32 count;
         u32 frame;

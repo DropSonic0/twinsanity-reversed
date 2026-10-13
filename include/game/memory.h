@@ -132,7 +132,7 @@ CONSTEXPR u32 ArrayCookieWords = ArrayCookieSize / sizeof(u32);
 template <typename T>
 T* NewArray(u32 count)
 {
-    auto* block = static_cast<u32*>(MemoryAllocate2(count * sizeof(T) + ArrayCookieSize));
+    u32* block = static_cast<u32*>(MemoryAllocate2(count * sizeof(T) + ArrayCookieSize));
     block[0] = count;
     return reinterpret_cast<T*>(block + ArrayCookieWords);
 }
@@ -140,7 +140,7 @@ T* NewArray(u32 count)
 template <typename T>
 u32 ArrayCount(T* array)
 {
-    return *(reinterpret_cast<u32*>(array) - ArrayCookieWords);
+    return *(reinterpret_cast<const u32*>(array) - ArrayCookieWords);
 }
 
 template <typename T>

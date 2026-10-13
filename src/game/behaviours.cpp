@@ -13,9 +13,9 @@
 namespace
 {
 // The best score of no body
-constexpr f32 NoScore = -Infinite;
+CONSTEXPR f32 NoScore = -Infinite;
 // A level's destructor
-constexpr u32 LevelDestroySlot = 1;
+CONSTEXPR u32 LevelDestroySlot = 1;
 
 GraphState* StartPacket(GraphState* state, BehaviourRunner* runner)
 {
@@ -172,12 +172,12 @@ GraphData* ChildGraphOf(GraphState* state, void* object)
     {
         u16 id;
         GetObjectBehaviourId(&id, static_cast<GameObject*>(object), state->bits.child);
-        auto* starter = id != NoScriptId ? static_cast<ScriptStarter*>(g_ScriptTable->items[id & ResourceIndexMask]) : nullptr;
+        ScriptStarter* starter = id != NoScriptId ? static_cast<ScriptStarter*>(g_ScriptTable->items[id & ResourceIndexMask]) : nullptr;
         return starter != nullptr ? starter->assigners[0]->graph : nullptr;
     }
 
     u16 id = state->bits.child;
-    auto* graph = id != NoScriptId ? static_cast<ScriptGraph*>(g_ScriptTable->items[id & ResourceIndexMask]) : nullptr;
+    ScriptGraph* graph = id != NoScriptId ? static_cast<ScriptGraph*>(g_ScriptTable->items[id & ResourceIndexMask]) : nullptr;
     return graph->data;
 }
 
@@ -205,7 +205,7 @@ void BehaviourRunner::EnterChild(u32 index, GraphState* state)
     BehaviourLevel* parent = levels[at - 1];
     BehaviourLevel* level = slot;
     GameNode* node = agentNode;
-    auto* objectNode = static_cast<ObjectNodeBase*>(node);
+    ObjectNodeBase* objectNode = static_cast<ObjectNodeBase*>(node);
     GameNode* source = objectNode->sourceNode;
     void* object = source != nullptr ? SourceObject(source) : objectNode->object;
     GraphData* graph = ChildGraphOf(state, object);
@@ -497,7 +497,7 @@ InstanceContext* InstanceOfConvention(const CallConvention* convention, Behaviou
             return nullptr;
         }
 
-        auto* links = static_cast<AttachmentsNode*>(GetGameNode(&node->owner->nodes, NodeAttachments));
+        AttachmentsNode* links = static_cast<AttachmentsNode*>(GetGameNode(&node->owner->nodes, NodeAttachments));
         return links != nullptr ? links->linked[argument] : nullptr;
     }
     case AssignGlobalAgent:
@@ -551,7 +551,7 @@ void BehaviourRunner::Stop(u32 release)
 
 u32 BehaviourRunner::StepPacket(TimeClock* clock)
 {
-    auto* node = static_cast<ObjectNode*>(agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(agentNode);
     if (node->trajectory != nullptr)
     {
         HoldTrajectory(node->trajectory, node);
@@ -573,7 +573,7 @@ u32 BehaviourRunner::Update(TimeClock* clock)
         return 0;
     }
 
-    auto* node = static_cast<ObjectNode*>(agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(agentNode);
     if (CheckInterrupts(clock) == 0)
     {
         if (packet != nullptr && flags.packetWaiting != 0)
@@ -658,7 +658,7 @@ void StarterReceivers::ReleaseAll(BehaviourRunner* runner)
             continue;
         }
 
-        auto* node = static_cast<GameNode*>(GetGameNode(&instances[index]->nodes, NodeObject));
+        GameNode* node = static_cast<GameNode*>(GetGameNode(&instances[index]->nodes, NodeObject));
         runner->Stop(0);
         CallVirtual<void>(node, node->vtable, ObjectNode::RunnerFinishedSlot);
     }
@@ -693,7 +693,7 @@ void StarterReceivers::Resolve(BehaviourRunner* runner)
             continue;
         }
 
-        auto* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
+        GameNode* node = static_cast<GameNode*>(GetGameNode(&instance->nodes, NodeObject));
         static_cast<ObjectNodeBase*>(node)->runners[slot]->Start(this, assigned);
         bits.running |= 1 << index;
         bits.users++;
@@ -784,14 +784,14 @@ void BehaviourRunner::Destroy(u32 destroyFlags)
 
 void BehaviourRunner::DestroyLevels()
 {
-    for (BehaviourLevel*& level : levels)
+    for (u32 index = 0; index < Levels; index++)
     {
-        if (level != nullptr)
+        if (levels[index] != nullptr)
         {
-            CallVirtual<void>(level, level->vtable, LevelDestroySlot, DestroyAndFree);
+            CallVirtual<void>(levels[index], levels[index]->vtable, LevelDestroySlot, DestroyAndFree);
         }
 
-        level = nullptr;
+        levels[index] = nullptr;
     }
 }
 

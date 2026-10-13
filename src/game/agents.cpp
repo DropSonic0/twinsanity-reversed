@@ -86,7 +86,7 @@ u32 ClockTime(InstanceContext* instance)
     return GetContextClock(instance)->time;
 }
 
-static_assert(offsetof(ReferencedObject, collision) + offsetof(ObjectCollision, box) == 0x40);
+CHECK_OFFSET(ReferencedObject, collision, 0x10);
 
 void DestroyHolder(PropertyHolder* holder)
 {
@@ -787,7 +787,10 @@ u32 CrateAgent::Fall(TimeClock* clock)
             }
             else
             {
-                move = {0.0f, drop, 0.0f, 1.0f};
+                move.x = 0.0f;
+                move.y = drop;
+                move.z = 0.0f;
+                move.w = 1.0f;
                 RunAgentEvent(other, OnBodyslamAttacked, reinterpret_cast<u32>(instance), 0, 0);
                 landed = false;
             }

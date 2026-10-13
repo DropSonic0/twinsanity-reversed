@@ -27,8 +27,8 @@ EABI_EXPORT(FUN_00297f98, ConstructAnimationSettings);
 namespace
 {
 // Translations and scales in 4096ths; turns in 4096ths of a turn, shifted up to 65536ths
-constexpr f32 TrackUnit = 0x1p-12f;
-constexpr u32 TrackTurnShift = 4;
+CONSTEXPR f32 TrackUnit = 0x1p-12f;
+CONSTEXPR u32 TrackTurnShift = 4;
 
 // A value moved a share of the way toward another
 f32 Toward(f32 from, f32 to, f32 share)
@@ -89,7 +89,7 @@ void PoseAtBind(f32 share, JointAnimator* animator)
 
 void RotateJoint(f32 share, JointAnimator* animator, const Vector4* to, Vector4* out)
 {
-    alignas(16) Vector4 from;
+    ALIGN16 Vector4 from;
     if (animator->flags.hasRotation != 0)
     {
         from = animator->rotation;
@@ -144,11 +144,15 @@ void AnimateJoint(f32 weight, f32 frameShare, JointAnimator* animator, const Ani
     reader.current = data->current + settings->frameIndex;
     reader.next = data->next + settings->frameIndex;
     // Translation, the turns about x, y and z, scale: this frame's and the next's
-    Vector4 moveNow = {};
-    Vector4 moveNext = {};
+    Vector4 moveNow;
+    Vector4 moveNext;
+    RetailLibc::MemorySet(&moveNow, 0, sizeof(moveNow));
+    RetailLibc::MemorySet(&moveNext, 0, sizeof(moveNext));
     ReadChannels(&reader, &moveNow.x, &moveNext.x);
-    Vector4 anglesNow = {};
-    Vector4 anglesNext = {};
+    Vector4 anglesNow;
+    Vector4 anglesNext;
+    RetailLibc::MemorySet(&anglesNow, 0, sizeof(anglesNow));
+    RetailLibc::MemorySet(&anglesNext, 0, sizeof(anglesNext));
     for (u32 axis = 0; axis < 3; axis++)
     {
         ReadJointAngle(&reader, &(&anglesNow.x)[axis], &(&anglesNext.x)[axis]);
@@ -158,8 +162,10 @@ void AnimateJoint(f32 weight, f32 frameShare, JointAnimator* animator, const Ani
     Vector4 rotation;
     Vector4 move;
     Platform::Math::EulerRotation(&anglesNow, &anglesNext, &moveNow, &moveNext, &rotation, &move);
-    Vector4 scaleNow = {};
-    Vector4 scaleNext = {};
+    Vector4 scaleNow;
+    Vector4 scaleNext;
+    RetailLibc::MemorySet(&scaleNow, 0, sizeof(scaleNow));
+    RetailLibc::MemorySet(&scaleNext, 0, sizeof(scaleNext));
     ReadChannels(&reader, &scaleNow.x, &scaleNext.x);
     if (settings->flags.independentScaling != 0)
     {
@@ -302,7 +308,10 @@ void CreateJointTransform(JointAnimator* animator, JointAnimation* parent, u32 m
     }
     else if (parent == nullptr)
     {
-        animation->scale = {1.0f, 1.0f, 1.0f, 1.0f};
+        animation->scale.x = 1.0f;
+        animation->scale.y = 1.0f;
+        animation->scale.z = 1.0f;
+        animation->scale.w = 1.0f;
     }
     else
     {
@@ -361,7 +370,7 @@ namespace
 // A joint's animation of its own (its scale and matrix's values the heap's until it's worked out)
 JointAnimation* NewJointAnimation(OgiJoint* joint, JointAnimation* parent)
 {
-    auto* animation = static_cast<JointAnimation*>(MemoryAllocate(sizeof(JointAnimation)));
+    JointAnimation* animation = static_cast<JointAnimation*>(MemoryAllocate(sizeof(JointAnimation)));
     animation->joint = joint;
     animation->callbacks = nullptr;
     animation->chain = nullptr;
@@ -422,7 +431,7 @@ void SetJointAnimations(OgiAnimator* animator, u32 jointCount)
 
 void BlendShapesFrame(f32 weight, f32 frameShare, BlendShapeWeights* weights, const AnimationData* data)
 {
-    constexpr u32 RingBytes = sizeof(g_BlendShapeRing);
+    CONSTEXPR u32 RingBytes = sizeof(g_BlendShapeRing);
     // The channels of the first joint's settings are the shapes
     const JointTrackSettings* settings = data->settings;
     TrackReader reader;
@@ -760,7 +769,7 @@ void StartJointMatrices(JointMatrices* matrices, const GameOGI* ogi)
     u32 count = ogi->jointCount;
     matrices->detailWord = 0;
     matrices->frame = 0;
-    auto* room = static_cast<Matrix4x4*>(Platform::Graphics::AllocFrameMemory(count, sizeof(Matrix4x4)));
+    Matrix4x4* room = static_cast<Matrix4x4*>(Platform::Graphics::AllocFrameMemory(count, sizeof(Matrix4x4)));
     matrices->end = room;
     matrices->frame = g_RenderedFrames;
     matrices->start = room;
@@ -1029,7 +1038,7 @@ AnimationStatus* ConstructAnimationStatus(AnimationStatus* status, GameAnimation
 void PlayAnimationOnChain(AnimationChain* chain, u32 main, const AnimationSettings* settings, u32 queues)
 {
     AnimationStatus* playing = main != 0 ? chain->main : chain->blendShapes;
-    auto* status = ConstructAnimationStatus(static_cast<AnimationStatus*>(MemoryAllocate(sizeof(AnimationStatus))),
+    AnimationStatus* status = ConstructAnimationStatus(static_cast<AnimationStatus*>(MemoryAllocate(sizeof(AnimationStatus))),
                                             settings->animation, settings->length, settings->blendTime);
     status->bits.loops = settings->bits.loops;
     status->bits.reversed = settings->bits.backward;
@@ -1189,7 +1198,7 @@ namespace
 template <typename T>
 SizedArray<T>* NewSizedArray(u32 size)
 {
-    auto* array = static_cast<SizedArray<T>*>(MemoryAllocate(sizeof(SizedArray<T>)));
+    SizedArray<T>* array = static_cast<SizedArray<T>*>(MemoryAllocate(sizeof(SizedArray<T>)));
     array->size = size;
     array->data = static_cast<T*>(MemoryAllocate2(size * sizeof(T)));
     return array;
@@ -1236,7 +1245,7 @@ void SetAnimatorOgi(OgiAnimator* animator, GameOGI* ogi, u32 reactJoints, u32 ex
     }
 
     u32 count = ogi->jointCount;
-    auto* table = static_cast<SizedArray<JointAnimation*>*>(MemoryAllocate(sizeof(SizedArray<JointAnimation*>)));
+    SizedArray<JointAnimation*>* table = static_cast<SizedArray<JointAnimation*>*>(MemoryAllocate(sizeof(SizedArray<JointAnimation*>)));
     table->size = count;
     table->data = count != 0 ? static_cast<JointAnimation**>(MemoryAllocate2(count * sizeof(JointAnimation*))) : nullptr;
     animator->joints = table;
@@ -1280,7 +1289,7 @@ void SetAnimatorOgi(OgiAnimator* animator, GameOGI* ogi, u32 reactJoints, u32 ex
         animator->exitPoints = NewSizedArray<ExitPointAnimation*>(exitPoints);
         for (u32 index = 0; index < exitPoints; index++)
         {
-            auto* animation = static_cast<ExitPointAnimation*>(MemoryAllocate(sizeof(ExitPointAnimation)));
+            ExitPointAnimation* animation = static_cast<ExitPointAnimation*>(MemoryAllocate(sizeof(ExitPointAnimation)));
             animation->bits.value = 0;
             ClearExitPointLinks(animation);
             InitIdentityMatrix(&animation->matrix);
@@ -1416,7 +1425,7 @@ ExitPointAnimation* UpdateExitPointMatrix(ExitPointAnimation* animation)
         return animation;
     }
 
-    auto* place = static_cast<ObjectPlace*>(animation->place);
+    ObjectPlace* place = static_cast<ObjectPlace*>(animation->place);
     RotateAndTranslate(place);
     OgiExitPoint* exitPoint = animation->exitPoint;
     if (exitPoint == nullptr)
@@ -1444,7 +1453,7 @@ ExitPointAnimation* UpdateExitPointMatrix(ExitPointAnimation* animation)
     {
         for (u32 axis = 0; axis < 3; axis++)
         {
-            auto* row = reinterpret_cast<Vector4*>(animation->matrix.m[axis]);
+            Vector4* row = reinterpret_cast<Vector4*>(animation->matrix.m[axis]);
             f32 inverse = InverseLength(row, LengthEpsilon);
             row->x = row->x * inverse;
             row->y = row->y * inverse;
@@ -1527,7 +1536,7 @@ u32 AddJointCallback(OgiAnimator* animator, u32 joint, void* object)
         previous = callback;
     }
 
-    auto* added = static_cast<JointCallback*>(MemoryAllocate(sizeof(JointCallback)));
+    JointCallback* added = static_cast<JointCallback*>(MemoryAllocate(sizeof(JointCallback)));
     added->object = object;
     added->next = nullptr;
     if (previous != nullptr)
@@ -1596,7 +1605,7 @@ namespace
 // The animator of an instance's model node, when it has one
 OgiAnimator* ModelAnimator(InstanceContext* instance)
 {
-    auto* node = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+    ModelNode* node = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
     return node != nullptr ? node->animator : nullptr;
 }
 
@@ -1640,9 +1649,9 @@ GameOGI* InitOGI(GameOGI* ogi)
     ogi->rigidModels = nullptr;
     ogi->hulls = nullptr;
     ogi->hullJoints = nullptr;
-    for (u32& word : ogi->countWords)
+    for (u32 index = 0; index < sizeof(ogi->countWords) / sizeof(ogi->countWords[0]); index++)
     {
-        word = 0;
+        ogi->countWords[index] = 0;
     }
 
     return ogi;
@@ -1704,9 +1713,9 @@ void ReadAnimation(GameAnimation* animation, Stream* stream)
 void ReadJoint(OgiJoint* joint, Stream* stream)
 {
     s32 words[5];
-    for (s32& word : words)
+    for (u32 index = 0; index < 5; index++)
     {
-        stream->ReadS32(&word);
+        stream->ReadS32(&words[index]);
     }
 
     joint->id = words[0];
@@ -1726,7 +1735,10 @@ namespace
 // What the older layout has after each hull (0x10 bytes): "Surf" and the hull's surface
 struct OlderHullSurface
 {
-    static constexpr u32 Mark = 0x66727553;
+    enum MarkConstant
+    {
+        Mark = 0x66727553
+    };
 
     u32 mark;
     u16 surface;
@@ -1738,7 +1750,7 @@ CHECK_SIZE(OlderHullSurface, 0x10);
 void ReadOgi(GameOGI* ogi, Stream* stream)
 {
     // What the older layout has that's skipped: the bytes before each rigid model's ID, the record after each hull
-    alignas(16) union
+    ALIGN16 union
     {
         u8 bytes[0x100];
         OlderHullSurface hull;
@@ -1750,9 +1762,9 @@ void ReadOgi(GameOGI* ogi, Stream* stream)
     else
     {
         s32 counts[9];
-        for (s32& count : counts)
+        for (u32 index = 0; index < 9; index++)
         {
-            stream->ReadS32(&count);
+            stream->ReadS32(&counts[index]);
         }
 
         ogi->jointCount = counts[0];

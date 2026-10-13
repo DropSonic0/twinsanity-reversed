@@ -8,6 +8,19 @@
 #endif
 #endif
 
+#if defined(__SNC__) || defined(__CELLOS_LV2__)
+#include <math.h>
+#ifndef __builtin_sqrtf
+#define __builtin_sqrtf sqrtf
+#endif
+#ifndef __builtin_fabsf
+#define __builtin_fabsf fabsf
+#endif
+#ifndef __builtin_fmaxf
+#define __builtin_fmaxf fmaxf
+#endif
+#endif
+
 #if defined(_EE) || defined(__PS2__) || defined(PS2)
 #include <tamtypes.h>
 #else

@@ -8,7 +8,7 @@
 // hardware may still be reading (DMA) are released a couple of frames later (DiskProcessReleases, once a frame)
 struct DiskNode;
 
-enum DiskNodeState : u32
+enum DiskNodeState
 {
     DiskNodeFree = 1,
     DiskNodeUsed = 2,
@@ -24,7 +24,7 @@ enum DiskNodeState : u32
 };
 
 // What reading into a node did: the hardware (DMA) reads into it from DiskAllocate until DiskMarkLoaded
-enum DiskLoadState : u32
+enum DiskLoadState
 {
     DiskNotReadInto = 0,
     DiskLoading = 1,
@@ -91,9 +91,9 @@ struct DiskPendingRelease
 CHECK_SIZE(DiskPendingRelease, 0xC);
 
 // A handle of no memory (a reader's before it has any)
-constexpr s32 NoDiskHandle = -1;
-constexpr u32 DiskSizeClasses = 16;
-constexpr u32 DiskHandles = 5500;
+CONSTEXPR s32 NoDiskHandle = -1;
+CONSTEXPR u32 DiskSizeClasses = 16;
+CONSTEXPR u32 DiskHandles = 5500;
 
 struct DiskManager
 {

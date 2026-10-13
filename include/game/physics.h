@@ -29,7 +29,7 @@ struct PlaneSet
 union ContactKind
 {
     // The masks of the bits tested together (what the solver's tests leave out) and of the kinds a contact is made with
-    enum Mask : u32
+    enum Mask
     {
         Hull = 0x1,
         Triangle = 0x2,
@@ -89,7 +89,10 @@ CHECK_SIZE(Contact, 0x50);
 // The contacts of one kind of surface (32 at most) and the triangles they come from
 struct ContactList
 {
-    static constexpr s32 MostContacts = 32;
+    enum MostContactsConstant
+    {
+        MostContacts = 32
+    };
 
     Contact contacts[MostContacts];
     CollisionHit triangles[MostContacts];
@@ -125,7 +128,10 @@ CHECK_SIZE(HullPlaneCacheEntry, 0x50);
 // The last 64 triangles and hulls' planes, the next to be replaced
 struct HullPlaneCache
 {
-    static constexpr s32 Entries = 64;
+    enum EntriesConstant
+    {
+        Entries = 64
+    };
 
     HullPlaneCacheEntry entries[Entries];
     s32 next;
@@ -134,9 +140,9 @@ CHECK_OFFSET(HullPlaneCache, next, 0x1400);
 
 // What Move and MoveCharacter return besides a ground contact's index (-1 none): stuck while falling; what ProbeAlong returns
 // when the motion goes into no contact; where a segment is against a space (ClipSegmentToSpace)
-constexpr s32 StuckFalling = -2;
-constexpr s32 NoProbeHit = -2;
-enum SegmentClip : s32
+CONSTEXPR s32 StuckFalling = -2;
+CONSTEXPR s32 NoProbeHit = -2;
+enum SegmentClip
 {
     SegmentOutside = 0,
     SegmentEnters = 1,

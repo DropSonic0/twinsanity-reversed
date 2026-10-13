@@ -21,42 +21,42 @@ EABI_EXPORT(FUN_0015eda8, &LookController::SetCarried);
 namespace
 {
 // The joints the look turns (its angles' joints), the Mecha-Bandicoot's three of them, its gun arm and the joint made with it
-constexpr u32 LookJointCount = 5;
-constexpr u32 MechaLookJointCount = 3;
-constexpr u32 MechaLookJoints[MechaLookJointCount] = {0, 2, 4};
-constexpr u32 MechaArm = 14;
-constexpr u32 MechaArmEnd = 18;
-constexpr u32 MechaJoints[] = {0, 2, 4, MechaArm, MechaArmEnd};
+CONSTEXPR u32 LookJointCount = 5;
+CONSTEXPR u32 MechaLookJointCount = 3;
+CONSTEXPR u32 MechaLookJoints[MechaLookJointCount] = {0, 2, 4};
+CONSTEXPR u32 MechaArm = 14;
+CONSTEXPR u32 MechaArmEnd = 18;
+CONSTEXPR u32 MechaJoints[] = {0, 2, 4, MechaArm, MechaArmEnd};
 
 // How fast the joints' angles follow their targets and the arm its aim, and the pitch and the yaw relax (radians a second)
-constexpr f32 TurnRadiansPerSecond = Rounded(1.6);
-constexpr f32 ArmRadiansPerSecond = Rounded(1.3);
-constexpr f32 RelaxRadiansPerSecond = 32.0f;
+CONSTEXPR f32 TurnRadiansPerSecond = Rounded(1.6);
+CONSTEXPR f32 ArmRadiansPerSecond = Rounded(1.3);
+CONSTEXPR f32 RelaxRadiansPerSecond = 32.0f;
 // The springs: toward a carried body's lean, the tracked point and back to rest (stiffness and damping)
-constexpr f32 FollowStiffness = 26.0f;
-constexpr f32 FollowDamping = Rounded(5.6);
-constexpr f32 RestStiffness = 20.0f;
-constexpr f32 RestDamping = 5.0f;
+CONSTEXPR f32 FollowStiffness = 26.0f;
+CONSTEXPR f32 FollowDamping = Rounded(5.6);
+CONSTEXPR f32 RestStiffness = 20.0f;
+CONSTEXPR f32 RestDamping = 5.0f;
 // A carried body: its forward offset grows by its lean (from its size) every frame, and the yaw and pitch lean from its offsets
-constexpr f32 CarryLeanBase = Rounded(0.56);
-constexpr f32 CarryLeanScale = -5.0f;
-constexpr f32 CarryYawShare = Rounded(-1.1);
-constexpr f32 CarryPitchShare = Rounded(-1.2);
+CONSTEXPR f32 CarryLeanBase = Rounded(0.56);
+CONSTEXPR f32 CarryLeanScale = -5.0f;
+CONSTEXPR f32 CarryYawShare = Rounded(-1.1);
+CONSTEXPR f32 CarryPitchShare = Rounded(-1.2);
 // The camera's free look past this (its length squared) turns the look directly
-constexpr f32 FreeLookLeast = Rounded(0.01);
-constexpr f32 FreeLookPitchSpeed = 5.0f;
-constexpr f32 FreeLookYawSpeed = -8.0f;
+CONSTEXPR f32 FreeLookLeast = Rounded(0.01);
+CONSTEXPR f32 FreeLookPitchSpeed = 5.0f;
+CONSTEXPR f32 FreeLookYawSpeed = -8.0f;
 // The tracked point is followed within about 45 degrees of the facing (the cosine)
-constexpr f32 FollowCosine = Rounded(0.7);
+CONSTEXPR f32 FollowCosine = Rounded(0.7);
 // The arm aims this far ahead without an aim point
-constexpr f32 ArmAhead = 1000.0f;
+CONSTEXPR f32 ArmAhead = 1000.0f;
 // AimRotation's turn below this (its axis's length squared) is none
-constexpr f32 AimAxisLeast = Epsilon;
+CONSTEXPR f32 AimAxisLeast = Epsilon;
 
 // The joints' shares of the pitch and the yaw: standing (and relaxing), carrying, the Mecha-Bandicoot's
-constexpr f32 StandingShares[LookJointCount] = {0.25f, Rounded(0.4), Rounded(0.3), Rounded(0.2), Rounded(0.2)};
-constexpr f32 CarryShares[LookJointCount] = {Rounded(-0.3), Rounded(-0.3), Rounded(0.05), Rounded(0.35), Rounded(0.35)};
-constexpr f32 MechaShare = 0.25f;
+CONSTEXPR f32 StandingShares[LookJointCount] = {0.25f, Rounded(0.4), Rounded(0.3), Rounded(0.2), Rounded(0.2)};
+CONSTEXPR f32 CarryShares[LookJointCount] = {Rounded(-0.3), Rounded(-0.3), Rounded(0.05), Rounded(0.35), Rounded(0.35)};
+CONSTEXPR f32 MechaShare = 0.25f;
 
 s32 CharacterKindOf(const CharacterAgent* agent)
 {
@@ -172,7 +172,11 @@ bool FollowPoint(LookController* look, f32 seconds)
     ExitPointAnimation* exitPoint = animator->exitPoints != nullptr ? animator->exitPoints->data[ExitPointHead] : nullptr;
     const Matrix4x4* head = &UpdateExitPointMatrix(exitPoint)->matrix;
     const Vector4* at = RowOf(head, 3);
-    Vector4 toward = {look->lookPoint.x - at->x, look->lookPoint.y - at->y, look->lookPoint.z - at->z, 1.0f};
+    Vector4 toward;
+    toward.x = look->lookPoint.x - at->x;
+    toward.y = look->lookPoint.y - at->y;
+    toward.z = look->lookPoint.z - at->z;
+    toward.w = 1.0f;
     f32 inverse = InverseLength(&toward, LengthEpsilon);
     toward.x = toward.x * inverse;
     toward.y = toward.y * inverse;
@@ -208,8 +212,16 @@ void AimArm(LookController* look, Matrix4x4* matrix)
         place = PlaceOf(look->agent);
         RotateAndTranslate(place);
         Vector4 forward = *RowOf(&place->matrix, 2);
-        Vector4 ahead = {forward.x * ArmAhead, forward.y * ArmAhead, forward.z * ArmAhead, 1.0f};
-        Vector4 point = {position.x + ahead.x, position.y + ahead.y, position.z + ahead.z, 1.0f};
+        Vector4 ahead;
+        ahead.x = forward.x * ArmAhead;
+        ahead.y = forward.y * ArmAhead;
+        ahead.z = forward.z * ArmAhead;
+        ahead.w = 1.0f;
+        Vector4 point;
+        point.x = position.x + ahead.x;
+        point.y = position.y + ahead.y;
+        point.z = position.z + ahead.z;
+        point.w = 1.0f;
         look->AimRotation(matrix, 0, 1, &point, &turn);
     }
 
@@ -303,7 +315,10 @@ void LookController::Reset()
         SetTurn(angles[joint], 0, 0, 0);
     }
 
-    aim = {0.0f, 0.0f, 0.0f, 1.0f};
+    aim.x = 0.0f;
+    aim.y = 0.0f;
+    aim.z = 0.0f;
+    aim.w = 1.0f;
     hasAimPoint = 0;
 }
 
@@ -326,9 +341,9 @@ void LookController::Attach(OgiAnimator* animator)
 {
     if (CharacterKindOf(agent) == CharacterMecha)
     {
-        for (u32 joint : MechaJoints)
+        for (u32 i = 0; i < sizeof(MechaJoints) / sizeof(MechaJoints[0]); i++)
         {
-            AddJointCallback(animator, joint, this);
+            AddJointCallback(animator, MechaJoints[i], this);
         }
 
         return;
@@ -344,9 +359,9 @@ void LookController::Detach(OgiAnimator* animator)
 {
     if (CharacterKindOf(agent) == CharacterMecha)
     {
-        for (u32 joint : MechaJoints)
+        for (u32 i = 0; i < sizeof(MechaJoints) / sizeof(MechaJoints[0]); i++)
         {
-            RemoveJointCallback(animator, joint, this);
+            RemoveJointCallback(animator, MechaJoints[i], this);
         }
 
         return;
@@ -535,16 +550,26 @@ void LookController::AimRotation(const Matrix4x4* joint, u32 axis, u32 negate, c
     RotateAndTranslate(place);
     Vector4 from;
     VuTransformPoint(&place->matrix, RowOf(joint, 3), &from);
-    Vector4 toward = {point->x - from.x, point->y - from.y, point->z - from.z, 1.0f};
+    Vector4 toward;
+    toward.x = point->x - from.x;
+    toward.y = point->y - from.y;
+    toward.z = point->z - from.z;
+    toward.w = 1.0f;
     inverse = InverseLength(&toward, LengthEpsilon);
     toward.x = toward.x * inverse;
     toward.y = toward.y * inverse;
     toward.z = toward.z * inverse;
-    Vector4 about = {along.y * toward.z - along.z * toward.y, along.z * toward.x - along.x * toward.z,
-                     along.x * toward.y - along.y * toward.x, 1.0f};
+    Vector4 about;
+    about.x = along.y * toward.z - along.z * toward.y;
+    about.y = along.z * toward.x - along.x * toward.z;
+    about.z = along.x * toward.y - along.y * toward.x;
+    about.w = 1.0f;
     if (!(AimAxisLeast < about.x * about.x + about.y * about.y + about.z * about.z))
     {
-        *rotation = {0.0f, 0.0f, 0.0f, 1.0f};
+        rotation->x = 0.0f;
+        rotation->y = 0.0f;
+        rotation->z = 0.0f;
+        rotation->w = 1.0f;
         return;
     }
 

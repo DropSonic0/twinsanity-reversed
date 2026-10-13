@@ -31,7 +31,7 @@ f32 ShareBetween(s32 value, s32 low, s32 high)
 // high one when it's below it by over 0.1 (straight there when it jumps): whether it moves
 u32 MoveDistance(DistanceBlender* blender, f32 toLow, f32 toHigh, f32 seconds, u32 jump)
 {
-    constexpr f32 Near = Rounded(0.1);
+    CONSTEXPR f32 Near = Rounded(0.1);
     if (Near < toLow)
     {
         if (jump != 0)
@@ -75,7 +75,7 @@ u32 MoveDistance(DistanceBlender* blender, f32 toLow, f32 toHigh, f32 seconds, u
 
 AngleBlender* AngleBlender::Construct(AngleBlender* blender, const s32* value)
 {
-    constexpr f32 Speed = 90.0f;
+    CONSTEXPR f32 Speed = 90.0f;
     blender->initial = *value;
     AngleFrom(&blender->speed, Speed, AngleDegrees);
     AngleFrom(&blender->inputSpeed, Speed, AngleDegrees);
@@ -94,7 +94,8 @@ void AngleBlender::Reset()
     previousSpeed = speed;
     delta = 0;
     share = ShareBetween(initial, low, high);
-    BlenderBits kept = {};
+    BlenderBits kept;
+    kept.value = 0;
     kept.holds = bits.holds;
     kept.sineSpeed = bits.sineSpeed;
     bits = kept;
@@ -449,13 +450,14 @@ void DistanceBlender::KeepWithin(f32 toLow, f32 toHigh)
 
 void DistanceBlender::Reset()
 {
-    constexpr f32 NoRange = Epsilon;
+    CONSTEXPR f32 NoRange = Epsilon;
     f32 range = high - low;
     delta = 0.0f;
     current = initial;
     share = __builtin_fabsf(range) <= NoRange ? Infinite : (initial - low) / range;
     previousSpeed = speed;
-    BlenderBits kept = {};
+    BlenderBits kept;
+    kept.value = 0;
     kept.holds = bits.holds;
     bits = kept;
     start = current;

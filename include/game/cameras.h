@@ -16,14 +16,16 @@ struct TimeClock;
 // search's state as a path has it (the segment searched -1 at first)
 struct CameraSpline
 {
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         ReadSlot = 2,
     };
 
-    // A sample's vectors: its point, then its tangent
-    static constexpr s32 VectorsPerSample = 2;
+    enum VectorsConstant
+    {
+        VectorsPerSample = 2
+    };
 
     s32 count;
     Vector4* samples;
@@ -106,7 +108,7 @@ CHECK_SIZE(CameraSubtypeFlags, 4);
 class CameraSubtype
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         AtSlot = 2,
@@ -118,14 +120,14 @@ public:
 
     // How the followers move: straight there (3 as well), their own way (their default way and rate), or at its rate (the share
     // of the way a second)
-    enum Follows : u32
+    enum Follows
     {
         FollowStraight = 0,
         FollowOwnWay = 1,
         FollowAtRate = 2,
     };
 
-    enum Types : u32
+    enum Types
     {
         TypeBoss = 0xA19,
         TypePoint = 0x1C02,
@@ -326,6 +328,11 @@ CHECK_SIZE(CameraRotationKey, 0x20);
 // Rotation keys (from the latest), how many there are and room for, the room it grows by, and whether it eases between them
 struct CameraRotationKeys
 {
+    enum GrowthConstant
+    {
+        Growth = 0x40
+    };
+
     CameraRotationKey* keys;
     u16 count;
     u16 capacity;
@@ -333,9 +340,6 @@ struct CameraRotationKeys
     u8 unused0A[2];
     u8 eases;
     u8 unused0D[3];
-
-    // The room the subtypes' keys grow by
-    static constexpr u16 Growth = 0x40;
 };
 CHECK_SIZE(CameraRotationKeys, 0x10);
 
@@ -359,7 +363,7 @@ CHECK_SIZE(SplineArmCamera, 0x70);
 class CameraPoint2 : public CameraPoint
 {
 public:
-    enum Modes : u32
+    enum Modes
     {
         // The share of the way from the target toward the point, the distance from the target toward it, the same no further
         // than the point

@@ -22,7 +22,7 @@ InstanceContext* AttachedInstance(const Attachment* attachment)
 // The animation of one of an instance's model's exit points (none when its animator has none)
 ExitPointAnimation* ExitPointOf(InstanceContext* instance, u8 exitPoint)
 {
-    auto* node = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+    ModelNode* node = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
     SizedArray<ExitPointAnimation*>* exitPoints = node->animator->exitPoints;
     return exitPoints != nullptr ? exitPoints->data[exitPoint] : nullptr;
 }

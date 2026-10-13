@@ -14,8 +14,8 @@
 #include "game/reference.h"
 #include "game/rigidbody.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 EABI_EXPORT(FUN_0012e328, &CharacterAgent::MeasureVelocity);
 EABI_EXPORT(FUN_00136168, &CharacterAgent::EaseVelocity);
@@ -27,19 +27,19 @@ EABI_EXPORT(FUN_00134780, &CharacterAgent::PushBodies);
 namespace
 {
 // The pushed body's spin when a spin kicks it, the kick's cooldown and the height its point is above the character's position
-constexpr Vector4 KickSpin = {0.0f, -1.0f, 0.0f, 1.0f};
-constexpr f32 KickSeconds = Rounded(0.8);
-constexpr f32 KickHeight = Rounded(0.8);
+CONSTEXPR Vector4 KickSpin = {0.0f, -1.0f, 0.0f, 1.0f};
+CONSTEXPR f32 KickSeconds = Rounded(0.8);
+CONSTEXPR f32 KickHeight = Rounded(0.8);
 
-static_assert(offsetof(CharacterLink, swingPosition) == 0x1F0);
-static_assert(offsetof(CharacterAgent, heightState) == 0x270);
-static_assert(offsetof(CharacterAgent, pushedBody) == 0x290);
-static_assert(offsetof(CharacterAgent, probePush) == 0x2A0);
-static_assert(offsetof(CharacterAgent, cache) == 0x2B0);
-static_assert(offsetof(DynamicBody, instance) == 0x2E4);
-static_assert(offsetof(SphereBody, radius) == 0x380);
-static_assert(offsetof(RigidBody, angularMomentum) == 0x90);
-static_assert(offsetof(RigidBody, velocity) == 0x150);
+CHECK_OFFSET(CharacterLink, swingPosition, 0x1F0);
+CHECK_OFFSET(CharacterAgent, heightState, 0x270);
+CHECK_OFFSET(CharacterAgent, pushedBody, 0x290);
+CHECK_OFFSET(CharacterAgent, probePush, 0x2A0);
+CHECK_OFFSET(CharacterAgent, cache, 0x2B0);
+CHECK_OFFSET(DynamicBody, instance, 0x2E4);
+CHECK_OFFSET(SphereBody, radius, 0x380);
+CHECK_OFFSET(RigidBody, angularMomentum, 0x90);
+CHECK_OFFSET(RigidBody, velocity, 0x150);
 
 InstanceContext* ObjectOf(const Reference* handle)
 {
@@ -49,7 +49,7 @@ InstanceContext* ObjectOf(const Reference* handle)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 DynamicBody* BodyOf(InstanceContext* instance)
@@ -71,7 +71,7 @@ ExitPointAnimation* ExitPointOf(const OgiAnimator* animator, u32 index)
 // An exit point's place as retail reads it, also without an exit point (the word at 0x44)
 void* PlaceOf(const ExitPointAnimation* exitPoint)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(exitPoint) + offsetof(ExitPointAnimation, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(exitPoint) + offsetof(ExitPointAnimation, place);
     return *reinterpret_cast<void* const*>(address);
 }
 
@@ -126,7 +126,7 @@ void CharacterAgent::SetHeightState(s32 newState)
 
 void CharacterAgent::ApplyGravity(f32 seconds)
 {
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     if (character->flags.onGround != 0 || character->flags.resting == 0)
     {
         return;
@@ -156,7 +156,7 @@ CollisionSurface* CharacterAgent::StandingSurface()
         }
 
         // The stamp is the OGI the instance's collision had: another one's hulls fall back to the default surface
-        if (reinterpret_cast<std::uintptr_t>(other->collision.ogi) != standingStamp)
+        if (reinterpret_cast<uintptr_t>(other->collision.ogi) != standingStamp)
         {
             return &g_CollisionSurfaces.surfaces[0];
         }
@@ -195,11 +195,15 @@ void CharacterAgent::MeasureVelocity(f32 vertical, u32 measured)
 {
     if (measured != 0)
     {
-        auto* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
+        MovementNode* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
         Vector4 last = lastPosition;
         Vector4 position;
         Position(&position);
-        Vector4 moved = {position.x - last.x, position.y - last.y, position.z - last.z, 1.0f};
+        Vector4 moved;
+        moved.x = position.x - last.x;
+        moved.y = position.y - last.y;
+        moved.z = position.z - last.z;
+        moved.w = 1.0f;
         f32 inverse = 1.0f / movement->Seconds();
         velocity.x = moved.x * inverse;
         velocity.z = moved.z * inverse;
@@ -207,7 +211,7 @@ void CharacterAgent::MeasureVelocity(f32 vertical, u32 measured)
         if (standing != nullptr && state.standing == StandingRidden)
         {
             // Retail fetches the ridden instance's move and does nothing with it
-            auto* ridden = static_cast<MovementNode*>(GetGameNode(&standing->nodes, NodeMovement));
+            MovementNode* ridden = static_cast<MovementNode*>(GetGameNode(&standing->nodes, NodeMovement));
             if (ridden != nullptr)
             {
                 MovementVelocity(ridden, &moved);
@@ -225,12 +229,12 @@ void CharacterAgent::EaseVelocity(f32 seconds, const Vector4* wanted)
 {
     // In the air: 10 a second (and 40 by the last floor's friction), less above a speed of 30, none without a walk, unbounded
     // while the walk is pushed
-    constexpr f32 AirRate = 10.0f;
-    constexpr f32 FrictionRate = 40.0f;
-    constexpr f32 FastSpeed = 30.0f;
-    constexpr f32 FastRate = 1500.0f;
-    constexpr f32 Unbounded = Infinite;
-    constexpr f32 GroundFall = Rounded(-0.01);
+    CONSTEXPR f32 AirRate = 10.0f;
+    CONSTEXPR f32 FrictionRate = 40.0f;
+    CONSTEXPR f32 FastSpeed = 30.0f;
+    CONSTEXPR f32 FastRate = 1500.0f;
+    CONSTEXPR f32 Unbounded = Infinite;
+    CONSTEXPR f32 GroundFall = Rounded(-0.01);
 
     CollisionSurface* surface = StandingSurface();
     if (surface != nullptr)
@@ -263,7 +267,7 @@ void CharacterAgent::EaseVelocity(f32 seconds, const Vector4* wanted)
         }
     }
 
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     if (walk == nullptr)
     {
         rate = 0.0f;
@@ -278,7 +282,11 @@ void CharacterAgent::EaseVelocity(f32 seconds, const Vector4* wanted)
     }
 
     f32 most = seconds * rate;
-    Vector4 change = {wanted->x - velocity.x, 0.0f, wanted->z - velocity.z, 1.0f};
+    Vector4 change;
+    change.x = wanted->x - velocity.x;
+    change.y = 0.0f;
+    change.z = wanted->z - velocity.z;
+    change.w = 1.0f;
     if (most * most < change.x * change.x + change.z * change.z)
     {
         f32 inverse = InverseLength(&change, LengthEpsilon);
@@ -295,8 +303,8 @@ f32 CharacterAgent::ExitPointsHeight()
 {
     // The lowest of the feet (counted 0.45 along their z axes), exit point 5 (where the invincibility's trails come from) and the
     // hand
-    constexpr f32 Reach = 0.45f;
-    constexpr u32 TrailExitPoint = 5;
+    CONSTEXPR f32 Reach = 0.45f;
+    CONSTEXPR u32 TrailExitPoint = 5;
 
     OgiAnimator* animator = AnimatorOf(instance);
     ExitPointAnimation* exitPoint = UpdateExitPointMatrix(ExitPointOf(animator, ExitPointLeftFoot));
@@ -331,7 +339,7 @@ f32 CharacterAgent::ExitPointsHeight()
 void CharacterAgent::MakeBoxOfExitPoints()
 {
     // Its exit points 0 to 10 (none for the Mecha-Bandicoot)
-    constexpr u32 BoxExitPoints = 11;
+    CONSTEXPR u32 BoxExitPoints = 11;
 
     if (properties->GetInt(CharacterKindProperty) == CharacterMecha)
     {
@@ -374,7 +382,7 @@ void CharacterAgent::MakeBoxOfExitPoints()
 
 u32 CharacterAgent::FitsAt(u32 kind, u32 push, const Vector4* normal, const Vector4* position)
 {
-    constexpr s32 MostTouched = 16;
+    CONSTEXPR s32 MostTouched = 16;
 
     // Crouching, crawling and the knee drop take the crouched hull, standing tells the instances touched
     bool crouched = kind == FitCrouching || kind == FitCrawling || kind == FitKneeDrop;
@@ -393,7 +401,7 @@ u32 CharacterAgent::FitsAt(u32 kind, u32 push, const Vector4* normal, const Vect
     at.y += heightOffset;
     ReferencedObject* leftOut[3] = {instance, ObjectOf(standingOn), nullptr};
     s32 leftOutCount = 2;
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     if (character->moveBits.linkedFirst != 0)
     {
         leftOut[2] = link->Second()->instance;
@@ -430,8 +438,8 @@ u32 CharacterAgent::FitsAt(u32 kind, u32 push, const Vector4* normal, const Vect
 u32 CharacterAgent::FootNormal(Vector4* normal)
 {
     // Its four corners 0.3 across and along, cast 0.3 down
-    constexpr f32 Spread = Rounded(0.3);
-    constexpr f32 Down = -Rounded(0.3);
+    CONSTEXPR f32 Spread = Rounded(0.3);
+    CONSTEXPR f32 Down = -Rounded(0.3);
 
     *normal = g_DefaultBox.min;
     normal->w = 1.0f;
@@ -444,17 +452,17 @@ u32 CharacterAgent::FootNormal(Vector4* normal)
         place = instance->place;
         RotateAndTranslate(place);
         f32 across = (corner & 1) != 0 ? Spread : -Spread;
-        Vector4 side = {place->matrix.m[0][0] * across, place->matrix.m[0][1] * across, place->matrix.m[0][2] * across, 1.0f};
-        Vector4 point = {origin.x + side.x, origin.y + side.y, origin.z + side.z, 1.0f};
+        Vector4 side; side.x = place->matrix.m[0][0] * across; side.y = place->matrix.m[0][1] * across; side.z = place->matrix.m[0][2] * across; side.w = 1.0f;
+        Vector4 point; point.x = origin.x + side.x; point.y = origin.y + side.y; point.z = origin.z + side.z; point.w = 1.0f;
         place = instance->place;
         RotateAndTranslate(place);
         f32 along = corner >= 2 ? Spread : -Spread;
-        Vector4 ahead = {place->matrix.m[2][0] * along, place->matrix.m[2][1] * along, place->matrix.m[2][2] * along, 1.0f};
-        Vector4 from = {point.x + ahead.x, point.y + ahead.y, point.z + ahead.z, 1.0f};
+        Vector4 ahead; ahead.x = place->matrix.m[2][0] * along; ahead.y = place->matrix.m[2][1] * along; ahead.z = place->matrix.m[2][2] * along; ahead.w = 1.0f;
+        Vector4 from; from.x = point.x + ahead.x; from.y = point.y + ahead.y; from.z = point.z + ahead.z; from.w = 1.0f;
         place = instance->place;
         RotateAndTranslate(place);
-        Vector4 drop = {place->matrix.m[1][0] * Down, place->matrix.m[1][1] * Down, place->matrix.m[1][2] * Down, 1.0f};
-        Vector4 to = {from.x + drop.x, from.y + drop.y, from.z + drop.z, 1.0f};
+        Vector4 drop; drop.x = place->matrix.m[1][0] * Down; drop.y = place->matrix.m[1][1] * Down; drop.z = place->matrix.m[1][2] * Down; drop.w = 1.0f;
+        Vector4 to; to.x = from.x + drop.x; to.y = from.y + drop.y; to.z = from.z + drop.z; to.w = 1.0f;
         Vector4 hitPoint;
         CollisionHit triangle;
         if (TriangleListRayCast(&cache, &from, &to, nullptr, &hitPoint, &triangle) == 0)
@@ -464,7 +472,7 @@ u32 CharacterAgent::FootNormal(Vector4* normal)
 
         Vector4 plane;
         PlaneThroughTriangle(&plane, &triangle.vertices[0], &triangle.vertices[1], &triangle.vertices[2]);
-        Vector4 facing = {plane.x, plane.y, plane.z, 1.0f};
+        Vector4 facing; facing.x = plane.x; facing.y = plane.y; facing.z = plane.z; facing.w = 1.0f;
         if (0.0f < facing.y)
         {
             facing.x = -facing.x;
@@ -492,22 +500,22 @@ u32 CharacterAgent::FootNormal(Vector4* normal)
 void CharacterAgent::MoveBy(f32 seconds, f32 turn, CharacterPart* part, const Vector4* move, f32* turnOut, u32 mode)
 {
     // Rising in a jump (past its first 0.1 seconds, not thrown) slower than it should, its vertical speed drops by 150 a second
-    constexpr f32 RiseStart = Rounded(0.1);
-    constexpr f32 Rising = 0.01f;
-    constexpr f32 RiseAsked = 1e-5f;
-    constexpr f32 RiseShare = 0.9f;
-    constexpr f32 RiseSlowing = 150.0f;
+    CONSTEXPR f32 RiseStart = Rounded(0.1);
+    CONSTEXPR f32 Rising = 0.01f;
+    CONSTEXPR f32 RiseAsked = 1e-5f;
+    CONSTEXPR f32 RiseShare = 0.9f;
+    CONSTEXPR f32 RiseSlowing = 150.0f;
     // The share of the move it made: 1 for a move under 0.01 across, a drop of more than 0.05 or 0.707 of it made
-    constexpr f32 LeastMove = 0.01f;
-    constexpr f32 Dropping = Rounded(-0.05);
-    constexpr f32 FullShare = Rounded(0.707);
-    constexpr f32 ShareScale = Rounded(1.0 / 0.707);
+    CONSTEXPR f32 LeastMove = 0.01f;
+    CONSTEXPR f32 Dropping = Rounded(-0.05);
+    CONSTEXPR f32 FullShare = Rounded(0.707);
+    CONSTEXPR f32 ShareScale = Rounded(1.0 / 0.707);
     // A knee slide with circle held stays longer: the floor's 3.5 over its value, and 4 by the slope it goes down
-    constexpr f32 SlideFloor = 3.5f;
-    constexpr f32 LeastSlope = Rounded(0.001);
-    constexpr f32 SlideSlope = -4.0f;
+    CONSTEXPR f32 SlideFloor = 3.5f;
+    CONSTEXPR f32 LeastSlope = Rounded(0.001);
+    CONSTEXPR f32 SlideSlope = -4.0f;
     // The steps the tied characters' move is solved in
-    constexpr u32 LinkedSteps = 2;
+    CONSTEXPR u32 LinkedSteps = 2;
 
     bool wasOnGround = part->flags.onGround != 0;
     u32 attack = part->bits.attackKind;
@@ -542,7 +550,7 @@ void CharacterAgent::MoveBy(f32 seconds, f32 turn, CharacterPart* part, const Ve
 
     Vector4 after;
     PlacePosition(&after);
-    Vector4 moved = {after.x - before.x, after.y - before.y, after.z - before.z, 1.0f};
+    Vector4 moved; moved.x = after.x - before.x; moved.y = after.y - before.y; moved.z = after.z - before.z; moved.w = 1.0f;
     if (rising && Rising < velocity.y && RiseAsked < step.y && moved.y / step.y < RiseShare)
     {
         velocity.y -= seconds * RiseSlowing;
@@ -623,7 +631,7 @@ void CharacterAgent::MoveBy(f32 seconds, f32 turn, CharacterPart* part, const Ve
 void CharacterAgent::Move(f32 seconds, CharacterPart* part, u32 controlled)
 {
     // The first of two tied characters turns at 0.65 of the stick's rate
-    constexpr f32 LinkedTurn = 0.65f;
+    CONSTEXPR f32 LinkedTurn = 0.65f;
 
     ObjectPlace* place = instance->place;
     RotateAndTranslate(place);
@@ -672,7 +680,7 @@ void CharacterAgent::Move(f32 seconds, CharacterPart* part, u32 controlled)
         side.w = 1.0f;
     }
 
-    Vector4 wanted = {forward.x + side.x, forward.y + side.y, forward.z + side.z, 1.0f};
+    Vector4 wanted; wanted.x = forward.x + side.x; wanted.y = forward.y + side.y; wanted.z = forward.z + side.z; wanted.w = 1.0f;
     EaseVelocity(seconds, &wanted);
     if (part->moveBits.verticalRequested != 0)
     {
@@ -711,9 +719,9 @@ void CharacterAgent::Move(f32 seconds, CharacterPart* part, u32 controlled)
         }
 
         const Vector4* now = &link->swingPosition;
-        Vector4 moved = {now->x - before.x, now->y - before.y, now->z - before.z, 1.0f};
+        Vector4 moved; moved.x = now->x - before.x; moved.y = now->y - before.y; moved.z = now->z - before.z; moved.w = 1.0f;
         f32 inverse = 1.0f / seconds;
-        Vector4 swingVelocity = {inverse * moved.x, inverse * moved.y, inverse * moved.z, 1.0f};
+        Vector4 swingVelocity; swingVelocity.x = inverse * moved.x; swingVelocity.y = inverse * moved.y; swingVelocity.z = inverse * moved.z; swingVelocity.w = 1.0f;
         ObjectPlace* leaderPlace = link->Leader()->instance->place;
         RotateAndTranslate(leaderPlace);
         link->SecondGait(&swingVelocity, RowOf(&leaderPlace->matrix, 2));
@@ -747,10 +755,10 @@ void CharacterAgent::Move(f32 seconds, CharacterPart* part, u32 controlled)
 void CharacterAgent::SlideIntoBody(DynamicBody* body)
 {
     // Pushed away 4 (times 1.2) and up by 3.2 to 9 (times 1.2) as the slide fades
-    constexpr f32 Away = 4.0f;
-    constexpr f32 Strength = Rounded(1.2);
-    constexpr f32 LeastLift = Rounded(3.2);
-    constexpr f32 MoreLift = Rounded(5.8);
+    CONSTEXPR f32 Away = 4.0f;
+    CONSTEXPR f32 Strength = Rounded(1.2);
+    CONSTEXPR f32 LeastLift = Rounded(3.2);
+    CONSTEXPR f32 MoreLift = Rounded(5.8);
 
     Vector4 position;
     Position(&position);
@@ -775,9 +783,9 @@ void CharacterAgent::SlideIntoBody(DynamicBody* body)
         fade = 1.0f;
     }
 
-    Vector4 impulse = {away.x * Away * Strength, away.y * Away * Strength, away.z * Away * Strength, 1.0f};
+    Vector4 impulse; impulse.x = away.x * Away * Strength; impulse.y = away.y * Away * Strength; impulse.z = away.z * Away * Strength; impulse.w = 1.0f;
     body->ApplyImpulse(&impulse, &local);
-    Vector4 lift = {0.0f, (fade * MoreLift + LeastLift) * Strength, 0.0f, 1.0f};
+    Vector4 lift; lift.x = 0.0f; lift.y = (fade * MoreLift + LeastLift) * Strength; lift.z = 0.0f; lift.w = 1.0f;
     body->ApplyImpulse(&lift, &g_DefaultBox.min);
     crouch->slideSpeed = 0.0f;
     if (body->instance == ObjectOf(pushedBody))
@@ -788,11 +796,11 @@ void CharacterAgent::SlideIntoBody(DynamicBody* body)
 
 void CharacterAgent::WalkIntoBody(DynamicBody* body, const Vector4* point)
 {
-    constexpr f32 Strength = 3.5f;
-    constexpr f32 LeastAcross = Rounded(0.001);
+    CONSTEXPR f32 Strength = 3.5f;
+    CONSTEXPR f32 LeastAcross = Rounded(0.001);
     // A spin kicks it (once every 0.8 seconds) and pushes 1.4 times harder
-    constexpr f32 KickShare = 0.5f;
-    constexpr f32 SpinStrength = 1.4f;
+    CONSTEXPR f32 KickShare = 0.5f;
+    CONSTEXPR f32 SpinStrength = 1.4f;
 
     if (__builtin_sqrtf(point->x * point->x + point->z * point->z) < __builtin_fabsf(point->y))
     {
@@ -805,7 +813,7 @@ void CharacterAgent::WalkIntoBody(DynamicBody* body, const Vector4* point)
     position.y += KickHeight;
     Vector4 local;
     VuTransformPoint(&body->inverseMatrix, &position, &local);
-    auto* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
+    MovementNode* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
     if (movement != nullptr)
     {
         // Retail works out its velocity from its movement node and does nothing with it
@@ -843,8 +851,7 @@ void CharacterAgent::WalkIntoBody(DynamicBody* body, const Vector4* point)
     {
         // Retail bug: the push along the sphere's side (across the way it's walked into) is worked out and then left out, a
         // push of nothing is added instead
-        Vector4 away = {position.x - body->matrix.m[3][0], position.y - body->matrix.m[3][1], position.z - body->matrix.m[3][2],
-                        1.0f};
+        Vector4 away; away.x = position.x - body->matrix.m[3][0]; away.y = position.y - body->matrix.m[3][1]; away.z = position.z - body->matrix.m[3][2]; away.w = 1.0f;
         Vector4 across = away;
         across.y = 0.0f;
         if (LeastAcross < across.x * across.x + across.z * across.z)
@@ -871,7 +878,7 @@ void CharacterAgent::WalkIntoBody(DynamicBody* body, const Vector4* point)
                     across.x *= inverse;
                     across.y *= inverse;
                     across.z *= inverse;
-                    constexpr Vector4 Sideways = {0.0f, 0.0f, 0.0f, 1.0f};
+                    CONSTEXPR Vector4 Sideways = {0.0f, 0.0f, 0.0f, 1.0f};
                     AddTo(&push, &Sideways);
                 }
             }
@@ -904,9 +911,9 @@ void CharacterAgent::StandOnBody(DynamicBody* body)
 {
     // Pressed down by 30 (a sphere only while the character doesn't rise 2 faster than it); a jump off another body kicks it
     // once, by 0.7 of the velocity across
-    constexpr Vector4 Press = {0.0f, -30.0f, 0.0f, 1.0f};
-    constexpr f32 Rebound = 2.0f;
-    constexpr f32 JumpKick = 0.7f;
+    Vector4 Press; Press.x = 0.0f; Press.y = -30.0f; Press.z = 0.0f; Press.w = 1.0f;
+    CONSTEXPR f32 Rebound = 2.0f;
+    CONSTEXPR f32 JumpKick = 0.7f;
 
     bool sphere = IsSphere(body);
     Vector4 position;
@@ -941,9 +948,9 @@ void CharacterAgent::StandOnBody(DynamicBody* body)
 void CharacterAgent::KickPushedBody()
 {
     // 15 forward and 0.6 of the character's speed forward, raised by a tenth
-    constexpr f32 Strength = 15.0f;
-    constexpr f32 SpeedShare = Rounded(0.6);
-    constexpr f32 Raise = Rounded(0.1);
+    CONSTEXPR f32 Strength = 15.0f;
+    CONSTEXPR f32 SpeedShare = Rounded(0.6);
+    CONSTEXPR f32 Raise = Rounded(0.1);
 
     DynamicBody* body = BodyOf(ObjectOf(pushedBody));
     AddTo(&body->angularMomentum, &KickSpin);
@@ -954,7 +961,7 @@ void CharacterAgent::KickPushedBody()
     f32 speed = forward.x * velocity.x + forward.y * velocity.y + forward.z * velocity.z;
     f32 raise = __builtin_sqrtf(forward.x * forward.x + forward.z * forward.z) * Raise;
     f32 strength = speed * SpeedShare + Strength;
-    Vector4 impulse = {forward.x * strength, (forward.y + raise) * strength, forward.z * strength, forward.w};
+    Vector4 impulse; impulse.x = forward.x * strength; impulse.y = (forward.y + raise) * strength; impulse.z = forward.z * strength; impulse.w = forward.w;
     Vector4 position;
     Position(&position);
     position.y += KickHeight;
@@ -968,10 +975,10 @@ void CharacterAgent::KeepPushedBody()
 {
     // Kept while one of the two moves, the character is on the ground with the body ahead and the stick doesn't point away
     // from it
-    constexpr f32 Still = Rounded(0.2);
-    constexpr f32 Reach = 4.0f;
-    constexpr f32 LeastStick = Rounded(0.2);
-    constexpr f32 Away = -0.35f;
+    CONSTEXPR f32 Still = Rounded(0.2);
+    CONSTEXPR f32 Reach = 4.0f;
+    CONSTEXPR f32 LeastStick = Rounded(0.2);
+    CONSTEXPR f32 Away = -0.35f;
 
     DynamicBody* body = BodyOf(ObjectOf(pushedBody));
     if (body != nullptr && !(Length(&body->velocity) < Still && Length(&velocity) < Still)
@@ -979,8 +986,7 @@ void CharacterAgent::KeepPushedBody()
     {
         Vector4 position;
         Position(&position);
-        Vector4 toBody = {body->matrix.m[3][0] - position.x, body->matrix.m[3][1] - position.y,
-                          body->matrix.m[3][2] - position.z, 1.0f};
+        Vector4 toBody; toBody.x = body->matrix.m[3][0] - position.x; toBody.y = body->matrix.m[3][1] - position.y; toBody.z = body->matrix.m[3][2] - position.z; toBody.w = 1.0f;
         f32 inverse = InverseLength(&toBody, LengthEpsilon);
         toBody.x *= inverse;
         toBody.y *= inverse;
@@ -991,7 +997,7 @@ void CharacterAgent::KeepPushedBody()
         // Retail bug: the reach is measured on the direction made unit long, which is always within it
         if (0.0f < ahead && Length(&toBody) < Reach)
         {
-            Vector4 stick = {buttons.moveX, 0.0f, buttons.moveZ, 1.0f};
+            Vector4 stick; stick.x = buttons.moveX; stick.y = 0.0f; stick.z = buttons.moveZ; stick.w = 1.0f;
             Vector4 flat = toBody;
             flat.y = 0.0f;
             inverse = InverseLength(&flat, LengthEpsilon);
@@ -1012,8 +1018,8 @@ void CharacterAgent::KeepPushedBody()
 void CharacterAgent::PickPushedBody(InstanceContext** touched, s32 count)
 {
     // On the ground, with the stick pushed and the body ahead
-    constexpr f32 LeastStick = Rounded(0.1);
-    constexpr f32 Ahead = 0.5f;
+    CONSTEXPR f32 LeastStick = Rounded(0.1);
+    CONSTEXPR f32 Ahead = 0.5f;
 
     for (s32 i = 0; i < count; i++)
     {
@@ -1032,9 +1038,8 @@ void CharacterAgent::PickPushedBody(InstanceContext** touched, s32 count)
 
         Vector4 position;
         Position(&position);
-        Vector4 toBody = {body->matrix.m[3][0] - position.x, body->matrix.m[3][1] - position.y,
-                          body->matrix.m[3][2] - position.z, 1.0f};
-        Vector4 stick = {buttons.moveX, 0.0f, buttons.moveZ, 1.0f};
+        Vector4 toBody; toBody.x = body->matrix.m[3][0] - position.x; toBody.y = body->matrix.m[3][1] - position.y; toBody.z = body->matrix.m[3][2] - position.z; toBody.w = 1.0f;
+        Vector4 stick; stick.x = buttons.moveX; stick.y = 0.0f; stick.z = buttons.moveZ; stick.w = 1.0f;
         Vector4 flat = toBody;
         flat.y = 0.0f;
         f32 inverse = InverseLength(&flat, LengthEpsilon);
@@ -1064,14 +1069,14 @@ void CharacterAgent::HoldPushedBody()
 {
     // Held its distance ahead (crouched, its radius and 1.15) by a spring of 350 by the gap and 90 by the velocities' difference,
     // at most 80 across and less for a radius under 0.6; let go past 1.3
-    constexpr f32 Radius = 0.5f;
-    constexpr f32 CrouchedReach = 1.15f;
-    constexpr f32 MostGap = 1.3f;
-    constexpr f32 Stiffness = 350.0f;
-    constexpr f32 Damping = 90.0f;
-    constexpr f32 MostForce = 80.0f;
-    constexpr f32 SmallRadius = Rounded(0.6);
-    constexpr f32 SmallScale = Rounded(1.0 / 0.6);
+    CONSTEXPR f32 Radius = 0.5f;
+    CONSTEXPR f32 CrouchedReach = 1.15f;
+    CONSTEXPR f32 MostGap = 1.3f;
+    CONSTEXPR f32 Stiffness = 350.0f;
+    CONSTEXPR f32 Damping = 90.0f;
+    CONSTEXPR f32 MostForce = 80.0f;
+    CONSTEXPR f32 SmallRadius = Rounded(0.6);
+    CONSTEXPR f32 SmallScale = Rounded(1.0 / 0.6);
 
     InstanceContext* pushed = ObjectOf(pushedBody);
     if (pushed == nullptr)
@@ -1105,27 +1110,27 @@ void CharacterAgent::HoldPushedBody()
     {
         f32 reach = radius + CrouchedReach;
         RotateAndTranslate(place);
-        ahead = {place->matrix.m[2][0] * reach, place->matrix.m[2][1] * reach, place->matrix.m[2][2] * reach, 1.0f};
+        ahead.x = place->matrix.m[2][0] * reach; ahead.y = place->matrix.m[2][1] * reach; ahead.z = place->matrix.m[2][2] * reach; ahead.w = 1.0f;
     }
     else
     {
         RotateAndTranslate(place);
         f32 reach = pushedDistance;
-        ahead = {place->matrix.m[2][0] * reach, place->matrix.m[2][1] * reach, place->matrix.m[2][2] * reach, 1.0f};
+        ahead.x = place->matrix.m[2][0] * reach; ahead.y = place->matrix.m[2][1] * reach; ahead.z = place->matrix.m[2][2] * reach; ahead.w = 1.0f;
     }
 
     AddTo(&target, &ahead);
-    Vector4 gap = {target.x - body->matrix.m[3][0], target.y - body->matrix.m[3][1], target.z - body->matrix.m[3][2], 1.0f};
+    Vector4 gap; gap.x = target.x - body->matrix.m[3][0]; gap.y = target.y - body->matrix.m[3][1]; gap.z = target.z - body->matrix.m[3][2]; gap.w = 1.0f;
     if (MostGap < Length(&gap))
     {
         AssignReference(&pushedBody, nullptr);
         return;
     }
 
-    Vector4 spring = {gap.x * Stiffness, gap.y * Stiffness, gap.z * Stiffness, 1.0f};
-    Vector4 slip = {body->velocity.x - velocity.x, body->velocity.y - velocity.y, body->velocity.z - velocity.z, 1.0f};
-    Vector4 damping = {slip.x * Damping, slip.y * Damping, slip.z * Damping, 1.0f};
-    Vector4 force = {spring.x - damping.x, spring.y - damping.y, spring.z - damping.z, 1.0f};
+    Vector4 spring; spring.x = gap.x * Stiffness; spring.y = gap.y * Stiffness; spring.z = gap.z * Stiffness; spring.w = 1.0f;
+    Vector4 slip; slip.x = body->velocity.x - velocity.x; slip.y = body->velocity.y - velocity.y; slip.z = body->velocity.z - velocity.z; slip.w = 1.0f;
+    Vector4 damping; damping.x = slip.x * Damping; damping.y = slip.y * Damping; damping.z = slip.z * Damping; damping.w = 1.0f;
+    Vector4 force; force.x = spring.x - damping.x; force.y = spring.y - damping.y; force.z = spring.z - damping.z; force.w = 1.0f;
     place = instance->place;
     RotateAndTranslate(place);
     f32 sideways = gap.x * place->matrix.m[0][0] + gap.y * place->matrix.m[0][1] + gap.z * place->matrix.m[0][2];
@@ -1149,7 +1154,7 @@ void CharacterAgent::HoldPushedBody()
         force.z *= scale;
     }
 
-    Vector4 center = {0.0f, 0.0f, 0.0f, 1.0f};
+    Vector4 center; center.x = 0.0f; center.y = 0.0f; center.z = 0.0f; center.w = 1.0f;
     body->AddLocalForce(&force, &center);
     if (look != nullptr)
     {
@@ -1161,10 +1166,10 @@ void CharacterAgent::PushBodies(f32 seconds, ContactSet* contacts)
 {
     // The pushed body is held 0.1 further than where it's touched; out of touch, with the stick pushed, it's held a unit a
     // second closer. A slide knocks a body once a second. Room for 32 bodies touched (retail doesn't check)
-    constexpr f32 HoldGap = Rounded(0.1);
-    constexpr f32 LeastStick = Rounded(0.1);
-    constexpr f32 SlideHitSeconds = 1.0f;
-    constexpr s32 MostTouched = 32;
+    CONSTEXPR f32 HoldGap = Rounded(0.1);
+    CONSTEXPR f32 LeastStick = Rounded(0.1);
+    CONSTEXPR f32 SlideHitSeconds = 1.0f;
+    CONSTEXPR s32 MostTouched = 32;
 
     f32 cooldown = slideHitCooldown - seconds;
     slideHitCooldown = cooldown < 0.0f ? 0.0f : cooldown;
@@ -1189,7 +1194,7 @@ void CharacterAgent::PushBodies(f32 seconds, ContactSet* contacts)
         }
     }
 
-    auto* character = static_cast<CharacterPart*>(part);
+    CharacterPart* character = static_cast<CharacterPart*>(part);
     if (Linked() == 0)
     {
         if (Spinning(character) && ObjectOf(pushedBody) != nullptr && kickCooldown == 0.0f)
@@ -1231,8 +1236,7 @@ void CharacterAgent::PushBodies(f32 seconds, ContactSet* contacts)
                         DynamicBody* body = BodyOf(ObjectOf(pushedBody));
                         Vector4 position;
                         Position(&position);
-                        Vector4 away = {body->matrix.m[3][0] - position.x, body->matrix.m[3][1] - position.y,
-                                        body->matrix.m[3][2] - position.z, 1.0f};
+                        Vector4 away; away.x = body->matrix.m[3][0] - position.x; away.y = body->matrix.m[3][1] - position.y; away.z = body->matrix.m[3][2] - position.z; away.w = 1.0f;
                         pushedDistance = Length(&away) + HoldGap;
                         break;
                     }
@@ -1240,7 +1244,7 @@ void CharacterAgent::PushBodies(f32 seconds, ContactSet* contacts)
 
                 if (i == touchedCount)
                 {
-                    Vector4 stick = {buttons.moveX, 0.0f, buttons.moveZ, 1.0f};
+                    Vector4 stick; stick.x = buttons.moveX; stick.y = 0.0f; stick.z = buttons.moveZ; stick.w = 1.0f;
                     if (LeastStick < Length(&stick))
                     {
                         pushedDistance -= seconds;
