@@ -22,7 +22,7 @@ void ForgetFirstList(ObjectRigidBody* body)
 
 ChunkRigidBodies* ConstructChunkRigidBodies(void* memory)
 {
-    auto* bodies = static_cast<ChunkRigidBodies*>(memory);
+    ChunkRigidBodies* bodies = static_cast<ChunkRigidBodies*>(memory);
     bodies->firstCount = 0;
     bodies->secondCount = 0;
     return bodies;

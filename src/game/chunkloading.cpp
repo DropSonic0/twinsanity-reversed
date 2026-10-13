@@ -26,22 +26,22 @@
 namespace
 {
 // GCC's pointers to the lists' members, passed along and unused
-constexpr s32 LinkPrevious = GCC2_MEMBER_POINTER(GameChunkLink, previous);
-constexpr s32 LinkNext = GCC2_MEMBER_POINTER(GameChunkLink, next);
-constexpr s32 LoaderPrevious = GCC2_MEMBER_POINTER(ChunkLoader, previous);
-constexpr s32 LoaderNext = GCC2_MEMBER_POINTER(ChunkLoader, next);
+CONSTEXPR s32 LinkPrevious = GCC2_MEMBER_POINTER(GameChunkLink, previous);
+CONSTEXPR s32 LinkNext = GCC2_MEMBER_POINTER(GameChunkLink, next);
+CONSTEXPR s32 LoaderPrevious = GCC2_MEMBER_POINTER(ChunkLoader, previous);
+CONSTEXPR s32 LoaderNext = GCC2_MEMBER_POINTER(ChunkLoader, next);
 // The seconds a loader waits before loading a wanted file and before unloading an unwanted one (a chunk no link reached this
 // frame's sooner)
-constexpr f32 LoadDelay = 1.0f;
-constexpr f32 UnloadDelay = 4.0f;
-constexpr f32 UnreachedUnloadDelay = Rounded(0.1);
+CONSTEXPR f32 LoadDelay = 1.0f;
+CONSTEXPR f32 UnloadDelay = 4.0f;
+CONSTEXPR f32 UnreachedUnloadDelay = Rounded(0.1);
 // The frames drawn empty before everything's unloaded
-constexpr s32 EmptyFrames = 2;
+CONSTEXPR s32 EmptyFrames = 2;
 // The shadows a chunk's made with (its constructor ignores it: its lists hold 100)
-constexpr s32 ShadowCount = 100;
+CONSTEXPR s32 ShadowCount = 100;
 // A chunk's list of the object IDs its RM2 brings: a count, then room for MostObjects IDs
-constexpr u32 MostObjects = 0x200;
-constexpr u32 ObjectListSize = sizeof(u32) + MostObjects * sizeof(u16);
+CONSTEXPR u32 MostObjects = 0x200;
+CONSTEXPR u32 ObjectListSize = sizeof(u32) + MostObjects * sizeof(u16);
 }
 
 extern "C"
@@ -127,7 +127,7 @@ LoaderReference* AddLoaderReference(ChunkLoader* loader)
 {
     if (loader->self == nullptr)
     {
-        auto* block = static_cast<LoaderReference*>(MemoryAllocate(sizeof(LoaderReference)));
+        LoaderReference* block = static_cast<LoaderReference*>(MemoryAllocate(sizeof(LoaderReference)));
         block->loader = loader;
         // The new block's bits above the count and the owning bit are kept
         ReferenceBits leftover = block->bits;
@@ -680,7 +680,7 @@ extern "C"
         reader->ReadS32(reinterpret_cast<s32*>(&count));
         for (u32 i = 0; i < count; i++)
         {
-            auto* link = static_cast<GameChunkLink*>(MemoryAllocate(sizeof(GameChunkLink)));
+            GameChunkLink* link = static_cast<GameChunkLink*>(MemoryAllocate(sizeof(GameChunkLink)));
             link->path.string = nullptr;
             link->path.capacity = 0;
             link->path.length = 0;
@@ -784,7 +784,7 @@ extern "C"
             return nullptr;
         }
 
-        auto* list = static_cast<LinkHullList*>(MemoryAllocate(sizeof(LinkHullList)));
+        LinkHullList* list = static_cast<LinkHullList*>(MemoryAllocate(sizeof(LinkHullList)));
         list->next = nullptr;
         HullConstruct(&list->hull);
         RetailLibc::MemorySet(&list->flags, 0, sizeof(list->flags));
@@ -832,7 +832,7 @@ extern "C"
             return;
         }
 
-        auto* next = static_cast<LinkHullList*>(MemoryAllocate(sizeof(LinkHullList)));
+        LinkHullList* next = static_cast<LinkHullList*>(MemoryAllocate(sizeof(LinkHullList)));
         next->next = nullptr;
         HullConstruct(&next->hull);
         ReadLinkHullList(next, reader);
@@ -1182,7 +1182,7 @@ Sm2Loader* Sm2Loader::Construct(Sm2Loader* loader, ChunkLoader* chunk)
     loader->data = nullptr;
     loader->vtable = g_Sm2LoaderVTable;
     loader->state = Queued;
-    auto* policy = static_cast<WantPolicy*>(MemoryAllocate(sizeof(WantPolicy)));
+    WantPolicy* policy = static_cast<WantPolicy*>(MemoryAllocate(sizeof(WantPolicy)));
     loader->policy = policy;
     policy->vtable = g_Sm2WantPolicyVTable;
     return loader;
@@ -1221,7 +1221,7 @@ bool Sm2Loader::StartLoading(s32 index, bool now)
     path.length = 0;
     path.capacity = 0;
     StringAssign(&path, loader->path.string);
-    auto* chunk = static_cast<ChunkData*>(MemoryAllocate(sizeof(ChunkData)));
+    ChunkData* chunk = static_cast<ChunkData*>(MemoryAllocate(sizeof(ChunkData)));
     AssignChunkData(&data, ConstructChunkData(chunk, GetChunkList(), path.string));
     ChunkDataLights(DataOf(data));
     ChunkDataInstances(DataOf(data));
@@ -1339,7 +1339,7 @@ Rm2Loader* Rm2Loader::Construct(Rm2Loader* loader, ChunkLoader* chunk)
     loader->entry = nullptr;
     loader->vtable = g_Rm2LoaderVTable;
     loader->state = Queued;
-    auto* policy = static_cast<WantPolicy*>(MemoryAllocate(sizeof(WantPolicy)));
+    WantPolicy* policy = static_cast<WantPolicy*>(MemoryAllocate(sizeof(WantPolicy)));
     loader->policy = policy;
     policy->vtable = g_Rm2WantPolicyVTable;
     return loader;
@@ -1375,7 +1375,7 @@ bool Rm2Loader::StartLoading(s32 index, bool now)
     ChunkShadowsOf(chunk, ShadowCount);
     ChunkDataCollision(chunk);
     ChunkEntry* added = entry;
-    auto* objects = static_cast<u32*>(MemoryAllocate(ObjectListSize));
+    u32* objects = static_cast<u32*>(MemoryAllocate(ObjectListSize));
     objects[0] = 0;
     added->objects = objects;
     reader = Rm2Reader::Construct(static_cast<Rm2Reader*>(MemoryAllocate(sizeof(Rm2Reader))), entry);
@@ -1480,7 +1480,7 @@ void Rm2Loader::Unlink(GameChunkLink*)
 namespace
 {
 // The most instances a chunk's search for an ID looks at (those with an object node)
-constexpr u16 MostInstances = 0x400;
+CONSTEXPR u16 MostInstances = 0x400;
 
 // Every element of a list destroyed (none skipped), then the list freed and forgotten (no list: nothing)
 template <typename Destroy>
@@ -1514,19 +1514,27 @@ void DestroyList(PointerArray<void>** list, Destroy destroy)
 
     *list = nullptr;
 }
+
+void DestroyPositionElement(void* position)
+{
+    static_cast<LayoutPosition*>(position)->Destroy(DestroyAndFree);
+}
+
+void DestroyPathElement(void* path)
+{
+    PointList* points = static_cast<PointList*>(path);
+    CallVirtual<void>(points, points->vtable, PointList::DestroySlot, static_cast<u32>(DestroyAndFree));
+}
 }
 
 void ChunkEntry::DestroyPositions()
 {
-    DestroyList(&positions, [](void* position) { static_cast<LayoutPosition*>(position)->Destroy(DestroyAndFree); });
+    DestroyList(&positions, DestroyPositionElement);
 }
 
 void ChunkEntry::DestroyPaths()
 {
-    DestroyList(&paths, [](void* path) {
-        auto* points = static_cast<PointList*>(path);
-        CallVirtual<void>(points, points->vtable, PointList::DestroySlot, u32{DestroyAndFree});
-    });
+    DestroyList(&paths, DestroyPathElement);
 }
 
 void ChunkEntry::Destroy(u32 destroyFlags)
@@ -1577,7 +1585,7 @@ InstanceContext* FindChunkInstance(ChunkEntry* chunk, u16 id)
     u32 count = QueryChunkInstancesOfKinds(reference->chunk, ObjectNodeKinds, &query);
     for (u32 index = 0; index < count; index++)
     {
-        auto* node = static_cast<ObjectNodeBase*>(GetGameNode(&found[index]->nodes, NodeObject));
+        ObjectNodeBase* node = static_cast<ObjectNodeBase*>(GetGameNode(&found[index]->nodes, NodeObject));
         if (node->agent->id == id)
         {
             return found[index];
@@ -1650,12 +1658,12 @@ void StopFilteredObjectNodes(ChunkManager*, const u32* filter)
                            InstanceCollector::BothPools);
         for (walk.First(); !walk.AtEnd(); walk.Next())
         {
-            auto* node = static_cast<ObjectNodeBase*>(GetGameNode(&(*walk.Item())->nodes, NodeObject));
+            ObjectNodeBase* node = static_cast<ObjectNodeBase*>(GetGameNode(&(*walk.Item())->nodes, NodeObject));
             if (node != nullptr)
             {
                 CallVirtual<void>(node, node->vtable, ObjectNode::ReleasePartsSlot);
                 CallVirtual<void>(node, node->vtable, ObjectNode::DoNothingSlot);
-                CallVirtual<void>(node, node->vtable, ObjectNode::StopRunnersSlot, u32{1});
+                CallVirtual<void>(node, node->vtable, ObjectNode::StopRunnersSlot, static_cast<u32>(1));
             }
         }
 
@@ -1683,7 +1691,7 @@ u16 ChunkEntry::NextFlagSlot()
 namespace
 {
 // A chunk's AI navigation's destructor
-constexpr u32 NavigationDestroySlot = 1;
+CONSTEXPR u32 NavigationDestroySlot = 1;
 }
 
 void UnloadChunkEntry(ChunkEntry* chunk)
@@ -1695,7 +1703,7 @@ void UnloadChunkEntry(ChunkEntry* chunk)
         AiNavigation* navigation = chunk->navigation;
         if (navigation != nullptr)
         {
-            CallVirtual<void>(navigation, navigation->vtable, NavigationDestroySlot, u32{DestroyAndFree});
+            CallVirtual<void>(navigation, navigation->vtable, NavigationDestroySlot, static_cast<u32>(DestroyAndFree));
         }
 
         chunk->navigation = nullptr;
@@ -1755,7 +1763,7 @@ AiPosition* NearestFlaggedAiPosition(ChunkEntry* chunk, const Vector4* point, u1
 
 ChunkEntry* ChunkManager::NewEntry(const char* path, ChunkData* chunk, void*, PersistentFlags* store)
 {
-    auto* entry = static_cast<ChunkEntry*>(MemoryAllocate(sizeof(ChunkEntry)));
+    ChunkEntry* entry = static_cast<ChunkEntry*>(MemoryAllocate(sizeof(ChunkEntry)));
     u16 index = count;
     StringConstruct(&entry->path, path);
     entry->index = index;
@@ -1818,7 +1826,7 @@ void ChunkManager::LoadDefault(const char* path)
     ClearCounters();
     defaultObjects = static_cast<u32*>(MemoryAllocate(ObjectListSize));
     defaultObjects[0] = 0;
-    auto* reader = static_cast<Rm2Reader*>(MemoryAllocate(sizeof(Rm2Reader)));
+    Rm2Reader* reader = static_cast<Rm2Reader*>(MemoryAllocate(sizeof(Rm2Reader)));
     defaultReader = Rm2Reader::ConstructDefault(reader, path, resources, defaultObjects);
     if (flags.queuesDefaultRm2 != 0)
     {
@@ -1844,9 +1852,9 @@ void ChunkManager::LoadDefault(const char* path)
 
 void ChunkManager::ClearCounters()
 {
-    for (s32& counter : counters)
+    for (s32 index = 0; index < Counters; index++)
     {
-        counter = 0;
+        counters[index] = 0;
     }
 }
 
@@ -1866,7 +1874,7 @@ ChunkEntry* FindChunkEntry(ChunkManager* chunks, const char* path)
 
 ChunkEntry* ChunkOfIndex(void* manager, u16 index)
 {
-    auto* chunks = static_cast<ChunkManager*>(manager);
+    ChunkManager* chunks = static_cast<ChunkManager*>(manager);
     u32 count = chunks->count;
     for (u32 i = 0; i < count; i++)
     {
@@ -1882,7 +1890,7 @@ ChunkEntry* ChunkOfIndex(void* manager, u16 index)
 
 ChunkEntry* ChunkOfInstance(void* chunks, InstanceContext* instance)
 {
-    auto* manager = static_cast<ChunkManager*>(chunks);
+    ChunkManager* manager = static_cast<ChunkManager*>(chunks);
     u32 count = manager->count;
     ChunkData* chunk = instance->chunk;
     for (u32 index = 0; index < count; index++)

@@ -44,7 +44,7 @@ CHECK_SIZE(LayoutInstancesFlags, 4);
 struct LayoutInstances
 {
     // The kinds' lists
-    enum Kind : u32
+    enum Kind
     {
         KindTemplates,
         KindObjectInstances,

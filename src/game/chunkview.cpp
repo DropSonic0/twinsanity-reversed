@@ -9,7 +9,7 @@
 namespace
 {
 // Without a view, the clip vector's x and y: 1 over a guard band of 5 screens
-constexpr f32 DefaultClip = Rounded(0.2);
+CONSTEXPR f32 DefaultClip = Rounded(0.2);
 
 // A point's clip flags (VU0's CLIP's six bits: past w on either side of each axis)
 union ClipFlags
@@ -116,7 +116,7 @@ void ChunkView::TakeViewMatrix()
 
 void ChunkView::TestBox(const Box* box)
 {
-    alignas(16) u32 flags[2];
+    ALIGN16 u32 flags[2];
     Platform::Graphics::ClipBox(&toClip, box, flags);
     u32 result = BoxVisibility(flags);
     lastVisibility = result;
@@ -125,7 +125,7 @@ void ChunkView::TestBox(const Box* box)
 
 void ChunkView::TestBoxAt(const Box* box, const Matrix4x4* matrix)
 {
-    alignas(16) u32 flags[2];
+    ALIGN16 u32 flags[2];
     Platform::Graphics::ClipBoxAt(&toClip, box, flags, matrix);
     u32 result = BoxVisibility(flags);
     lastVisibility = result;

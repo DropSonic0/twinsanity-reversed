@@ -23,26 +23,26 @@ namespace
 {
 // The stick's and the strafe's dead zone, the stick past which it walks (barely, when it's controlled) and runs, and how far
 // the move's direction may be off the facing before it shuffles
-constexpr f32 StickEpsilon = Epsilon;
-constexpr f32 WalkStick = Rounded(0.3);
-constexpr f32 ControlledWalkStick = Rounded(0.0001);
-constexpr f32 RunStick = Rounded(0.96);
-constexpr f32 ShuffleDegrees = 5.0f;
+CONSTEXPR f32 StickEpsilon = Epsilon;
+CONSTEXPR f32 WalkStick = Rounded(0.3);
+CONSTEXPR f32 ControlledWalkStick = Rounded(0.0001);
+CONSTEXPR f32 RunStick = Rounded(0.96);
+CONSTEXPR f32 ShuffleDegrees = 5.0f;
 // The stick's turn (1 a half turn) is eased within 45 degrees and between 45 and 135
-constexpr f32 HalfTurnDegrees = 180.0f;
-constexpr f32 EaseNearDegrees = 45.0f;
-constexpr f32 EaseFarDegrees = 135.0f;
-constexpr f32 EaseNearLeast = Rounded(0.05);
-constexpr f32 EaseNearMost = 0.5f;
-constexpr f32 EaseFarLeast = 0.5f;
+CONSTEXPR f32 HalfTurnDegrees = 180.0f;
+CONSTEXPR f32 EaseNearDegrees = 45.0f;
+CONSTEXPR f32 EaseFarDegrees = 135.0f;
+CONSTEXPR f32 EaseNearLeast = Rounded(0.05);
+CONSTEXPR f32 EaseNearMost = 0.5f;
+CONSTEXPR f32 EaseFarLeast = 0.5f;
 // Mecha-Bandicoot's strafe turns half a turn a second and ends a quarter second in
-constexpr f32 MechaStrafeTurnDegrees = 180.0f;
-constexpr f32 MechaStrafeSeconds = 0.25f;
+CONSTEXPR f32 MechaStrafeTurnDegrees = 180.0f;
+CONSTEXPR f32 MechaStrafeSeconds = 0.25f;
 // A push in the air is kept while the stick is within this
-constexpr f32 PushedStick = Rounded(0.3);
+CONSTEXPR f32 PushedStick = Rounded(0.3);
 // The tied slam: its speed (times the stick) and its turn rate (radians a second)
-constexpr f32 SlamSpeed = 4.0f;
-constexpr f32 SlamTurnRadians = 8.0f;
+CONSTEXPR f32 SlamSpeed = 4.0f;
+CONSTEXPR f32 SlamTurnRadians = 8.0f;
 
 CharacterPart* PartOf(const CharacterAgent* agent)
 {

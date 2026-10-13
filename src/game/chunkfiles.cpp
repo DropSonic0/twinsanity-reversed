@@ -43,7 +43,7 @@ extern "C"
 namespace
 {
 // The SM2's sections (1-3 not read)
-enum Sm2Section : u32
+enum Sm2Section
 {
     Sm2Scenery = 0,
     Sm2DynamicScenery = 4,
@@ -53,7 +53,7 @@ enum Sm2Section : u32
 };
 
 // The RM2's sections past its layouts' instances (sections 0-7)
-enum Rm2Section : u32
+enum Rm2Section
 {
     Rm2Particles = Rm2Reader::Layouts,
     Rm2Collision = 9,
@@ -63,8 +63,8 @@ enum Rm2Section : u32
 };
 
 // The layouts 0-2 and the last are the chunk's own, the others aren't
-constexpr u32 FirstOtherLayout = 3;
-constexpr u32 LastLayout = Rm2Reader::Layouts - 1;
+CONSTEXPR u32 FirstOtherLayout = 3;
+CONSTEXPR u32 LastLayout = Rm2Reader::Layouts - 1;
 
 ChunkData* ChunkDataOf(Sm2Loader* loader)
 {
@@ -74,7 +74,7 @@ ChunkData* ChunkDataOf(Sm2Loader* loader)
 template <typename Reader>
 Reader* MakeSectionReader(const GccVTableEntry* vtable, ItemInterface* item, const ItemHeader* header)
 {
-    auto* reader = static_cast<Reader*>(MemoryAllocate(sizeof(Reader)));
+    Reader* reader = static_cast<Reader*>(MemoryAllocate(sizeof(Reader)));
     reader->id = header->id;
     reader->vtable = vtable;
     reader->offset = header->offset;
@@ -200,13 +200,13 @@ void Sm2SectionReader::Destroy(u32 flags)
 
 void Sm2SectionReader::Read(u8* data, u32 size, ReaderStack*)
 {
-    auto* sm2 = static_cast<Sm2Reader*>(item);
+    Sm2Reader* sm2 = static_cast<Sm2Reader*>(item);
     Sm2Loader* loader = sm2->loader;
     switch (id)
     {
     case Sm2Scenery:
     {
-        auto* section = ScenerySectionReader::Construct(
+        ScenerySectionReader* section = ScenerySectionReader::Construct(
             static_cast<ScenerySectionReader*>(MemoryAllocate(sizeof(ScenerySectionReader))), data, size);
         MemoryReader* reader = MemoryReader::Construct(static_cast<MemoryReader*>(MemoryAllocate(sizeof(MemoryReader))), section,
                                                        nullptr, 0);
@@ -428,9 +428,9 @@ void Rm2Reader::ReadSection(u32 id, u32 offset, MemoryStream* stream)
 
     // The other sections are the layouts' instances
     u32 chunkOwn = id < FirstOtherLayout || id == LastLayout ? 1 : 0;
-    auto* layout = static_cast<LayoutInstances*>(MemoryAllocate(sizeof(LayoutInstances)));
+    LayoutInstances* layout = static_cast<LayoutInstances*>(MemoryAllocate(sizeof(LayoutInstances)));
     layout = LayoutInstances::Construct(layout, bits.defaultChunk, chunkOwn, resources, entry);
-    auto* item = static_cast<InstanceSectionItem*>(MemoryAllocate(sizeof(InstanceSectionItem)));
+    InstanceSectionItem* item = static_cast<InstanceSectionItem*>(MemoryAllocate(sizeof(InstanceSectionItem)));
     item = InstanceSectionItem::Construct(item, layout);
     layouts[id] = layout;
     instanceItems[id] = item;

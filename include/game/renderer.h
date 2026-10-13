@@ -8,8 +8,8 @@ struct RenderView;
 struct Vector2;
 
 // The TV's shapes as the game has them: 4:3 (the one the game's places were made for) and 16:9
-constexpr f32 NarrowAspect = 0x1.555556p+0f;
-constexpr f32 WideAspect = 0x1.C71C72p+0f;
+CONSTEXPR f32 NarrowAspect = 0x1.555556p+0f;
+CONSTEXPR f32 WideAspect = 0x1.C71C72p+0f;
 
 // The renderer's frames: the render buckets (the PS2's DMA chains) linked into one chain the platform presents
 extern "C"

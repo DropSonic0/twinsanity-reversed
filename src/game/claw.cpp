@@ -13,8 +13,8 @@
 #include "game/reference.h"
 #include "retail/libc.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // Nina's claw: the graple instance hanging on her (held by one of her attachments) is her claw, which she sends at what her
 // target lock picks (a grabbable to hang from or to leap to) or swipes with. Each state has a step, and the frame takes the next
@@ -25,46 +25,46 @@ EABI_EXPORT(FUN_001467d0, &ClawController::Frame);
 namespace
 {
 // Her model's exit point the claw hangs from, and her float property of her gravity
-constexpr u32 ClawHandExitPoint = 8;
-constexpr u32 GravityProperty = 1;
+CONSTEXPR u32 ClawHandExitPoint = 8;
+CONSTEXPR u32 GravityProperty = 1;
 
 // Her target lock: a flat-bottomed hull 10 long, its half widths 1 at its near end and 7 at its far end, taking grabbables
-constexpr f32 LockLength = 10.0f;
-constexpr f32 LockNearHalf = 1.0f;
-constexpr f32 LockFarHalf = 7.0f;
-constexpr u32 GrabbablePriority = 1;
+CONSTEXPR f32 LockLength = 10.0f;
+CONSTEXPR f32 LockNearHalf = 1.0f;
+CONSTEXPR f32 LockFarHalf = 7.0f;
+CONSTEXPR u32 GrabbablePriority = 1;
 
 // The states' times: reaching and winding up 0.12 seconds, flying 0.1, pulled 0.28 (a second when the claw holds nothing),
 // leaping 0.5, dropped 0.2, jumped off 0.1, swiping out 0.18 and back 0.08, after a swipe 0.1
-constexpr f32 ReachSeconds = Rounded(0.12);
-constexpr f32 FlySeconds = Rounded(0.1);
-constexpr f32 PullSeconds = Rounded(0.28);
-constexpr f32 LeapSeconds = 0.5f;
-constexpr f32 DropSeconds = Rounded(0.2);
-constexpr f32 JumpOffSeconds = Rounded(0.1);
-constexpr f32 SwipeOutSeconds = Rounded(0.18);
-constexpr f32 SwipeBackSeconds = Rounded(0.08);
-constexpr f32 AfterSwipeSeconds = Rounded(0.1);
+CONSTEXPR f32 ReachSeconds = Rounded(0.12);
+CONSTEXPR f32 FlySeconds = Rounded(0.1);
+CONSTEXPR f32 PullSeconds = Rounded(0.28);
+CONSTEXPR f32 LeapSeconds = 0.5f;
+CONSTEXPR f32 DropSeconds = Rounded(0.2);
+CONSTEXPR f32 JumpOffSeconds = Rounded(0.1);
+CONSTEXPR f32 SwipeOutSeconds = Rounded(0.18);
+CONSTEXPR f32 SwipeBackSeconds = Rounded(0.08);
+CONSTEXPR f32 AfterSwipeSeconds = Rounded(0.1);
 
 // Her events: a grab, its target lost while reaching, the claw hitting a hook and a point, a swipe, the leap, hanging, dropped
 // and jumped off the hook
-constexpr u32 EventGrab = 0x37;
-constexpr u32 EventTargetLost = 0x38;
-constexpr u32 EventHookHit = 0x39;
-constexpr u32 EventPointHit = 0x3A;
-constexpr u32 EventSwipe = 0x3C;
-constexpr u32 EventLeap = 0x3D;
-constexpr u32 EventHang = 0x3E;
-constexpr u32 EventDrop = 0x3F;
-constexpr u32 EventJumpOff = 0x40;
+CONSTEXPR u32 EventGrab = 0x37;
+CONSTEXPR u32 EventTargetLost = 0x38;
+CONSTEXPR u32 EventHookHit = 0x39;
+CONSTEXPR u32 EventPointHit = 0x3A;
+CONSTEXPR u32 EventSwipe = 0x3C;
+CONSTEXPR u32 EventLeap = 0x3D;
+CONSTEXPR u32 EventHang = 0x3E;
+CONSTEXPR u32 EventDrop = 0x3F;
+CONSTEXPR u32 EventJumpOff = 0x40;
 // The graple's: the claw leaving her hand, hitting, the leap, back (hanging or retracted), a swipe going out, coming back, done
-constexpr u32 GrapleLeaves = 0xB;
-constexpr u32 GrapleHits = 0xC;
-constexpr u32 GrapleLeap = 0xD;
-constexpr u32 GrapleBack = 0xE;
-constexpr u32 GrapleSwipeOut = 0xF;
-constexpr u32 GrapleSwipeBack = 0x10;
-constexpr u32 GrapleSwipeDone = 0x11;
+CONSTEXPR u32 GrapleLeaves = 0xB;
+CONSTEXPR u32 GrapleHits = 0xC;
+CONSTEXPR u32 GrapleLeap = 0xD;
+CONSTEXPR u32 GrapleBack = 0xE;
+CONSTEXPR u32 GrapleSwipeOut = 0xF;
+CONSTEXPR u32 GrapleSwipeBack = 0x10;
+CONSTEXPR u32 GrapleSwipeDone = 0x11;
 
 InstanceContext* ObjectOf(const Reference* handle)
 {
@@ -90,7 +90,7 @@ bool TimeIsUp(const ClawController* claw, const TimeClock* clock)
 // How far into its time the state is (at least 0.01, 1 once the time is up): whether the time is up
 bool StateShare(const ClawController* claw, const TimeClock* clock, f32* share)
 {
-    constexpr f32 LeastShare = Rounded(0.01);
+    CONSTEXPR f32 LeastShare = Rounded(0.01);
 
     s32 elapsed = static_cast<s32>(clock->time - claw->stateStart);
     f32 fraction = static_cast<f32>(elapsed) * g_SecondsPerClockUnit / (static_cast<f32>(claw->duration) * g_SecondsPerClockUnit);
@@ -161,7 +161,7 @@ ExitPointAnimation* ClawHandOf(InstanceContext* instance)
 GrapleAgent* GrapleAgentOf(InstanceContext* instance)
 {
     void* node = GetGameNode(&instance->nodes, NodeGraple);
-    return *reinterpret_cast<GrapleAgent* const*>(reinterpret_cast<std::uintptr_t>(node) + offsetof(AgentNode, agent));
+    return *reinterpret_cast<GrapleAgent* const*>(reinterpret_cast<uintptr_t>(node) + offsetof(AgentNode, agent));
 }
 
 // The claw's graple told an event, when she has one
@@ -177,7 +177,7 @@ void TellGraple(ClawController* claw, u32 event)
 // The graple taken from what hangs on her: the instance of the last attachment that holds one
 void TakeGraple(ClawController* claw, InstanceContext* instance)
 {
-    auto* attachments = static_cast<AttachmentsNode*>(GetGameNode(&instance->nodes, NodeAttachments));
+    AttachmentsNode* attachments = static_cast<AttachmentsNode*>(GetGameNode(&instance->nodes, NodeAttachments));
     if (attachments == nullptr || attachments->path == nullptr)
     {
         return;
@@ -237,7 +237,7 @@ Vector4 GrabPointOf(InstanceContext* target, ObjectPlace* place)
         return grab;
     }
 
-    auto* grabbable = static_cast<AgentNode*>(GetGameNode(&target->nodes, NodeGrabbable));
+    AgentNode* grabbable = static_cast<AgentNode*>(GetGameNode(&target->nodes, NodeGrabbable));
     const Vector4* landing = grabbable != nullptr ? GrabbableLandingPoint(grabbable, place) : nullptr;
     if (landing != nullptr)
     {
@@ -282,10 +282,10 @@ void TurnInstance(InstanceContext* instance, const s32* x, const s32* y, const s
 }
 }
 
-static_assert(offsetof(ClawController, grabYaw) == 0x18);
-static_assert(offsetof(ClawController, claw) == 0x30);
-static_assert(offsetof(ObjectNode, motion) == 0x128);
-static_assert(offsetof(CharacterAgent, buttons) == 0xF0);
+CHECK_OFFSET(ClawController, grabYaw, 0x18);
+CHECK_OFFSET(ClawController, claw, 0x30);
+CHECK_OFFSET(ObjectNode, motion, 0x128);
+CHECK_OFFSET(CharacterAgent, buttons, 0xF0);
 
 ClawController* ClawController::Construct(ClawController* claw, CharacterAgent* agent)
 {
@@ -314,7 +314,7 @@ void ClawController::Reset()
 
 void ClawController::AimPoints(Vector4* handOut, s32* facingYaw, Vector4* point, s32* grabYawOut, Vector4* grabPoint)
 {
-    constexpr f32 ReachAhead = 5.0f;
+    CONSTEXPR f32 ReachAhead = 5.0f;
 
     InstanceContext* instance = agent->instance;
     ObjectPlace* place = instance->place;
@@ -452,7 +452,7 @@ void ClawController::Ready(TimeClock* clock, u32 circle, s32* next)
 
     u32 event = EventNone;
     InstanceContext* aimed = ObjectOf(lock.target);
-    auto* grabbable = aimed != nullptr ? static_cast<AgentNode*>(GetGameNode(&aimed->nodes, NodeGrabbable)) : nullptr;
+    AgentNode* grabbable = aimed != nullptr ? static_cast<AgentNode*>(GetGameNode(&aimed->nodes, NodeGrabbable)) : nullptr;
     if (grabbable != nullptr)
     {
         *next = StateReaching;
@@ -632,9 +632,9 @@ void ClawController::Leap(TimeClock* clock, s32* next)
 {
     // Up at 10 units a second, forward 1.1 times as fast as covers the flat way to the grab point in the time her gravity brings
     // her to its height (the later time, 0.01 seconds when it's never there)
-    constexpr f32 UpSpeed = 10.0f;
-    constexpr f32 NoTime = Rounded(0.01);
-    constexpr f32 Faster = Rounded(1.1);
+    CONSTEXPR f32 UpSpeed = 10.0f;
+    CONSTEXPR f32 NoTime = Rounded(0.01);
+    CONSTEXPR f32 Faster = Rounded(1.1);
 
     if (clock->time != static_cast<u32>(stateStart))
     {
@@ -856,7 +856,7 @@ void ClawController::Frame(f32 circle, f32 cross, TimeClock* clock)
     case StateAfterSwipe:
         HoldStill(PartOf(agent));
         TakeOwnGravity(agent);
-        [[fallthrough]];
+        /* fallthrough */
     case StateDropped:
         if (TimeIsUp(this, clock))
         {

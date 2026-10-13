@@ -28,7 +28,7 @@ CHECK_SIZE(LightHeader, 4);
 // it follows (nothing for the scenery's lights), 12 another's values taken (its kind's and the base's)
 struct Light
 {
-    enum Kind : u8
+    enum Kind
     {
         KindAmbient = 0,
         KindDirectional = 1,
@@ -40,17 +40,17 @@ struct Light
         KindAttachedAmbient = 5,
         KindAttachedDirectional = 6,
         KindAttachedPoint = 7,
-        KindAttachedSpot = 8,
+        KindAttachedSpot = 8
     };
 
     // Its vtable's slots the lights call
-    enum Slot : u32
+    enum Slot
     {
         SlotDestroy = 1,
         SlotKind = 6,
         SlotAssignBase = 7,
         SlotLightAt = 8,
-        SlotRead = 10,
+        SlotRead = 10
     };
 
     LightHeader header;
@@ -164,7 +164,7 @@ CHECK_SIZE(SpotLight, 0x90);
 struct AttachedAmbientLight : AmbientLight
 {
     // After the base's whole size (GCC 2.9x didn't put members into a base's tail padding)
-    alignas(16) struct InstanceContext* instance;
+    ALIGN16 InstanceContext* instance;
     Vector4 worldPosition;
 
     void Destroy(u32 destroyFlags) RETAIL(FUN_001cb7a0);
@@ -181,7 +181,7 @@ CHECK_SIZE(AttachedAmbientLight, 0x80);
 
 struct AttachedDirectionalLight : DirectionalLight
 {
-    alignas(16) struct InstanceContext* instance;
+    ALIGN16 InstanceContext* instance;
     Vector4 worldPosition;
     Vector4 worldDirection;
 
@@ -199,7 +199,7 @@ CHECK_SIZE(AttachedDirectionalLight, 0xB0);
 
 struct AttachedPointLight : PointLight
 {
-    alignas(16) struct InstanceContext* instance;
+    ALIGN16 InstanceContext* instance;
     Vector4 worldPosition;
 
     void Destroy(u32 destroyFlags) RETAIL(FUN_001cb748);
@@ -216,7 +216,7 @@ CHECK_SIZE(AttachedPointLight, 0x90);
 
 struct AttachedSpotLight : SpotLight
 {
-    alignas(16) struct InstanceContext* instance;
+    ALIGN16 InstanceContext* instance;
     Vector4 worldPosition;
     Vector4 worldDirection;
 
@@ -246,8 +246,11 @@ struct LightReference
 struct ChunkLights
 {
     // The strongest lights kept, the last one the object's own light's slot when it has one
-    static constexpr u32 Strongest = 3;
-    static constexpr u32 OwnSlot = 2;
+    enum
+    {
+        Strongest = 3,
+        OwnSlot = 2
+    };
 
     ChunkData* chunk;
     AmbientLight* ambientLights;
@@ -277,11 +280,11 @@ CHECK_SIZE(ChunkLights, 0x500);
 
 // Where the lighting's constants keep the point and spot lights' fall off (K in K / (d² + K)) and the way shadows are cast from an
 // instance (a Vector4, times the shadow's strength)
-enum LightingConstant : u32
+enum LightingConstant
 {
     FalloffConstant = 3,
     ShadowDirection = 0x20,
-    LightingConstantCount = 36,
+    LightingConstantCount = 36
 };
 
 extern "C"

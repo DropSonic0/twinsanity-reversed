@@ -53,21 +53,21 @@ extern "C"
 
 namespace
 {
-constexpr u32 CellCount = ChunkData::InstanceCells;
+CONSTEXPR u32 CellCount = ChunkData::InstanceCells;
 // The last cell has everything too big for the levels
-constexpr u32 LastCell = ChunkData::InstanceCells - 1;
-constexpr u32 LevelCount = 3;
+CONSTEXPR u32 LastCell = ChunkData::InstanceCells - 1;
+CONSTEXPR u32 LevelCount = 3;
 // The links an instance is on a cell's list by (InstanceContext::cellPrevious and cellNext), as GCC 2.9x member pointers: their
 // offsets plus 1
-constexpr u32 CellPrevious = 0x148 + 1;
-constexpr u32 CellNext = 0x14C + 1;
+CONSTEXPR u32 CellPrevious = 0x148 + 1;
+CONSTEXPR u32 CellNext = 0x14C + 1;
 // How much of a box may stick out of its scenery cell (CellHoldsBox)
-constexpr f32 CellMargin = Epsilon;
+CONSTEXPR f32 CellMargin = Epsilon;
 // The planes a view or a portal is bounded by
-constexpr u32 ViewPlaneCount = 6;
+CONSTEXPR u32 ViewPlaneCount = 6;
 // A load wall's corners, and how far in front of it it takes an instance
-constexpr u32 WallCorners = 4;
-constexpr f32 WallReach = 2.0f;
+CONSTEXPR u32 WallCorners = 4;
+CONSTEXPR f32 WallReach = 2.0f;
 
 void PushCell(InstanceContext** list, InstanceContext* instance)
 {
@@ -121,7 +121,7 @@ InstanceContext** MakeCells(ChunkData* chunk)
 {
     if (chunk->instanceCells == nullptr)
     {
-        auto* cells = static_cast<InstanceContext**>(MemoryAllocate(CellCount * sizeof(InstanceContext*)));
+        InstanceContext** cells = static_cast<InstanceContext**>(MemoryAllocate(CellCount * sizeof(InstanceContext*)));
         for (s32 cell = LastCell; cell >= 0; cell--)
         {
             cells[cell] = nullptr;
@@ -328,7 +328,7 @@ f32 InstanceCellsRayCast(InstanceContext** cells, const Vector4* segment, u32 ki
     if (count > 0)
     {
         CollisionHit record;
-        auto* out = reinterpret_cast<CollisionHit*>(hitFace);
+        CollisionHit* out = reinterpret_cast<CollisionHit*>(hitFace);
         void* wanted = out != nullptr ? &record : nullptr;
         InstanceContext** lists = cells;
         for (s32 index = 0; index < count; index++)
@@ -445,7 +445,7 @@ u16 CellListInHull(InstanceQuery* query, InstanceContext* first, BoundingVolume*
                 continue;
             }
 
-            auto* place = static_cast<ObjectPlace*>(UpdateObjectMatrix(instance));
+            ObjectPlace* place = static_cast<ObjectPlace*>(UpdateObjectMatrix(instance));
             if (IsPointInsideHullAt(hull, reinterpret_cast<const Vector4*>(&place->matrix.m[3][0]), &inverse))
             {
                 Add(query, instance);
@@ -671,7 +671,7 @@ ChunkData* UpdateCollisionCell(ObjectCollision* collision, InstanceContext* inst
         SceneryCell* root = RootOf(collision->sceneryCell->chunk);
         if (root == nullptr)
         {
-            auto* node = static_cast<ObjectNodeBase*>(GetGameNode(&instance->nodes, NodeObject));
+            ObjectNodeBase* node = static_cast<ObjectNodeBase*>(GetGameNode(&instance->nodes, NodeObject));
             String name = {};
             if (node == nullptr)
             {
@@ -822,7 +822,7 @@ u32 ChunkRemoveInstance(ChunkData* chunk, InstanceContext* instance)
 // awake (put to sleep instead when the chunk has no instances)
 u32 MoveToChunk(ChunkData* chunk, ReferencedObject* object)
 {
-    auto* instance = static_cast<InstanceContext*>(object);
+    InstanceContext* instance = static_cast<InstanceContext*>(object);
     g_ChangingChunk = 0;
     ChunkData* old = instance->chunk;
     u32 awake = !instance->flags.asleep;
@@ -1155,7 +1155,7 @@ void TransformVectorThroughLink(const ChunkLinkData* link, Vector4* vector, u32 
 // link's object matrix
 u32 LinkTakesInstance(const ChunkLinkData* link, InstanceContext* instance)
 {
-    auto* wall = static_cast<const LoadWall*>(link->loadWall);
+    const LoadWall* wall = static_cast<const LoadWall*>(link->loadWall);
     if (wall != nullptr)
     {
         ObjectPlace* place = instance->place;
@@ -1471,7 +1471,7 @@ void LinksVisibility(ChunkData* chunk, ChunkView* view)
     ChunkLinkData* tested = nullptr;
     for (ChunkLinkData* link = chunk->links; link != nullptr; link = link->next)
     {
-        auto* wall = static_cast<const LoadWall*>(link->loadWall);
+        const LoadWall* wall = static_cast<const LoadWall*>(link->loadWall);
         if (wall == nullptr || link->flags.visibility == ChunkLinkData::VisibilityAlways)
         {
             link->flags.wallView = ChunkView::InView;
@@ -1513,7 +1513,7 @@ void DrawChunk(ChunkData* chunk, ChunkView* view, const ObjectPlace* place, s32 
     }
 
     chunk->flags.drawStamp = frame;
-    auto* matrices = &chunk->matrix;
+    Matrix4x4* matrices = &chunk->matrix;
     if (portal == nullptr)
     {
         SetUpChunkView(matrices, view, place);
@@ -1591,7 +1591,7 @@ void DrawChunkShadows(ChunkData* chunk, s32 depth, const Matrix4x4* toCamera, co
 void DrawScene(ChunkData* chunk, const ObjectPlace* place, RenderView* renderView)
 {
     // The clipped instances go in the frame's list from its end
-    constexpr s32 LastDrawnSlot = sizeof(g_DrawnInstances) / sizeof(g_DrawnInstances[0]) - 1;
+    CONSTEXPR s32 LastDrawnSlot = sizeof(g_DrawnInstances) / sizeof(g_DrawnInstances[0]) - 1;
     ChunkView view;
     ChunkView::ConstructFor(&view, renderView);
     g_DeferredClippedCount = 0;
@@ -1646,7 +1646,7 @@ void DrawDeferredInstances(ChunkView* view)
 // reverb's
 void SetChunkReverb(ChunkData* chunk, const void* arguments)
 {
-    const auto* given = static_cast<const ReverbSettings*>(arguments);
+    const ReverbSettings* given = static_cast<const ReverbSettings*>(arguments);
     ReverbSettings* reverb = &chunk->reverb;
     reverb->bits.type = given->bits.type;
     reverb->bits.unused8 = given->bits.unused8;
@@ -1658,7 +1658,7 @@ void SetChunkReverb(ChunkData* chunk, const void* arguments)
 
 void SetChunkBoxReverb(ChunkData* chunk, const void* arguments)
 {
-    const auto* given = static_cast<const ReverbSettings*>(arguments);
+    const ReverbSettings* given = static_cast<const ReverbSettings*>(arguments);
     ReverbSettings* reverb = &chunk->boxReverb;
     reverb->bits.type = given->bits.type;
     reverb->bits.unused8 = given->bits.unused8;

@@ -29,11 +29,11 @@ struct ObjectCollision;
 // matrix tested, 4 a point tested, 5 a matrix taken into the chunk's space, 6 whether it's a linked chunk's, 7 and 8 1 and 0
 // (nothing calls them), 9 whether a direction faces the camera's way, 10 the view loaded into VU0, 11 a model's matrix loaded,
 // 12 a scenery cell's box tested
-struct alignas(16) ChunkView
+struct ALIGN16 ChunkView
 {
     // What a test found (a scenery cell's visibility is also how its children are drawn and collected: all of them as they are
     // when it's wholly in view, each tested when it's partly)
-    enum Visibility : u32
+    enum Visibility
     {
         OutOfView = 0,
         InView = 1,
@@ -41,7 +41,7 @@ struct alignas(16) ChunkView
     };
 
     // Its vtable's slots the scenery calls
-    enum Slot : u32
+    enum Slot
     {
         SlotTestBox = 2,
         SlotTestBoxAt = 3,
@@ -51,7 +51,7 @@ struct alignas(16) ChunkView
     };
 
     // The chunk's matrices (ChunkData's matrix, toScreen, drawMatrix and drawInverse)
-    enum MatrixIndex : u32
+    enum MatrixIndex
     {
         CameraMatrix = 0,
         ToScreenMatrix = 1,
@@ -152,8 +152,11 @@ CHECK_SIZE(LinkedChunkView, 0x150);
 struct SceneryMeshes
 {
     // Its type in the SM2 (a cell without meshes has NoTypeId)
-    static constexpr s32 TypeId = 0x1613;
-    static constexpr s32 NoTypeId = 3;
+    enum
+    {
+        TypeId = 0x1613,
+        NoTypeId = 3
+    };
 
     u16 meshCount;
     u16 lodCount;
@@ -183,7 +186,7 @@ CHECK_SIZE(SceneryMeshes, 0x10);
 // first), the flags an instance has all of and none of to be gathered, and a word of the caller's (0) nothing reads
 struct InstanceCollector
 {
-    enum Pool : u32
+    enum Pool
     {
         WhollyInsidePool = 0,
         PartlyInsidePool = 1,
@@ -191,7 +194,10 @@ struct InstanceCollector
     };
 
     // A walk's mask of both pools
-    static constexpr u32 BothPools = 1 << WhollyInsidePool | 1 << PartlyInsidePool;
+    enum
+    {
+        BothPools = 1 << WhollyInsidePool | 1 << PartlyInsidePool
+    };
 
     ItemPools<InstanceContext*> instances;
     ItemPools<SceneryCell*> cells;
@@ -213,12 +219,15 @@ CHECK_SIZE(InstanceCollector, 0x1C);
 //  instances put to sleep and released by a filter (InstanceFilterWord), 24 its type, 25 read, 26 an instance added at a path, 27
 //  a mesh or LOD set at a path, 28 the cell at a path, 29 its parent, 30 a child made, 31 a light's bit set, 32-34 its children.
 //  A cell drawn or collected is given its parent's visibility (ChunkView::Visibility)
-struct alignas(16) SceneryCell
+struct ALIGN16 SceneryCell
 {
-    static constexpr u32 TypeId = 0x1612;
+    enum
+    {
+        TypeId = 0x1612
+    };
 
     // Its vtable's slots the cells and the chunks call
-    enum Slot : u32
+    enum Slot
     {
         SlotDestroy = 1,
         SlotRelease = 2,
@@ -315,7 +324,10 @@ CHECK_SIZE(SceneryCell, 0x50);
 // A leaf (0x50 bytes, the SM2's type 0x1605)
 struct SceneryLeaf : SceneryCell
 {
-    static constexpr u32 TypeId = 0x1605;
+    enum
+    {
+        TypeId = 0x1605
+    };
 
     static SceneryLeaf* Construct(SceneryLeaf* leaf) RETAIL(FUN_001eff30);
     void Destroy(u32 flags) RETAIL(FUN_001effb8);
@@ -382,11 +394,14 @@ CHECK_SIZE(SceneryTree, 0x60);
 // bit 1 y, bit 2 z, a set bit the lower half)
 struct SceneryNode : SceneryTree
 {
-    static constexpr u32 TypeId = 0x1600;
-    static constexpr u32 Octants = 8;
+    enum
+    {
+        TypeId = 0x1600,
+        Octants = 8
+    };
 
     // (Aligned so GCC doesn't put them in the tree's tail padding, which GCC 2.9x left alone)
-    alignas(16) SceneryCell* children[Octants];
+    ALIGN16 SceneryCell* children[Octants];
 
     static SceneryNode* Construct(SceneryNode* node) RETAIL(FUN_001f1028);
     void Destroy(u32 flags) RETAIL(FUN_001f1068);
@@ -413,7 +428,10 @@ CHECK_SIZE(SceneryNode, 0x80);
 // The scenery's root (0x90 bytes, the SM2's type 0x160A): the tree's depth (the node search gets it and ignores it)
 struct SceneryRoot : SceneryNode
 {
-    static constexpr u32 TypeId = 0x160A;
+    enum
+    {
+        TypeId = 0x160A
+    };
 
     u32 treeDepth;
 
@@ -463,7 +481,7 @@ public:
 
 // A filter of instances (three words): the kinds of nodes (a bit per NodeKind) one has any of, the flags (ReferencedObjectFlags)
 // it has all of and the flags it has none of
-enum InstanceFilterWord : u32
+enum InstanceFilterWord
 {
     FilterKinds = 0,
     FilterWantedFlags = 1,

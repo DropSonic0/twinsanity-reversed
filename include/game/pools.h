@@ -8,11 +8,11 @@ struct InstanceContext;
 struct SceneryCell;
 
 // A pool's links: a used slot's, and the last free slot's (the free list's end). A pool with no slots has no free one either
-constexpr s16 PoolSlotUsed = -1;
-constexpr s16 PoolFreeListEnd = -2;
-constexpr s16 PoolNoFreeSlot = -1;
+CONSTEXPR s16 PoolSlotUsed = -1;
+CONSTEXPR s16 PoolFreeListEnd = -2;
+CONSTEXPR s16 PoolNoFreeSlot = -1;
 // What a new pool grows by when it's full (the stream system by a quarter of its first capacity more)
-constexpr s16 PoolGrowth = 10;
+CONSTEXPR s16 PoolGrowth = 10;
 
 // A pool of items (0x14 bytes; its vtable, after its members, only has the destructor): slots handed out from a free list
 // through the links; full, it grows by its growth, both made even first. The retail code has one per item type, each with its
@@ -20,7 +20,10 @@ constexpr s16 PoolGrowth = 10;
 template <typename T>
 struct ItemPool
 {
-    static constexpr u32 DestroySlot = 1;
+    enum
+    {
+        DestroySlot = 1
+    };
 
     s16 capacity;
     s16 growth;
@@ -50,7 +53,8 @@ struct ItemPools
     ItemPool<T>* pools;
     s32 count;
 };
-static_assert(sizeof(ItemPool<void*>) == 0x14);
+typedef ItemPool<void*> VoidItemPool;
+CHECK_SIZE(VoidItemPool, 0x14);
 
 // The walks over pools' used slots, on an abstract base of their own (the retail iterators; their vtables: 1 destructor, 2 to
 // the first, 3 whether it's past the last, 4 the slot's item, 5 to the next)
@@ -178,7 +182,7 @@ void ConstructPoolsWalk(PoolsWalk<T>* walk, const GccVTableEntry* vtable, const 
             continue;
         }
 
-        auto* poolWalk = static_cast<PoolWalk<T>*>(MemoryAllocate(sizeof(PoolWalk<T>)));
+        PoolWalk<T>* poolWalk = static_cast<PoolWalk<T>*>(MemoryAllocate(sizeof(PoolWalk<T>)));
         poolWalk->vtable = poolWalkVTable;
         poolWalk->slot = 0;
         poolWalk->pool = &pools->pools[index];

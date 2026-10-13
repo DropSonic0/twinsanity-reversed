@@ -18,7 +18,10 @@ struct TimeClock;
 struct DynamicSceneryModel
 {
     // A new model's mesh ID
-    static constexpr u32 NoMesh = 0xFFFFFFFF;
+    enum
+    {
+        NoMesh = 0xFFFFFFFF
+    };
 
     s32 leftover;
     u32 hullCount;
@@ -38,7 +41,10 @@ CHECK_SIZE(DynamicSceneryModel, 0x50);
 // and never checked) and its models
 struct DynamicSceneryData
 {
-    static constexpr u32 Version = 0x10009;
+    enum
+    {
+        Version = 0x10009
+    };
 
     u32 version;
     u16 modelCount;
@@ -75,8 +81,11 @@ CHECK_SIZE(ChunkDynamicScenery, 0x14);
 struct DynamicAnimationData
 {
     // The bytes its static values take in its information's sections: their count (bits 11-21) times a float's size
-    static constexpr u32 StaticBytesShift = 9;
-    static constexpr u32 StaticBytesMask = 0x1FFC;
+    enum
+    {
+        StaticBytesShift = 9,
+        StaticBytesMask = 0x1FFC
+    };
 
     AnimationDataInformation* information;
     const JointTrackSettings* settings;
@@ -101,7 +110,7 @@ CHECK_SIZE(DynamicTrackReader, 0x10);
 
 // A joint's channel of whether it's shown shows its instance above this and hides it below (the cutscenes' tracks' too, whose
 // emitters are kept above it)
-constexpr f32 ShownAbove = 0.5f;
+CONSTEXPR f32 ShownAbove = 0.5f;
 
 // A dynamic scenery instance's node (kind 4, class 0x1617, 0x30 bytes, its vtable D_002FC430): its model, two words nothing reads,
 // the seconds into its animation, the animation it plays and the meshes the model is drawn with (a mesh or a LOD of the model's
@@ -109,7 +118,10 @@ constexpr f32 ShownAbove = 0.5f;
 // about x, y and z, then whether it's shown (above a half)
 struct DynamicSceneryNode : GameNode
 {
-    static constexpr u32 ClassId = 0x1617;
+    enum
+    {
+        ClassId = 0x1617
+    };
 
     DynamicSceneryModel* model;
     u32 unused1C;

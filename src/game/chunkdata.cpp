@@ -41,12 +41,12 @@ extern "C"
 namespace
 {
 // GCC's pointers to the lists' members, passed along and unused
-constexpr s32 ChunkPrevious = GCC2_MEMBER_POINTER(ChunkData, previous);
-constexpr s32 ChunkNext = GCC2_MEMBER_POINTER(ChunkData, next);
-constexpr s32 LinkPrevious = GCC2_MEMBER_POINTER(ChunkLinkData, previous);
-constexpr s32 LinkNext = GCC2_MEMBER_POINTER(ChunkLinkData, next);
+CONSTEXPR s32 ChunkPrevious = GCC2_MEMBER_POINTER(ChunkData, previous);
+CONSTEXPR s32 ChunkNext = GCC2_MEMBER_POINTER(ChunkData, next);
+CONSTEXPR s32 LinkPrevious = GCC2_MEMBER_POINTER(ChunkLinkData, previous);
+CONSTEXPR s32 LinkNext = GCC2_MEMBER_POINTER(ChunkLinkData, next);
 // A frame a new chunk was never drawn in
-constexpr u32 NeverDrawnFrame = 0x10101015;
+CONSTEXPR u32 NeverDrawnFrame = 0x10101015;
 
 void ConstructReverb(ReverbSettings* reverb)
 {
@@ -63,7 +63,7 @@ ChunkDataReference* AddChunkDataReference(ChunkData* chunk)
 {
     if (chunk->self == nullptr)
     {
-        auto* block = static_cast<ChunkDataReference*>(MemoryAllocate(sizeof(ChunkDataReference)));
+        ChunkDataReference* block = static_cast<ChunkDataReference*>(MemoryAllocate(sizeof(ChunkDataReference)));
         chunk->self = block;
         // The new block's bits above the count and the owning bit are kept
         ReferenceBits leftover = block->bits;
@@ -247,7 +247,7 @@ extern "C"
 
             if (inSteps)
             {
-                constexpr u32 Parts[] = {ChunkData::PartDropHold,         ChunkData::PartCollision, ChunkData::PartClocks,
+                CONSTEXPR u32 Parts[] = {ChunkData::PartDropHold,         ChunkData::PartCollision, ChunkData::PartClocks,
                                          ChunkData::PartSceneryInstances, ChunkData::PartParticles, ChunkData::PartShadows,
                                          ChunkData::PartAddHold};
                 QueueParts(chunk, Parts, sizeof(Parts) / sizeof(Parts[0]));
@@ -301,7 +301,7 @@ extern "C"
 
             if (chunk->flags.releasesInSteps != 0)
             {
-                constexpr u32 Parts[] = {ChunkData::PartDropHold, ChunkData::PartCollision, ChunkData::PartClocks,
+                CONSTEXPR u32 Parts[] = {ChunkData::PartDropHold, ChunkData::PartCollision, ChunkData::PartClocks,
                                          ChunkData::PartScenery,  ChunkData::PartLights,    ChunkData::PartParticles,
                                          ChunkData::PartShadows,  ChunkData::PartAddHold};
                 QueueParts(chunk, Parts, sizeof(Parts) / sizeof(Parts[0]));
@@ -348,7 +348,7 @@ extern "C"
     void QueueChunkPartRelease(ChunkData* chunk, u32 part)
     {
         GameReadersStorage* storage = g_ReadersStorages[MainReaders];
-        auto* job = static_cast<ChunkPartRelease*>(MemoryAllocate(sizeof(ChunkPartRelease)));
+        ChunkPartRelease* job = static_cast<ChunkPartRelease*>(MemoryAllocate(sizeof(ChunkPartRelease)));
         job->vtable = g_ChunkPartReleaseVTable;
         job->reference = chunk != nullptr ? AddChunkDataReference(chunk) : nullptr;
         job->part = part;
@@ -416,7 +416,7 @@ extern "C"
     {
         if (chunk->dynamicScenery == nullptr)
         {
-            auto* scenery = static_cast<ChunkDynamicScenery*>(MemoryAllocate(sizeof(ChunkDynamicScenery)));
+            ChunkDynamicScenery* scenery = static_cast<ChunkDynamicScenery*>(MemoryAllocate(sizeof(ChunkDynamicScenery)));
             chunk->dynamicScenery = ConstructDynamicScenery(scenery, chunk);
         }
 
@@ -947,7 +947,7 @@ u32 ChunkData::AddInstance(ChunkData* chunk, InstanceContext* instance)
     {
         if (chunk->instanceCells == nullptr)
         {
-            auto* cells = static_cast<InstanceContext**>(MemoryAllocate(InstanceCells * sizeof(InstanceContext*)));
+            InstanceContext** cells = static_cast<InstanceContext**>(MemoryAllocate(InstanceCells * sizeof(InstanceContext*)));
             for (s32 index = InstanceCells - 1; index >= 0; index--)
             {
                 cells[index] = nullptr;

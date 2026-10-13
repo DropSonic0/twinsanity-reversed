@@ -14,7 +14,7 @@ struct GamePad;
 class GameContextPrototype
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         LanguageChangedSlot = 1,
         StartGameSlot = 2,
@@ -118,7 +118,7 @@ class GameContext : public GameContextPrototype
 public:
 
     // The object builder's item builders (a vtable alone each), by the kinds of items they make
-    enum Builder : u32
+    enum Builder
     {
         BuilderObjects,
         BuilderBehaviours,
@@ -130,7 +130,7 @@ public:
         Builders,
     };
 
-    enum MoreBuilder : u32
+    enum MoreBuilder
     {
         BuilderCameras,
         BuilderSounds,
@@ -199,7 +199,7 @@ CHECK_OFFSET(GameContext, archivePath, 0x40);
 CHECK_OFFSET(GameContext, firstFrameStamp, 0xE0);
 CHECK_OFFSET(GameContext, mainPad, 0xE4);
 
-enum GameState : s32
+enum GameState
 {
     GameStateStarting = 0,
     GameStateRunning = 1,
@@ -235,10 +235,12 @@ extern "C"
 struct UpdateRate
 {
     // A cutoff of none: updated however long unseen
-    static constexpr u16 NoCutoff = 0xFFFF;
-    // The rarest updates' mask (every 65536 frames), for a count of stamps unseen of none
-    static constexpr u32 RarestMask = 0xFFFF;
-    static constexpr u32 NoCount = 0xFFFFFFFF;
+    enum
+    {
+        NoCutoff = 0xFFFF,
+        RarestMask = 0xFFFF,
+        NoCount = 0xFFFFFFFF
+    };
 
     u16 grace;
     u16 cutoff;

@@ -10,12 +10,12 @@ namespace
 {
 // Its way swings once a minute (6 degrees a second) 30 degrees either side of 75, and its sway's phases, a 16th of a turn
 // apart, turn 35 degrees a second
-constexpr f32 SwingDegreesPerSecond = 6.0f;
-constexpr f32 SwingDegrees = 30.0f;
-constexpr f32 MiddleDegrees = 75.0f;
-constexpr u32 Phases = 16;
-constexpr f32 PhaseDegrees = 22.5f;
-constexpr f32 SwayDegreesPerSecond = 35.0f;
+CONSTEXPR f32 SwingDegreesPerSecond = 6.0f;
+CONSTEXPR f32 SwingDegrees = 30.0f;
+CONSTEXPR f32 MiddleDegrees = 75.0f;
+CONSTEXPR u32 Phases = 16;
+CONSTEXPR f32 PhaseDegrees = 22.5f;
+CONSTEXPR f32 SwayDegreesPerSecond = 35.0f;
 }
 
 void UpdateChunkWind(ChunkWind* wind, GameTimeController* time)
