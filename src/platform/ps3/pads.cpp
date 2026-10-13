@@ -1,7 +1,9 @@
 #include "platform/pads.h"
 #include <string.h>
 
-namespace Platform::Pads
+namespace Platform
+{
+namespace Pads
 {
 static u8 s_PadBuffers[2][BufferSize];
 static bool s_PadConnected[2] = {true, false};
@@ -124,5 +126,6 @@ s32 EnterPressureMode(s32 port, s32 slot)
     (void)port;
     (void)slot;
     return 1;
+}
 }
 }

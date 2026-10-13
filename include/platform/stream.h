@@ -5,7 +5,9 @@
 // The disc's files read in the background, on channels: a channel reads one thing at a time, into memory or into the sound
 // processor's. The game numbers the channels from 0 (the PS2's are the streams of the I/O processor's sound and stream module).
 // Files are opened by their paths on the disc and stay open, by number, until they're closed
-namespace Platform::Stream
+namespace Platform
+{
+namespace Stream
 {
 enum class State : s32
 {
@@ -17,11 +19,11 @@ enum class State : s32
     Recovering = 4,
 };
 
-constexpr s32 NoFile = -1;
+CONSTEXPR s32 NoFile = -1;
 
 // The memory Initialise needs, from the game's heap
-constexpr u32 WorkMemorySize = 0x8000;
-constexpr u32 WorkMemoryAlignment = 0x40;
+CONSTEXPR u32 WorkMemorySize = 0x8000;
+CONSTEXPR u32 WorkMemoryAlignment = 0x40;
 
 // Starts reading with so many channels. Returns negative when it can't read
 s32 Initialise(s32 channels, void* workMemory);
@@ -49,4 +51,5 @@ bool IsReading(s32 channel);
 // Waits until the channel has read what it started. Returns 0, or 1 more than a channel whose read the platform left to the
 // caller (never on the PS2, which reads them all itself)
 s32 Wait(s32 channel);
+}
 }

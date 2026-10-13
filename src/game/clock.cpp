@@ -7,12 +7,12 @@
 namespace
 {
 // Clock units are the platform's ticks halved until there are at most this many a second
-constexpr u32 MaxClockUnitsPerSecond = 9000;
+CONSTEXPR u32 MaxClockUnitsPerSecond = 9000;
 // Ticks a frame may go past its time and still count as that frame
-constexpr u64 FrameSlack = 0x4E;
+CONSTEXPR u64 FrameSlack = 0x4E;
 
 // Test runs' time (g_DebugFixedTime): the ticks, a frame's worth more each frame, and the time checks a frame's work has left
-constexpr u32 TestTimeChecks = 16;
+CONSTEXPR u32 TestTimeChecks = 16;
 u64 g_TestTicks;
 u32 g_TestTimeChecks;
 

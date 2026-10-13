@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace Platform::Files
+namespace Platform
+{
+namespace Files
 {
 static FILE* s_Files[32] = {nullptr};
 
@@ -96,5 +98,6 @@ s32 Seek(s32 file, s32 offset, Whence whence)
 
     fseek(s_Files[file], offset, origin);
     return static_cast<s32>(ftell(s_Files[file]));
+}
 }
 }

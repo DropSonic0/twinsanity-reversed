@@ -3,7 +3,9 @@
 #include "common.h"
 
 // The game's files, by their paths on the disc ("Crash6\\Crash.bh", either slash, any case), and descriptors
-namespace Platform::Files
+namespace Platform
+{
+namespace Files
 {
 enum OpenFlags : s32
 {
@@ -32,4 +34,5 @@ s32 Read(s32 file, void* buffer, s32 size);
 s32 Write(s32 file, const void* buffer, s32 size);
 // Returns the new position
 s32 Seek(s32 file, s32 offset, Whence whence);
+}
 }

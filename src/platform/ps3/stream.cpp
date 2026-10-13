@@ -1,7 +1,9 @@
 #include "platform/stream.h"
 #include <string.h>
 
-namespace Platform::Stream
+namespace Platform
+{
+namespace Stream
 {
 static State s_StreamState = State::Stopped;
 static bool s_ChannelReading[16] = {false};
@@ -101,5 +103,6 @@ s32 Wait(s32 channel)
         s_ChannelReading[channel] = false;
     }
     return 0;
+}
 }
 }

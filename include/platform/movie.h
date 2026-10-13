@@ -5,22 +5,24 @@
 // The movies (FMVs): a player decodes a movie file's pictures and plays its sound while the game shows them. The PS2's plays PSS
 // files from the disc: MPEG-2 pictures decoded on the IPU, sent to the GS from the vertical blank's interrupt, and PCM sound
 // streamed to the sound processor
-namespace Platform::Movie
+namespace Platform
+{
+namespace Movie
 {
 // A player's state, kept in the game's movie controller (16 byte aligned, the PS2's making the controller 0x4200 bytes)
 struct Player;
-constexpr u32 PlayerSize = 0x41D0;
+CONSTEXPR u32 PlayerSize = 0x41D0;
 
 // The memory the game can lend a player to stream through, which it doesn't use while the movie plays (on the PS2 a music
 // stream's buffer in the I/O processor's memory)
-constexpr u32 LentMemorySize = 0x2E040;
+CONSTEXPR u32 LentMemorySize = 0x2E040;
 
 // The disc's name of a movie file is FilePrefix, the game's path, "." and Extension, then FileSuffix, in capitals when
 // CapitalFileNames (the PS2's ISO 9660 names: "\\FMV\\INTRO.PSS;1")
-inline constexpr char FilePrefix[] = "\\";
-inline constexpr char Extension[] = "pss";
-inline constexpr char FileSuffix[] = ";1";
-constexpr bool CapitalFileNames = true;
+inline CONSTEXPR char FilePrefix[] = "\\";
+inline CONSTEXPR char Extension[] = "pss";
+inline CONSTEXPR char FileSuffix[] = ";1";
+CONSTEXPR bool CapitalFileNames = true;
 
 void Construct(Player* player);
 
@@ -55,4 +57,5 @@ void Draw(Player* player, const Area& area, s32 width, s32 height, u32 skippedRo
 
 // Stops presenting and closes the movie. The memory the game lent is the game's again
 void Close(Player* player);
+}
 }

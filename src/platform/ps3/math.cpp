@@ -2,7 +2,9 @@
 #include "game/math.h"
 #include <math.h>
 
-namespace Platform::Math
+namespace Platform
+{
+namespace Math
 {
 void SinCos(f32 first, f32 second, f32* out)
 {
@@ -181,5 +183,6 @@ bool FinishRayTriangle(Vector4* hit)
         hit->w = 0.0f;
     }
     return false;
+}
 }
 }

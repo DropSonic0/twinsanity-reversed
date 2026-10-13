@@ -2,7 +2,9 @@
 
 #include "common.h"
 
-namespace Platform::Disc
+namespace Platform
+{
+namespace Disc
 {
 enum class Media : s32
 {
@@ -22,4 +24,5 @@ s32 Initialise();
 s32 SetMedia(Media media);
 // Waits until the drive is ready
 Readiness WaitReady();
+}
 }

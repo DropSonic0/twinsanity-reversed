@@ -64,7 +64,7 @@ namespace
 // frame.c's frame_state (long is 64 bits): the CFA and the exception's pointer, the CFA's offset from its register, the size of
 // the arguments, every register's saved offset (or the register it's saved in) and how it's saved, the CFA's register and the
 // return address's column. frame_state_internal adds the state DW_CFA_remember_state kept
-constexpr u32 FrameRegisters = 112;
+CONSTEXPR u32 FrameRegisters = 112;
 
 struct FrameState
 {
@@ -134,13 +134,13 @@ enum CallFrameInstruction : u32
 };
 
 // DW_CFA_GNU_window_save's registers (SPARC's windows: 16 to 31)
-constexpr u32 WindowFirst = 16;
-constexpr u32 WindowEnd = 32;
+CONSTEXPR u32 WindowFirst = 16;
+CONSTEXPR u32 WindowEnd = 32;
 
 // An LEB128 number's bytes: 7 bits of the number each, from the lowest, the top bit set on all but the last
-constexpr u32 Leb128Bits = 7;
-constexpr u32 Leb128Mask = 0x7F;
-constexpr u32 Leb128More = 0x80;
+CONSTEXPR u32 Leb128Bits = 7;
+CONSTEXPR u32 Leb128Mask = 0x7F;
+CONSTEXPR u32 Leb128More = 0x80;
 
 u32 ReadUnaligned32(const u8* data)
 {

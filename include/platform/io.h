@@ -4,7 +4,9 @@
 
 // The I/O processor the game's drivers run on (the PS2's IOP: the disc drive, the pads, the memory cards and the sound processor
 // are behind it). Platforms without one do nothing here
-namespace Platform::Io
+namespace Platform
+{
+namespace Io
 {
 void Initialise();
 // Restarts it with an image of its modules (the disc's IOPRP) and waits until it's back. Initialise it again after
@@ -16,4 +18,5 @@ s32 LoadDriver(const char* path);
 void InitialiseHeap();
 void* AllocateHeap(s32 size);
 s32 FreeHeap(void* address);
+}
 }

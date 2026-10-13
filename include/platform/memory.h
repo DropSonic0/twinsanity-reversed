@@ -3,7 +3,9 @@
 #include "common.h"
 
 // The memory the game's own allocators manage (the heap manager's and the disk manager's pools)
-namespace Platform::Memory
+namespace Platform
+{
+namespace Memory
 {
 // How much there is for the pools. The retail game sized its heap manager's pool to take what its executable and C library
 // left of the console's memory after the disk manager's
@@ -16,4 +18,5 @@ void Synchronise();
 void BeforeDeviceWrite(void* memory, u32 size);
 // Writes what the processor's cache holds back to memory, for hardware about to read it (the PS2's FlushCache(0))
 void WriteBackCache();
+}
 }

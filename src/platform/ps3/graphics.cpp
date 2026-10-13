@@ -2,7 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-namespace Platform::Graphics
+namespace Platform
+{
+namespace Graphics
 {
 static Vector4 s_ViewPlanes[6];
 static bool s_DevicesReset = false;
@@ -47,6 +49,7 @@ void StartRenderer(s32 height, bool pal)
 
 void FinishRendererStart()
 {
+    (void)0;
 }
 
 void MoveDisplay(const Vector2* offset)
@@ -96,6 +99,7 @@ void* AllocFrameMemory(u32 count, u32 size)
 
 void FinishFrame()
 {
+    (void)0;
 }
 
 void FinishScene(bool effects)
@@ -181,6 +185,7 @@ void InitParticleRenderTable(u8* table)
 
 void InitParticleGraphics()
 {
+    (void)0;
 }
 
 void WriteParticleRenderTable(u8* table, const ParticleLook& look)
@@ -664,5 +669,6 @@ void ReadParticlePage(ParticlePage* page, Stream* stream, bool decals)
     (void)page;
     (void)stream;
     (void)decals;
+}
 }
 }

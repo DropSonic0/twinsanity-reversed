@@ -1,7 +1,9 @@
 #include "platform/audio.h"
 #include <string.h>
 
-namespace Platform::Audio
+namespace Platform
+{
+namespace Audio
 {
 static bool s_Paused = false;
 static u32 s_ReservedMemory = 0;
@@ -220,5 +222,6 @@ bool IsMusicPlaying(s32 channel)
 void StopMusic(s32 channel)
 {
     (void)channel;
+}
 }
 }

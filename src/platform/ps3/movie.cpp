@@ -1,6 +1,8 @@
 #include "platform/movie.h"
 
-namespace Platform::Movie
+namespace Platform
+{
+namespace Movie
 {
 void Construct(Player* player)
 {
@@ -46,5 +48,20 @@ void WaitFrame(Player* player)
 void QueuePicture(Player* player)
 {
     (void)player;
+}
+
+void Draw(Player* player, const Area& area, s32 width, s32 height, u32 skippedRows)
+{
+    (void)player;
+    (void)area;
+    (void)width;
+    (void)height;
+    (void)skippedRows;
+}
+
+void Close(Player* player)
+{
+    (void)player;
+}
 }
 }

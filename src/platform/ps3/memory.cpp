@@ -3,11 +3,13 @@
 
 namespace
 {
-constexpr u32 DefaultPoolSize = 32 * 1024 * 1024;
+CONSTEXPR u32 DefaultPoolSize = 32 * 1024 * 1024;
 static volatile u32 s_SyncCounter = 0;
 }
 
-namespace Platform::Memory
+namespace Platform
+{
+namespace Memory
 {
 u32 PoolSpace()
 {
@@ -37,5 +39,6 @@ void BeforeDeviceWrite(void* memory, u32 size)
 void WriteBackCache()
 {
     s_SyncCounter++;
+}
 }
 }

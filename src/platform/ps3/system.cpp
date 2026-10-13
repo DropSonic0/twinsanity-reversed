@@ -1,7 +1,9 @@
 #include "platform/system.h"
 #include <stdlib.h>
 
-namespace Platform::System
+namespace Platform
+{
+namespace System
 {
 static bool s_SystemInitialised = false;
 static bool s_ServicesStarted = false;
@@ -36,5 +38,6 @@ DateTime LocalTime()
     dt.minute = 0;
     dt.second = 0;
     return dt;
+}
 }
 }

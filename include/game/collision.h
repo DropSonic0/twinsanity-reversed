@@ -84,8 +84,11 @@ CHECK_SIZE(CollisionHit, 0x40);
 // Hits kept in blocks of 8 (0x210 bytes: the next one, then its hits 16 bytes in)
 struct CollisionHitBlock
 {
-    static CONSTEXPR s32 CapacityShift = 3;
-    static CONSTEXPR s32 Capacity = 1 << CapacityShift;
+    enum
+    {
+        CapacityShift = 3,
+        Capacity = 1 << CapacityShift
+    };
 
     CollisionHitBlock* next;
     CollisionHit hits[Capacity];
@@ -98,7 +101,10 @@ CHECK_SIZE(CollisionHitBlock, 0x210);
 // index (NotIterated before it starts) and block, the first block
 struct CollisionCache
 {
-    static CONSTEXPR u16 NotIterated = 0xFFFF;
+    enum
+    {
+        NotIterated = 0xFFFF
+    };
 
     ReferencedObject* owner;
     u8 unused04[0x10 - 0x4];

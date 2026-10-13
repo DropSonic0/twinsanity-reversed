@@ -1,7 +1,9 @@
 #include "platform/io.h"
 #include <stdlib.h>
 
-namespace Platform::Io
+namespace Platform
+{
+namespace Io
 {
 static bool s_IoInitialised = false;
 static void* s_HeapBase = nullptr;
@@ -47,5 +49,6 @@ s32 FreeHeap(void* address)
         free(address);
     }
     return 0;
+}
 }
 }

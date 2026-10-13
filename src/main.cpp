@@ -12,15 +12,15 @@
 
 namespace
 {
-constexpr u32 MaxArguments = 256;
+CONSTEXPR u32 MaxArguments = 256;
 // The file streams' channels
-constexpr s32 StreamChannels = 9;
+CONSTEXPR s32 StreamChannels = 9;
 // The game's clock goes by the display's frames: 50 a second on a PAL TV, 60 on an NTSC one
-constexpr s32 PalFramesPerSecond = 50;
-constexpr s32 NtscFramesPerSecond = 60;
+CONSTEXPR s32 PalFramesPerSecond = 50;
+CONSTEXPR s32 NtscFramesPerSecond = 60;
 // One pad, so pad 1's bit (of GamePadController's bit per pad made) is never set
-constexpr s32 PadCount = 1;
-constexpr u32 SecondPadBit = 1u << 1;
+CONSTEXPR s32 PadCount = 1;
+CONSTEXPR u32 SecondPadBit = 1u << 1;
 
 bool IsPlayingMovie(const GameMovieController* movie)
 {

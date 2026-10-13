@@ -2,7 +2,9 @@
 #include <string.h>
 #include <stdio.h>
 
-namespace Platform::Saves
+namespace Platform
+{
+namespace Saves
 {
 static Operation s_CurrentOperation = OperationNone;
 static Result s_LastResult = {1, 0, 0};
@@ -122,5 +124,6 @@ u32 FileKilobytes(u32 size)
 u32 SaveBytes(u32 kilobytes, u32 files)
 {
     return kilobytes * 1024 + files * sizeof(FileEntry);
+}
 }
 }

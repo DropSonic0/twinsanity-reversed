@@ -23,13 +23,13 @@ EABI_EXPORT(FUN_0027eb40, AccelerateOnSurface);
 namespace
 {
 // No CollisionHit for the instances' cast's face hit
-constexpr u32 NoHitFace = 0;
+CONSTEXPR u32 NoHitFace = 0;
 // The most leaves a box query finds, and where their groups go: the scripts' state jump table's second half
-constexpr s32 MostLeaves = 0x100;
-constexpr u32 JumpTableHalf = sizeof(g_StateJumpTable) / sizeof(g_StateJumpTable[0]) / 2;
+CONSTEXPR s32 MostLeaves = 0x100;
+CONSTEXPR u32 JumpTableHalf = sizeof(g_StateJumpTable) / sizeof(g_StateJumpTable[0]) / 2;
 u32* const CollisionLeaves = reinterpret_cast<u32*>(&g_StateJumpTable[JumpTableHalf]);
 // A surface's volume scales of the kinds of contact (CollisionSurface::volumeScales)
-enum SurfaceVolumeScale : u32
+enum SurfaceVolumeScale
 {
     ImpactVolume = 0,
     HardImpactVolume = 1,
@@ -60,7 +60,7 @@ void CopyHit(CollisionHit* to, const CollisionHit* from)
 
 CollisionData* ConstructCollisionData(CollisionData* collision)
 {
-    constexpr u32 Version = 3001;
+    CONSTEXPR u32 Version = 3001;
     collision->version = Version;
     collision->verticesHandle = -1;
     collision->nodesHandle = -1;
@@ -77,8 +77,9 @@ CollisionData* ConstructCollisionData(CollisionData* collision)
 void DestroyCollisionData(CollisionData* collision, u32 destroyFlags)
 {
     s32* handles[] = {&collision->nodesHandle, &collision->groupsHandle, &collision->trianglesHandle, &collision->verticesHandle};
-    for (s32* handle : handles)
+    for (u32 i = 0; i < sizeof(handles) / sizeof(handles[0]); i++)
     {
+        s32* handle = handles[i];
         if (*handle >= 0)
         {
             DiskRelease(GetDiskManager(), handle);
@@ -94,8 +95,8 @@ void DestroyCollisionData(CollisionData* collision, u32 destroyFlags)
 void ReadCollisionData(CollisionData* collision, u32 closesFile, s32 offset, const u8* header)
 {
     // The arrays' readers' flags, and the last one's closing the file once read
-    constexpr u32 ArrayFlags = SubItemsReaderOptions::Unused0;
-    constexpr u32 ClosingArrayFlags = SubItemsReaderOptions::Unused0 | SubItemsReaderOptions::ClosesFile;
+    CONSTEXPR u32 ArrayFlags = SubItemsReaderOptions::Unused0;
+    CONSTEXPR u32 ClosingArrayFlags = SubItemsReaderOptions::Unused0 | SubItemsReaderOptions::ClosesFile;
     GameReadersStorage* storage = g_ReadersStorages[MainReaders];
     RetailLibc::MemoryCopy(collision, header, CollisionHeaderSize);
     u32 verticesFlags = closesFile == 0 ? ArrayFlags : ClosingArrayFlags;
@@ -107,15 +108,24 @@ void ReadCollisionData(CollisionData* collision, u32 closesFile, s32 offset, con
         u32 size;
     };
 
-    const Array arrays[] = {
-        {&collision->nodesHandle, ArrayFlags, collision->nodeCount * static_cast<u32>(sizeof(CollisionNode))},
-        {&collision->groupsHandle, ArrayFlags, collision->groupCount * static_cast<u32>(sizeof(CollisionGroup))},
-        {&collision->trianglesHandle, ArrayFlags, collision->triangleCount * static_cast<u32>(sizeof(CollisionTriangle))},
-        {&collision->verticesHandle, verticesFlags, collision->vertexCount * static_cast<u32>(sizeof(Vector4))},
-    };
-    for (const Array& array : arrays)
+    Array arrays[4];
+    arrays[0].handle = &collision->nodesHandle;
+    arrays[0].flags = ArrayFlags;
+    arrays[0].size = collision->nodeCount * static_cast<u32>(sizeof(CollisionNode));
+    arrays[1].handle = &collision->groupsHandle;
+    arrays[1].flags = ArrayFlags;
+    arrays[1].size = collision->groupCount * static_cast<u32>(sizeof(CollisionGroup));
+    arrays[2].handle = &collision->trianglesHandle;
+    arrays[2].flags = ArrayFlags;
+    arrays[2].size = collision->triangleCount * static_cast<u32>(sizeof(CollisionTriangle));
+    arrays[3].handle = &collision->verticesHandle;
+    arrays[3].flags = verticesFlags;
+    arrays[3].size = collision->vertexCount * static_cast<u32>(sizeof(Vector4));
+
+    for (u32 i = 0; i < 4; i++)
     {
-        auto* reader = static_cast<SubItemsReader*>(MemoryAllocate(sizeof(SubItemsReader)));
+        const Array& array = arrays[i];
+        SubItemsReader* reader = static_cast<SubItemsReader*>(MemoryAllocate(sizeof(SubItemsReader)));
         reader = SubItemsReader::ConstructOnDisk(reader, array.handle, array.flags, at, array.size);
         at += array.size;
         AddItemReaderToReaderStorage(storage, reader, QueueBack);
@@ -141,12 +151,12 @@ void CollisionSectionReader::Read(u8* header, u32, ReaderStack*)
 void QueueCollisionSection(CollisionData** holder, s32 offset)
 {
     GameReadersStorage* storage = g_ReadersStorages[MainReaders];
-    auto* section = static_cast<CollisionSectionReader*>(MemoryAllocate(sizeof(CollisionSectionReader)));
+    CollisionSectionReader* section = static_cast<CollisionSectionReader*>(MemoryAllocate(sizeof(CollisionSectionReader)));
     section->vtable = g_CollisionSectionReaderVTable;
     section->collision = *holder;
     section->offset = offset;
     section->closesFile = 0;
-    auto* reader = static_cast<SubItemsReader*>(MemoryAllocate(sizeof(SubItemsReader)));
+    SubItemsReader* reader = static_cast<SubItemsReader*>(MemoryAllocate(sizeof(SubItemsReader)));
     // The header read into the disk manager, let go of once it's read
     reader = SubItemsReader::ConstructOpen(reader, section, SubItemsReaderOptions::OnDisk, offset, CollisionHeaderSize);
     AddItemReaderToReaderStorage(storage, reader, QueueBack);
@@ -174,7 +184,7 @@ void DestroyCollisionScratch(void* scratch, u32 destroyFlags)
 void QueryCollisionBox(CollisionData* collision, const Box* box)
 {
     g_CollisionLeafCount = 0;
-    auto* nodes = reinterpret_cast<const CollisionNode*>(DiskLoadedMemory(GetDiskManager(), &collision->nodesHandle));
+    const CollisionNode* nodes = reinterpret_cast<const CollisionNode*>(DiskLoadedMemory(GetDiskManager(), &collision->nodesHandle));
     s32 first = nodes[0].firstChild;
     s32 second = nodes[0].secondChild;
     if (first < 0)
@@ -235,9 +245,9 @@ void GetCollisionTriangleWithCoordinates(CollisionHit* hit, const CollisionTrian
 
 void TransformCollisionHit(CollisionHit* hit, const Matrix4x4* matrix)
 {
-    for (Vector4& vertex : hit->vertices)
+    for (u32 i = 0; i < 3; i++)
     {
-        VuTransformPoint(matrix, &vertex, &vertex);
+        VuTransformPoint(matrix, &hit->vertices[i], &hit->vertices[i]);
     }
 }
 
@@ -257,10 +267,10 @@ void TriangleNormal(const CollisionHit* hit, Vector4* normal)
 CollisionSurface* ConstructCollisionSurface(CollisionSurface* surface)
 {
     // The header's bits 18-31 are kept
-    constexpr u32 KeptHeader = 0xFFFC0000;
+    CONSTEXPR u32 KeptHeader = 0xFFFC0000;
     // Set on every surface, never read (SurfaceFlags::unused12)
-    constexpr u32 UnreadBits = 0xFF000;
-    constexpr f32 NoVolumeScale = -1.0f;
+    CONSTEXPR u32 UnreadBits = 0xFF000;
+    CONSTEXPR f32 NoVolumeScale = -1.0f;
     surface->header &= KeptHeader;
     surface->id = -1;
     surface->rollFriction = 1.0f;
@@ -276,9 +286,9 @@ CollisionSurface* ConstructCollisionSurface(CollisionSurface* surface)
     surface->flow.z = 0.0f;
     ContactMessage::Construct(&surface->contact);
     surface->stepParticles = NoSurfaceEffect;
-    for (f32& scale : surface->volumeScales)
+    for (u32 i = 0; i < sizeof(surface->volumeScales) / sizeof(surface->volumeScales[0]); i++)
     {
-        scale = NoVolumeScale;
+        surface->volumeScales[i] = NoVolumeScale;
     }
 
     surface->impactSound = NoSurfaceEffect;
@@ -302,9 +312,9 @@ void InitCollisionStatics(u32 initialise, u32 priority)
         return;
     }
 
-    for (CollisionSurface& surface : g_CollisionSurfaces.surfaces)
+    for (u32 i = 0; i < sizeof(g_CollisionSurfaces.surfaces) / sizeof(g_CollisionSurfaces.surfaces[0]); i++)
     {
-        ConstructCollisionSurface(&surface);
+        ConstructCollisionSurface(&g_CollisionSurfaces.surfaces[i]);
     }
 
     g_CollisionSurfaces.count = 0;
@@ -446,8 +456,8 @@ u32 PlaneThroughEdge(Vector4* plane, const Vector4* from, const Vector4* to, con
 f32 CheckTriangleIntersection(const CollisionHit* triangle, const Vector4* start, const Vector4* end, Vector4* point)
 {
     // How far a value is from 0 to be on one side, and the tests' values: the ray's ends' sides of each edge (two each)
-    constexpr f32 SideTolerance = Rounded(0.0001);
-    constexpr u32 EdgeTestValues = 6;
+    CONSTEXPR f32 SideTolerance = Rounded(0.0001);
+    CONSTEXPR u32 EdgeTestValues = 6;
     f32 values[EdgeTestValues];
     StartTriangleEdgeTests(start, end, triangle, values);
     // The ray's ends on the plane's two sides
@@ -571,8 +581,9 @@ u32 CheckRayIsInsideVolume(const CollisionNode* node, const Vector4* start, cons
     for (u32 axis = 0; axis < 3; axis++)
     {
         const f32 faces[] = {node->min[axis], node->max[axis]};
-        for (f32 face : faces)
+        for (u32 f = 0; f < 2; f++)
         {
+            f32 face = faces[f];
             f32 t;
             Vector4 point;
             if (FaceCrossing(node, start, end, delta, axis, face, &t, &point) && t < *share)
@@ -602,8 +613,9 @@ u32 RayCrossesBox(const CollisionNode* node, const Vector4* start, const Vector4
     for (u32 axis = 0; axis < 3; axis++)
     {
         const f32 faces[] = {node->min[axis], node->max[axis]};
-        for (f32 face : faces)
+        for (u32 f = 0; f < 2; f++)
         {
+            f32 face = faces[f];
             f32 t;
             Vector4 point;
             if (FaceCrossing(node, start, end, delta, axis, face, &t, &point))
@@ -741,10 +753,10 @@ void CheckCollisionRayCastFast(CollisionData* collision, s32 node, FastRayCast* 
 u32 CheckCollision(CollisionData* collision, const Vector4* start, const Vector4* end, u32 surfaceMask, f32* distance,
                    Vector4* position, CollisionHit* triangle)
 {
-    auto* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
-    auto* nodes = reinterpret_cast<const CollisionNode*>(DiskLoadedMemory(GetDiskManager(), &collision->nodesHandle));
-    auto* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
-    auto* triangles = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
+    const Vector4* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
+    const CollisionNode* nodes = reinterpret_cast<const CollisionNode*>(DiskLoadedMemory(GetDiskManager(), &collision->nodesHandle));
+    const CollisionGroup* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
+    const CollisionTriangle* triangles = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
     if (triangle != nullptr)
     {
         RayCast cast;
@@ -818,7 +830,10 @@ namespace
 // One of a box's eight corners (0 to 7): the min's coordinate along an axis whose bit is set, the max's otherwise
 union BoxCorner
 {
-    static constexpr u32 Count = 8;
+    enum
+    {
+        Count = 8
+    };
 
     u32 value;
     struct
@@ -875,7 +890,8 @@ u32 PlaneCrossesBox(const Box* box, const Vector4* plane)
 {
     u32 above = 0;
     u32 below = 0;
-    for (BoxCorner corner = {0}; corner.value < BoxCorner::Count; corner.value++)
+    BoxCorner corner;
+    for (corner.value = 0; corner.value < BoxCorner::Count; corner.value++)
     {
         if (0.0f < PlaneAtCorner(box, plane, corner))
         {
@@ -897,7 +913,8 @@ u32 PlaneCrossesBox(const Box* box, const Vector4* plane)
 
 u32 BoxInFrontOfPlane(const Box* box, const Vector4* plane)
 {
-    for (BoxCorner corner = {0}; corner.value < BoxCorner::Count; corner.value++)
+    BoxCorner corner;
+    for (corner.value = 0; corner.value < BoxCorner::Count; corner.value++)
     {
         if (PlaneAtCorner(box, plane, corner) < 0.0f)
         {
@@ -933,9 +950,9 @@ u32 TriangleTouchesBox(const Vector4* first, const Vector4* second, const Vector
 s32 GatherBoxTriangles(CollisionData* collision, const Box* box, u32 surfaceMask, CollisionHit* triangles, s32 most)
 {
     s32 count = 0;
-    auto* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
-    auto* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
-    auto* packed = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
+    const CollisionGroup* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
+    const Vector4* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
+    const CollisionTriangle* packed = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
     QueryCollisionBox(collision, box);
     for (s32 leaf = 0; leaf < g_CollisionLeafCount; leaf++)
     {
@@ -1012,13 +1029,14 @@ u32 InstancesInDamageHull(InstanceContext* instance, u32 hull, u32 kinds, Instan
     return ChunkInstancesInHull(chunk, &g_DamageHulls[hull], &place->matrix, kinds, query, 0);
 }
 
-
 void MakeFlatBoxHull()
 {
-    constexpr f32 HalfSize = 2.0f;
-    constexpr f32 HalfHeight = Rounded(0.15);
-    Vector4 min = {-HalfSize, -HalfHeight, -HalfSize, 1.0f};
-    Vector4 max = {HalfSize, HalfHeight, HalfSize, 1.0f};
+    CONSTEXPR f32 HalfSize = 2.0f;
+    CONSTEXPR f32 HalfHeight = Rounded(0.15);
+    Vector4 min;
+    min.x = -HalfSize; min.y = -HalfHeight; min.z = -HalfSize; min.w = 1.0f;
+    Vector4 max;
+    max.x = HalfSize; max.y = HalfHeight; max.z = HalfSize; max.w = 1.0f;
     BuildBoxHull(&g_DamageHulls[0], &min, &max);
 }
 
@@ -1027,7 +1045,9 @@ EABI_EXPORT(FUN_001f2080, ChunkInstancesInCylinder);
 u32 SegmentHitsInstances(ChunkData* chunk, const Vector4* start, const Vector4* end, InstanceQuery* hit, u32 kinds, f32* share,
                          Vector4* point, u32 hitFace)
 {
-    Vector4 segment[2] = {*start, *end};
+    Vector4 segment[2];
+    segment[0] = *start;
+    segment[1] = *end;
     f32 t = ChunkInstancesRayCast(chunk, segment, kinds, hit, hitFace);
     if (!(0.0f <= t) || !(t <= 1.0f))
     {
@@ -1151,7 +1171,9 @@ u32 FinishSegmentCast(ChunkData* chunk, const Vector4* start, const Vector4* end
     stop.y = start->y * distance + end->y * rest;
     stop.z = start->z * distance + end->z * rest;
     stop.w = 1.0f;
-    Vector4 segment[2] = {*start, stop};
+    Vector4 segment[2];
+    segment[0] = *start;
+    segment[1] = stop;
     f32 t = ChunkInstancesRayCast(chunk, segment, instanceMask, hit, hitFace);
     bool hitInstance = false;
     if (0.0f <= t && t <= 1.0f)
@@ -1270,9 +1292,9 @@ s32 GatherBoxTrianglePointers(CollisionData* collision, const Box* box, u32 surf
                               s32 most)
 {
     s32 count = 0;
-    auto* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
-    auto* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
-    auto* packed = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
+    const CollisionGroup* groups = reinterpret_cast<const CollisionGroup*>(DiskLoadedMemory(GetDiskManager(), &collision->groupsHandle));
+    const Vector4* vertices = reinterpret_cast<const Vector4*>(DiskLoadedMemory(GetDiskManager(), &collision->verticesHandle));
+    const CollisionTriangle* packed = reinterpret_cast<const CollisionTriangle*>(DiskLoadedMemory(GetDiskManager(), &collision->trianglesHandle));
     QueryCollisionBox(collision, box);
     for (s32 leaf = 0; leaf < g_CollisionLeafCount; leaf++)
     {
@@ -1420,7 +1442,8 @@ void TransformBox(Box* box, const Matrix4x4* matrix)
 {
     Box old = *box;
     ResetBox(box);
-    for (BoxCorner corner = {0}; corner.value < BoxCorner::Count; corner.value++)
+    BoxCorner corner;
+    for (corner.value = 0; corner.value < BoxCorner::Count; corner.value++)
     {
         Vector4 point;
         point.x = corner.minX ? old.min.x : old.max.x;
@@ -1463,7 +1486,7 @@ void TransformBox(Box* box, const Matrix4x4* matrix)
 namespace
 {
 // A box's faces: the min's and the max's of each axis
-enum BoxFace : s32
+enum BoxFace
 {
     FaceMinX,
     FaceMaxX,
@@ -1592,17 +1615,17 @@ u32 SphereBoxPush(f32 radius, const Box* box, const Vector4* centre, Vector4* pu
         if (!outside[FaceMinX] && !outside[FaceMaxX])
         {
             corner.x = box->min.x;
-            along = {1.0f, 0.0f, 0.0f, 1.0f};
+            along.x = 1.0f; along.y = 0.0f; along.z = 0.0f; along.w = 1.0f;
         }
         else if (!outside[FaceMinY] && !outside[FaceMaxY])
         {
             corner.y = box->min.y;
-            along = {0.0f, 1.0f, 0.0f, 1.0f};
+            along.x = 0.0f; along.y = 1.0f; along.z = 0.0f; along.w = 1.0f;
         }
         else
         {
             corner.z = box->min.z;
-            along = {0.0f, 0.0f, 1.0f, 1.0f};
+            along.x = 0.0f; along.y = 0.0f; along.z = 1.0f; along.w = 1.0f;
         }
 
         Vector4 toEdge;
@@ -1707,12 +1730,12 @@ void MakeCollisionCacheBlocks(CollisionCache* cache, s32 count)
         return;
     }
 
-    auto* block = static_cast<CollisionHitBlock*>(MemoryAllocate(sizeof(CollisionHitBlock)));
+    CollisionHitBlock* block = static_cast<CollisionHitBlock*>(MemoryAllocate(sizeof(CollisionHitBlock)));
     cache->firstBlock = block;
     block->next = nullptr;
     for (s32 made = 1; made < count; made++)
     {
-        auto* next = static_cast<CollisionHitBlock*>(MemoryAllocate(sizeof(CollisionHitBlock)));
+        CollisionHitBlock* next = static_cast<CollisionHitBlock*>(MemoryAllocate(sizeof(CollisionHitBlock)));
         next->next = nullptr;
         block->next = next;
         block = next;
@@ -1744,7 +1767,7 @@ void DestroyCollisionCache(CollisionCache* cache, u32 destroyFlags)
 
 u32 RefreshCollisionCache(CollisionCache* cache, const Box* box)
 {
-    constexpr s32 MostTriangles = 0x400;
+    CONSTEXPR s32 MostTriangles = 0x400;
     if (BoxInsideBox(box, &cache->box) != 0)
     {
         return 0;
@@ -1772,7 +1795,7 @@ u32 RefreshCollisionCache(CollisionCache* cache, const Box* box)
 
 u32 SphereTouchesTriangle(f32 radius, const CollisionHit* triangle, const Vector4* centre, Vector4* out)
 {
-    constexpr f32 WithinEdge = Rounded(0.001);
+    CONSTEXPR f32 WithinEdge = Rounded(0.001);
     const Vector4* vertices = triangle->vertices;
     Box bounds;
     TriangleBox(&bounds, &vertices[0], &vertices[1], &vertices[2]);
@@ -1986,8 +2009,8 @@ namespace
 {
 // The way out of the contacts' spaces looked for once a point is in them, and the motion the contacts are gathered for a hull
 // standing still with
-constexpr f32 NoMargin = 0.0f;
-constexpr f32 StillMotion = Epsilon;
+CONSTEXPR f32 NoMargin = 0.0f;
+CONSTEXPR f32 StillMotion = Epsilon;
 }
 
 void AccelerateOnSurface(CollisionSurface* surface, f32 seconds, Vector4* velocity, const Vector4* wanted, const Vector4* normal)
@@ -2052,7 +2075,8 @@ u32 HullOverlaps(ChunkData* chunk, const CollisionHull* hull, const Vector4* pos
 
     u32 overlaps = 0;
     ContactSet* contacts = BeginContacts();
-    Vector4 motion = {StillMotion, StillMotion, StillMotion, 1.0f};
+    Vector4 motion;
+    motion.x = StillMotion; motion.y = StillMotion; motion.z = StillMotion; motion.w = 1.0f;
     if (touchedCount != nullptr)
     {
         *touchedCount = 0;
@@ -2122,7 +2146,7 @@ u32 CastHullDown(f32 distance, ChunkData* chunk, const CollisionHull* hull, cons
                  Vector4* found, InstanceContext* const* leftOut, s32 leftOutCount)
 {
     // The steps down stop being halved below this
-    constexpr f32 FinestStep = Rounded(0.002);
+    CONSTEXPR f32 FinestStep = Rounded(0.002);
     if (chunk == nullptr)
     {
         return 0;
@@ -2133,7 +2157,8 @@ u32 CastHullDown(f32 distance, ChunkData* chunk, const CollisionHull* hull, cons
     // A hull of no height never steps down: unless it starts inside something the loop never ends (retail's; the game's hulls
     // have height)
     f32 step = (box.max.y - box.min.y) * 0.5f;
-    Vector4 motion = {StillMotion, StillMotion, StillMotion, 1.0f};
+    Vector4 motion;
+    motion.x = StillMotion; motion.y = StillMotion; motion.z = StillMotion; motion.w = 1.0f;
     Vector4 at = *from;
     while (true)
     {
@@ -2195,3 +2220,4 @@ FUN_002816f8:
     .size FUN_002816f8, . - FUN_002816f8
     .popsection
 )");
+#endif

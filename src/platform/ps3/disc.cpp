@@ -1,6 +1,8 @@
 #include "platform/disc.h"
 
-namespace Platform::Disc
+namespace Platform
+{
+namespace Disc
 {
 static Media s_Media = Media::Dvd;
 static bool s_Initialised = false;
@@ -20,5 +22,6 @@ s32 SetMedia(Media media)
 Readiness WaitReady()
 {
     return Ready;
+}
 }
 }

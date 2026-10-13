@@ -5,7 +5,9 @@
 // The platform layer: what the game needs of the machine it runs on. The game's C++ calls these interfaces and a platform
 // implements them (src/platform/<platform>/, picked by configure.py). The PS2 one is on PS2SDK; the retail asm that's left calls
 // Sony's SDK by name, which src/sce/ puts on the same interfaces. The platform's entry sets things up and calls Main.
-namespace Platform::System
+namespace Platform
+{
+namespace System
 {
 // Makes the machine ready for the game, first thing: on the PS2 the graphics hardware reset and the I/O processor restarted with
 // the disc's modules
@@ -42,4 +44,5 @@ struct DateTime
 
 // The local date and time
 DateTime LocalTime();
+}
 }

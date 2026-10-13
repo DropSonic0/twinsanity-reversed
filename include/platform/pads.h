@@ -5,7 +5,9 @@
 // The controllers, by port and slot (multitap), each reporting into a buffer of its own. The interface is a DualShock 2's, the
 // PS2's libpad: its states, modes (4 digital, 7 analog), actuators, pressure sensitive mode and report (ReportByte), which
 // the game's pad code goes by. Another platform presents its pads as DualShock 2s
-namespace Platform::Pads
+namespace Platform
+{
+namespace Pads
 {
 enum State : s32
 {
@@ -34,7 +36,7 @@ enum ModeInfo : s32
     InfoModeTable = 4,
 };
 
-constexpr s32 ModeTableLength = -1;
+CONSTEXPR s32 ModeTableLength = -1;
 
 // The modes' IDs: a digital pad, an analog one (a DualShock's)
 enum ModeId : s32
@@ -57,10 +59,10 @@ enum ModeLock : s32
 };
 
 // InfoActuator's actuator for how many there are
-constexpr s32 CountActuators = -1;
+CONSTEXPR s32 CountActuators = -1;
 
 // Its buffer: 256 bytes, 64 byte aligned
-constexpr u32 BufferSize = 256;
+CONSTEXPR u32 BufferSize = 256;
 
 // The report's bytes: the mode, the button word (pressed 0, its high byte first), the sticks and the buttons' pressures
 enum ReportByte : u32
@@ -103,4 +105,5 @@ s32 SetActuatorDirect(s32 port, s32 slot, const u8 values[6]);
 // Pressure sensitive buttons
 s32 InfoPressureMode(s32 port, s32 slot);
 s32 EnterPressureMode(s32 port, s32 slot);
+}
 }
