@@ -494,7 +494,7 @@ void SetChiChiGrassCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
     }
 
     AgentNode* grabbable = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeGrabbable));
-    CharacterPart* part = static_cast<GrabbablePart*>(grabbable->agent->part);
+    GrabbablePart* part = static_cast<GrabbablePart*>(grabbable->agent->part);
     part->grabbable.unused0 = setting.on;
 }
 
@@ -810,7 +810,7 @@ void StopTargetBehaviourCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
     u8 designator = request.designator;
     if (designator != DesignatesNone)
     {
-        InstanceContext* target = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{designator});
+        InstanceContext* target = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, static_cast<u32>(designator));
         if (target != nullptr)
         {
             static_cast<ObjectNodeBase*>(GetGameNode(&target->nodes, NodeObject))->sourceNode = nullptr;
@@ -1011,7 +1011,7 @@ void UnlinkTargetCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
     }
     else
     {
-        linked = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{request.target});
+        linked = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, static_cast<u32>(request.target));
         if (IndexOfLinked(attachments, linked) == -1)
         {
             linked = nullptr;

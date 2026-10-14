@@ -138,7 +138,7 @@ CONSTEXPR u32 NoSkateSound = 0xFFFF;
 // A gun's second count (game/characters.h's Gun::AddSecondCount)
 CONSTEXPR u32 AmountToken = 0x200;
 // The board's sounds by slot: sliding (on water or ice, on wood), grinding, leaning and landing (on metal, on wood)
-enum BoardSound : u32
+enum BoardSound
 {
     SoundSlide = 0,
     SoundSlideSlippery = 1,
@@ -377,7 +377,7 @@ void ApplyVelocityCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
     InstanceContext* instance = node->owner;
     PropertyHolder* properties = PropertiesOf(node);
     // ApplyVelocityToSelf's values lead its own (retail's base class)
-    auto* base = reinterpret_cast<const ApplyVelocityToSelfCommand*>(this);
+    const ApplyVelocityToSelfCommand* base = reinterpret_cast<const ApplyVelocityToSelfCommand*>(this);
     if (!given.rayValues && !given.castsRay)
     {
         InstanceContext* other = runner->InstanceOf(receiver);
@@ -419,15 +419,38 @@ void ApplyVelocityCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
 // it from below (and bit 14 of its part)
 void SetAttacksTakenCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* part = static_cast<BasicAgentPart*>(NodeOf(runner)->agent->part);
+    BasicAgentPart* part = static_cast<BasicAgentPart*>(NodeOf(runner)->agent->part);
     Settings given = settings;
-    ApplySetting(given.spin, [part](u32 on) { part->bits.hitBySpin = on; });
-    ApplySetting(given.slam, [part](u32 on) { part->bits.hitBySlamOrTied = on; });
-    ApplySetting(given.walkInto, [part](u32 on) {
-        part->bits.hitByWalkInto = on;
-        part->bits.unused14 = on;
-        part->bits.hitFromBelow = on;
-    });
+    if (given.spin == SettingOn)
+    {
+        part->bits.hitBySpin = 1;
+    }
+    else if (given.spin == SettingOff)
+    {
+        part->bits.hitBySpin = 0;
+    }
+
+    if (given.slam == SettingOn)
+    {
+        part->bits.hitBySlamOrTied = 1;
+    }
+    else if (given.slam == SettingOff)
+    {
+        part->bits.hitBySlamOrTied = 0;
+    }
+
+    if (given.walkInto == SettingOn)
+    {
+        part->bits.hitByWalkInto = 1;
+        part->bits.unused14 = 1;
+        part->bits.hitFromBelow = 1;
+    }
+    else if (given.walkInto == SettingOff)
+    {
+        part->bits.hitByWalkInto = 0;
+        part->bits.unused14 = 0;
+        part->bits.hitFromBelow = 0;
+    }
 }
 
 // The first contents come out as many as the count's range says, spread around above the crate and staggered by 0.05 seconds; the
@@ -478,7 +501,7 @@ void CreateCrateContents(const CreateCrateContentsCommand* command, Agent*, Inst
         spot.y = spot.y + velocity.y;
         spot.z = spot.z + velocity.z;
         InstanceContext* made = CreateInstance(factory, chunk, first & ResourceIndexMask, &spot, angles);
-        auto* node = static_cast<GameNode*>(GetGameNode(&made->nodes, NodeObject));
+        GameNode* node = static_cast<GameNode*>(GetGameNode(&made->nodes, NodeObject));
         velocity.x = velocity.x + velocity.x;
         velocity.y = velocity.y + velocity.y;
         velocity.z = velocity.z + velocity.z;
@@ -605,7 +628,7 @@ void CountPlayerApproachCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
     InstanceContext* instance = NodeOf(runner)->owner;
     if (player != nullptr)
     {
-        auto* character = static_cast<CharacterAgent*>(AgentOfKind(player, NodeCharacter));
+        CharacterAgent* character = static_cast<CharacterAgent*>(AgentOfKind(player, NodeCharacter));
         Vector4 velocity;
         CharacterVelocity(character, &velocity);
         Vector4 from = PositionOf(player);
@@ -707,7 +730,7 @@ void HitInstancesInBoxesCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
         ChunkInstancesInHull(instance->chunk, shape, &matrix, kinds, &query, 0);
         for (s32 i = 0; i < query.count; i++)
         {
-            auto* hit = static_cast<InstanceContext*>(results[i]);
+            InstanceContext* hit = static_cast<InstanceContext*>(results[i]);
             if (flags.sendsMessage)
             {
                 Reference* eventHandle = trigger != nullptr ? AddEventReference(trigger) : nullptr;
@@ -926,7 +949,7 @@ void PlayCharacterSound(SkateController* skate, u32 slot, f32 pitch, f32 volume)
 void SetPlayerInputCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     InstanceContext* instance = NodeOf(runner)->owner;
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (node == nullptr)
     {
         // Retail bug: neither the player nor its character node (nor its controls' node below) is checked for none
@@ -934,7 +957,7 @@ void SetPlayerInputCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
         node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     }
 
-    auto* character = static_cast<CharacterAgent*>(node->agent);
+    CharacterAgent* character = static_cast<CharacterAgent*>(node->agent);
     u32* locked = &character->buttons.locked.value;
     for (u32 setting = 0; setting < SettingCount; setting++)
     {
@@ -962,17 +985,17 @@ void SetPlayerInputCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
         }
         else if (setting == SettingResting)
         {
-            auto* part = static_cast<CharacterPart*>(character->part);
+            CharacterPart* part = static_cast<CharacterPart*>(character->part);
             part->flags.resting = on;
         }
         else
         {
-            auto* part = static_cast<CharacterPart*>(character->part);
+            CharacterPart* part = static_cast<CharacterPart*>(character->part);
             part->bits.invulnerable = on ^ 1;
         }
     }
 
-    auto* controlsNode = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
+    ControlsNode* controlsNode = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
     controlsNode->bits.motionDriven = controls.motionDriven;
     character->state.boxOnly = controls.boxOnly;
 }
@@ -1086,20 +1109,20 @@ void LinkToFocusCharacterCommand::Execute(TimeClock*, BehaviourRunner* runner, B
         return;
     }
 
-    auto* own = static_cast<AgentNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
+    AgentNode* own = static_cast<AgentNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
     if (own == nullptr)
     {
         return;
     }
 
-    auto* character = static_cast<CharacterAgent*>(own->agent);
-    auto* other = static_cast<AgentNode*>(GetGameNode(&focus->nodes, NodeCharacter));
+    CharacterAgent* character = static_cast<CharacterAgent*>(own->agent);
+    AgentNode* other = static_cast<AgentNode*>(GetGameNode(&focus->nodes, NodeCharacter));
     if (other == nullptr)
     {
         return;
     }
 
-    auto* focusCharacter = static_cast<CharacterAgent*>(other->agent);
+    CharacterAgent* focusCharacter = static_cast<CharacterAgent*>(other->agent);
     if (link.focusLeads)
     {
         focusCharacter->Link(character);
@@ -1124,7 +1147,7 @@ void CountPlayerCirclingCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
         return;
     }
 
-    auto* character = static_cast<CharacterAgent*>(AgentOfKind(player, NodeCharacter));
+    CharacterAgent* character = static_cast<CharacterAgent*>(AgentOfKind(player, NodeCharacter));
     Vector4 velocity;
     CharacterVelocity(character, &velocity);
     Vector4 from = PositionOf(player);
@@ -1192,7 +1215,7 @@ void MakeCharactersIdleCommand::MakeIdle(InstanceContext* instance, BehaviourLev
         return;
     }
 
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (node != nullptr)
     {
         RunAgentEvent(node->agent, EventIdle, reinterpret_cast<u32>(instance), 1, 0);
@@ -1254,7 +1277,7 @@ void SwitchCharacterCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
     }
     else if (target.byLinked)
     {
-        auto* attachments = static_cast<AttachmentsNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeAttachments));
+        AttachmentsNode* attachments = static_cast<AttachmentsNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeAttachments));
         if (attachments != nullptr)
         {
             switched = attachments->linked[target.linked];
@@ -1266,7 +1289,7 @@ void SwitchCharacterCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
         return;
     }
 
-    auto* node = static_cast<ObjectNodeBase*>(GetGameNode(&switched->nodes, NodeObject));
+    ObjectNodeBase* node = static_cast<ObjectNodeBase*>(GetGameNode(&switched->nodes, NodeObject));
     if (node == nullptr)
     {
         return;
@@ -1332,37 +1355,37 @@ void SetAgentCommand::Execute(TimeClock* clock, BehaviourRunner* runner, Behavio
             break;
         case SettingSnapsToGround:
         {
-            auto* creature = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCreature));
+            AgentNode* creature = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCreature));
             if (creature == nullptr)
             {
                 break;
             }
 
-            auto* part = static_cast<CreaturePart*>(creature->agent->part);
+            CreaturePart* part = static_cast<CreaturePart*>(creature->agent->part);
             part->flags.snapsToGround = on;
             break;
         }
         case SettingCanDamageCharacter:
         {
-            auto* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
+            BasicAgentPart* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
             part->bits.canDamageCharacter = on;
             break;
         }
         case SettingVulnerable:
         {
-            auto* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
+            BasicAgentPart* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
             part->bits.invulnerable = on ^ 1;
             break;
         }
         case SettingBulletsBounceBack:
         {
-            auto* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
+            BasicAgentPart* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
             part->bits.bulletsBounceBack = on;
             break;
         }
         case SettingTargettable:
         {
-            auto* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
+            BasicAgentPart* part = static_cast<BasicAgentPart*>(AgentNodeOf(instance)->agent->part);
             part->bits.targettable = on;
             break;
         }
@@ -1437,8 +1460,8 @@ void TriggerBalancedCrateFallingCommand::Execute(TimeClock*, BehaviourRunner* ru
         lowest = lowest + Margin;
         for (u32 i = 0; i < count; i++)
         {
-            auto* crate = static_cast<InstanceContext*>(results[i]);
-            auto* agent = static_cast<CrateAgent*>(AgentOfKind(crate, NodeCrate));
+            InstanceContext* crate = static_cast<InstanceContext*>(results[i]);
+            CrateAgent* agent = static_cast<CrateAgent*>(AgentOfKind(crate, NodeCrate));
             if (PositionOf(crate).y - point.y < lowest)
             {
                 agent->StartFalling();
@@ -1463,8 +1486,8 @@ bool CharactersOf(CharacterPairArgument pair, CharacterAgent** first, CharacterA
         return false;
     }
 
-    auto* firstNode = static_cast<AgentNode*>(GetGameNode(&firstInstance->nodes, NodeCharacter));
-    auto* secondNode = static_cast<AgentNode*>(GetGameNode(&secondInstance->nodes, NodeCharacter));
+    AgentNode* firstNode = static_cast<AgentNode*>(GetGameNode(&firstInstance->nodes, NodeCharacter));
+    AgentNode* secondNode = static_cast<AgentNode*>(GetGameNode(&secondInstance->nodes, NodeCharacter));
     if (firstNode == nullptr || secondNode == nullptr)
     {
         return false;
@@ -1509,18 +1532,18 @@ void SetVehicleHumiliskateCommand::Execute(TimeClock*, BehaviourRunner* runner, 
     f32 top = topSpeed.FloatWith(properties);
     f32 crouched = crouchedSpeed.FloatWith(properties);
     // Retail bug: unlike the Rollerbrawl's, the characters' instances aren't checked for none
-    auto* firstNode = static_cast<AgentNode*>(GetGameNode(&firstInstance->nodes, NodeCharacter));
-    auto* secondNode = static_cast<AgentNode*>(GetGameNode(&secondInstance->nodes, NodeCharacter));
+    AgentNode* firstNode = static_cast<AgentNode*>(GetGameNode(&firstInstance->nodes, NodeCharacter));
+    AgentNode* secondNode = static_cast<AgentNode*>(GetGameNode(&secondInstance->nodes, NodeCharacter));
     if (firstNode == nullptr || secondNode == nullptr)
     {
         return;
     }
 
-    auto* first = static_cast<CharacterAgent*>(firstNode->agent);
-    auto* second = static_cast<CharacterAgent*>(secondNode->agent);
+    CharacterAgent* first = static_cast<CharacterAgent*>(firstNode->agent);
+    CharacterAgent* second = static_cast<CharacterAgent*>(secondNode->agent);
     first->SetVehicle(Vehicle::KindHumiliskate, second, 0);
     SetPairing(PairingHumiliskate, first, second);
-    auto* board = static_cast<HumiliskateVehicle*>(first->vehicle);
+    HumiliskateVehicle* board = static_cast<HumiliskateVehicle*>(first->vehicle);
     board->crouchedSpeed = crouched;
     board->topSpeed = top;
 }
@@ -1536,14 +1559,14 @@ void SetVehicleHoverboardCommand::Execute(TimeClock*, BehaviourRunner* runner, B
         return;
     }
 
-    auto* riderNode = static_cast<AgentNode*>(GetGameNode(&riding->nodes, NodeCharacter));
+    AgentNode* riderNode = static_cast<AgentNode*>(GetGameNode(&riding->nodes, NodeCharacter));
     AgentNode* boardNode = AgentNodeOf(board);
     if (riderNode == nullptr || boardNode == nullptr)
     {
         return;
     }
 
-    auto* character = static_cast<CharacterAgent*>(riderNode->agent);
+    CharacterAgent* character = static_cast<CharacterAgent*>(riderNode->agent);
     GameProgress* progress = &G_GameController->progress;
     character->SetVehicle(Vehicle::KindHoverboard, boardNode->agent, rider.boardControls);
     progress->play.pairing = rider.boardControls ? PairingHoverboardControls : PairingHoverboard;
@@ -1749,7 +1772,7 @@ u32 AddToGunSecondCountCommand::Size()
 
 f32 RidesRollerbrawl(InstanceContext* instance)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (node == nullptr)
     {
         return 0.0f;
@@ -1765,7 +1788,7 @@ f32 RidesRollerbrawl(InstanceContext* instance)
         }
         else if (vehicle->Kind() == Vehicle::KindPassenger)
         {
-            auto* driverNode = static_cast<AgentNode*>(GetGameNode(&vehicle->other->instance->nodes, NodeCharacter));
+            AgentNode* driverNode = static_cast<AgentNode*>(GetGameNode(&vehicle->other->instance->nodes, NodeCharacter));
             if (driverNode != nullptr)
             {
                 Vehicle* driven = static_cast<CharacterAgent*>(driverNode->agent)->vehicle;

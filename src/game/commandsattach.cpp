@@ -103,6 +103,18 @@ bool OnPath(const AttachmentsNode* attachments, InstanceContext* instance)
     return path != nullptr && PathIndexOf(path, instance) != -1;
 }
 
+// Whether a linked object gets the message: only those on the attachments' path, or only those off it
+bool Picked(const AttachmentsNode* attachments, InstanceContext* linked, u32 onlyOnPath, u32 onlyOffPath)
+{
+    bool onPath = OnPath(attachments, linked);
+    if (onlyOnPath != 0)
+    {
+        return onPath;
+    }
+
+    return onlyOffPath == 0 || !onPath;
+}
+
 // The node a rigid body moves (retail reads it with the body's state, as 64 bits)
 ObjectNode* NodeOfBody(ObjectRigidBody* body)
 {
@@ -126,7 +138,7 @@ void DestroyMessage(GameEvent* event)
 {
     if (event != nullptr)
     {
-        CallVirtual<void>(event, event->vtable, GameEvent::DestroySlot, u32{DestroyAndFree});
+        CallVirtual<void>(event, event->vtable, GameEvent::DestroySlot, static_cast<u32>(DestroyAndFree));
     }
 }
 
@@ -747,7 +759,7 @@ void UnsupportAboveCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
     Vector4 position = PositionOf(instance);
     for (u16 index = 0; index < count; index++)
     {
-        auto* hit = static_cast<InstanceContext*>(results[index]);
+        InstanceContext* hit = static_cast<InstanceContext*>(results[index]);
         Vector4 away = PositionOf(hit);
         away.x = away.x - position.x;
         away.y = away.y - position.y;
@@ -851,8 +863,8 @@ void ForceVolumeControllerCommand::Execute(TimeClock*, BehaviourRunner* runner, 
         return;
     }
 
-    auto* volume = static_cast<MessageTriggerNode*>(GetGameNode(&static_cast<InstanceContext*>(results[0])->nodes,
-                                                                NodeMessageTrigger));
+    MessageTriggerNode* volume = static_cast<MessageTriggerNode*>(GetGameNode(&static_cast<InstanceContext*>(results[0])->nodes,
+                                                                          NodeMessageTrigger));
     volume->force = force;
     if (turns.on != 0)
     {
@@ -875,17 +887,6 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     u16 message = target.message;
-    // Whether a linked object gets the message: only those on the attachments' path, or only those off it (the path looked up
-    // whatever the bits)
-    auto picked = [this](const AttachmentsNode* attachments, InstanceContext* linked) {
-        bool onPath = OnPath(attachments, linked);
-        if (flags.onlyOnPath != 0)
-        {
-            return onPath;
-        }
-
-        return flags.onlyOffPath == 0 || !onPath;
-    };
 
     InstanceContext* recipient = nullptr;
     if (flags.everyLinked != 0 || flags.byField != 0 || flags.object != NoLinkedObjectId)
@@ -903,7 +904,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
             for (u32 index = 0; index < attachments->LinkedCount(); index++)
             {
                 InstanceContext* linked = LinkedInstances(attachments)[index];
-                if (linked != nullptr && picked(attachments, linked))
+                if (linked != nullptr && Picked(attachments, linked, flags.onlyOnPath, flags.onlyOffPath))
                 {
                     SendMessage(event, linked);
                     sent = true;
@@ -930,7 +931,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
                     continue;
                 }
 
-                if (picked(attachments, linked))
+                if (Picked(attachments, linked, flags.onlyOnPath, flags.onlyOffPath))
                 {
                     SendMessage(event, linked);
                     sent = true;
@@ -960,7 +961,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
                     continue;
                 }
 
-                if (picked(attachments, linked))
+                if (Picked(attachments, linked, flags.onlyOnPath, flags.onlyOffPath))
                 {
                     SendMessage(event, linked);
                     sent = true;
@@ -1001,7 +1002,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 
         u32 index = flags.currentLinked != 0 ? CurrentLinked(attachments) : target.recipient;
         recipient = LinkedInstances(attachments)[index];
-        if (recipient != nullptr && !picked(attachments, recipient))
+        if (recipient != nullptr && !Picked(attachments, recipient, flags.onlyOnPath, flags.onlyOffPath))
         {
             recipient = nullptr;
         }
@@ -1021,7 +1022,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
         }
         else
         {
-            recipient = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{designator});
+            recipient = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, static_cast<u32>(designator));
             if (flags.unlinks != 0)
             {
                 AttachmentsNode* attachments = AttachmentsNodeOf(instance);
@@ -1064,7 +1065,7 @@ void BroadcastUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, B
     GameEvent* event = nullptr;
     for (u16 index = 0; index < count; index++)
     {
-        auto* found = static_cast<InstanceContext*>(results[index]);
+        InstanceContext* found = static_cast<InstanceContext*>(results[index]);
         if (objectId != AnyObjectId && (ObjectNodeOf(found)->agent->objectId & ResourceIndexMask) != objectId)
         {
             continue;
@@ -1140,9 +1141,9 @@ void InitCommandStatics(u32 initialise, u32 priority)
     }
 
     g_UnusedCommandsWord = 0;
-    for (Reference*& agent : g_GlobalAgents)
+    for (u32 index = 0; index < sizeof(g_GlobalAgents) / sizeof(g_GlobalAgents[0]); index++)
     {
-        agent = nullptr;
+        g_GlobalAgents[index] = nullptr;
     }
 }
 

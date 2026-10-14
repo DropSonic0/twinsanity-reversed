@@ -19,7 +19,6 @@
 #include "game/vehicles.h"
 #include "game/widgets.h"
 
-#include <bit>
 #include <stdint.h>
 
 // The commands that work the cameras: the played character's follow camera, the game's camera rig the cutscenes' commands
@@ -117,8 +116,8 @@ FollowNode* PlayedFollowNode()
 // A playable character's velocity: its vehicle's while it rides one, else its own
 void CharacterVelocity(InstanceContext* character, Vector4* velocity)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(NodesOf(character), NodeCharacter));
-    auto* agent = static_cast<CharacterAgent*>(node->agent);
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(NodesOf(character), NodeCharacter));
+    CharacterAgent* agent = static_cast<CharacterAgent*>(node->agent);
     Vehicle* vehicle = agent->vehicle;
     if (vehicle != nullptr)
     {
@@ -188,7 +187,7 @@ void CameraFocusObjectCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
 void CameraStopFocusObjectCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
     InstanceContext* played = PlayedInstance();
-    auto* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
+    FollowNode* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
     AssignReference(&follow->camera.rig.ownTarget.followed, played);
 }
 
@@ -203,7 +202,7 @@ void SwingAroundCameraCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
     CONSTEXPR f32 MinusHalfPi = -HalfPi;
     CONSTEXPR f32 PhaseStep = 0x1.aceea2p-5f;
     InstanceContext* played = PlayedInstance();
-    auto* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
+    FollowNode* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
     ReferencedObject* cameraInstance = ObjectOf(follow->cameraInstance);
     // The character's velocity, which nothing reads
     Vector4 unused;
@@ -663,7 +662,7 @@ f32 FramingDistance(const CutsceneCameraMoveCommand*, f32 size, f32 ratio, f32 v
 void CameraSaveParamsCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
     FollowNode* follow = PlayedFollowNode();
-    auto* cameraInstance = static_cast<InstanceContext*>(ObjectOf(follow->cameraInstance));
+    InstanceContext* cameraInstance = static_cast<InstanceContext*>(ObjectOf(follow->cameraInstance));
     FollowCamera* camera = &follow->camera;
     switch (mode.action)
     {
@@ -875,14 +874,17 @@ void CameraTopdownModeCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLe
     }
 
     FollowCameraPositioner* positioner = &follow->camera.rig.ownPositioner;
-    auto* camera = static_cast<OrbitCamera*>(MemoryAllocate(sizeof(OrbitCamera)));
+    OrbitCamera* camera = static_cast<OrbitCamera*>(MemoryAllocate(sizeof(OrbitCamera)));
     CameraSubtype::Construct(camera);
     camera->unused40[0] = 1;
     camera->vtable = g_OrbitCameraVTable;
     camera->radius = 11.0f;
     camera->farHeight = 16.0f;
     camera->farDistance = 20.0f;
-    camera->centre = {Rounded(-0.07851), Rounded(1.25772), Rounded(-0.17564), 1.0f};
+    camera->centre.x = Rounded(-0.07851);
+    camera->centre.y = Rounded(1.25772);
+    camera->centre.z = Rounded(-0.17564);
+    camera->centre.w = 1.0f;
     camera->nearHeight = 16.0f;
     camera->extra = 0.0f;
     camera->nearDistance = 0.0f;
@@ -937,7 +939,7 @@ void GetColor(u32* colour, s32 index)
 
 void MakeColour(u32* colour, f32 red, f32 green, f32 blue)
 {
-    auto* bytes = reinterpret_cast<u8*>(colour);
+    u8* bytes = reinterpret_cast<u8*>(colour);
     bytes[0] = Colour::ColourByte(red);
     bytes[1] = Colour::ColourByte(green);
     bytes[2] = Colour::ColourByte(blue);
