@@ -245,7 +245,7 @@ u16 HullSurfaceIndex(ObjectCollision* collision, u8 index)
 
 void GetHullAndMatrix(ObjectCollision* collision, const Matrix4x4* matrix, s32 index, CollisionHull** hull, Matrix4x4* out)
 {
-    constexpr s8 ModelSpace = -1;
+    CONSTEXPR s8 ModelSpace = -1;
     if (collision->hull != nullptr)
     {
         *hull = collision->hull;
@@ -449,7 +449,7 @@ void SetCollisionOgi(ObjectCollision* collision, GameOGI* ogi)
 
 void MarkThinAndCopySurfaces(ObjectCollision* collision)
 {
-    constexpr f32 Thin = Rounded(0.05);
+    CONSTEXPR f32 Thin = Rounded(0.05);
     const Box& own = collision->ownBox;
     f32 x = __builtin_fabsf(own.max.x - own.min.x);
     f32 y = __builtin_fabsf(own.max.y - own.min.y);

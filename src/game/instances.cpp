@@ -12,25 +12,25 @@
 namespace
 {
 // The queued events' links
-constexpr u32 EventPrevious = 0x4 + 1;
-constexpr u32 EventNext = 0x8 + 1;
+CONSTEXPR u32 EventPrevious = 0x4 + 1;
+CONSTEXPR u32 EventNext = 0x8 + 1;
 // The node iterator's own vtable functions: whether it's done, to the next node
-constexpr u32 IteratorIsDoneSlot = 3;
-constexpr u32 IteratorNextSlot = 5;
+CONSTEXPR u32 IteratorIsDoneSlot = 3;
+CONSTEXPR u32 IteratorNextSlot = 5;
 // The size of an object's place
-constexpr u32 ObjectPlaceSize = 0x70;
+CONSTEXPR u32 ObjectPlaceSize = 0x70;
 // The links of the nodes' lists and of the instances' (GCC 2.9x member pointers: their offsets plus 1)
-constexpr u32 NodePrevious = 0xC + 1;
-constexpr u32 NodeNext = 0x10 + 1;
-constexpr u32 InstancePrevious = 0x140 + 1;
-constexpr u32 InstanceNext = 0x144 + 1;
-constexpr u8 NoKind = 0xFF;
+CONSTEXPR u32 NodePrevious = 0xC + 1;
+CONSTEXPR u32 NodeNext = 0x10 + 1;
+CONSTEXPR u32 InstancePrevious = 0x140 + 1;
+CONSTEXPR u32 InstanceNext = 0x144 + 1;
+CONSTEXPR u8 NoKind = 0xFF;
 // UnregisterNode's second argument: the node detached from its instance too
-constexpr u32 DetachNode = 1;
+CONSTEXPR u32 DetachNode = 1;
 // A new instance's clock (none yet)
-constexpr u8 NoClock = 0xFF;
+CONSTEXPR u8 NoClock = 0xFF;
 // The kinds stepped at the start, in their order (0 to 10)
-constexpr u32 FirstStepKinds = 11;
+CONSTEXPR u32 FirstStepKinds = 11;
 
 u32 KindOf(GameNode* node)
 {
@@ -38,7 +38,7 @@ u32 KindOf(GameNode* node)
 }
 
 // The reference arrays' start: 10 handles, none set
-constexpr u32 ReferenceArrayGrowth = 10;
+CONSTEXPR u32 ReferenceArrayGrowth = 10;
 }
 
 extern "C"

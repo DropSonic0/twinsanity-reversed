@@ -17,8 +17,8 @@
 #include "game/reference.h"
 #include "game/rigidbody.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The custom pickups (pickups of subtypes 16 and 17): their object node (kind 1), which the code model of its custom slot drives
 // through its states, the code models' slots and the spin the idle ones share. The events' handle release sits here too, where
@@ -26,8 +26,8 @@
 
 // The frames of the idle pickups' spin (a 0.8 second loop of sixtieths), and how far apart the pickups made one after the other
 // start in it
-constexpr s32 SpinFrames = 48;
-constexpr s32 SpinPhaseStep = 8;
+CONSTEXPR s32 SpinFrames = 48;
+CONSTEXPR s32 SpinPhaseStep = 8;
 
 extern "C"
 {
@@ -56,9 +56,9 @@ EABI_EXPORT(FUN_00109290, &PickupObjectNode::Launch);
 
 namespace
 {
-constexpr u32 PickupStates = 10;
+CONSTEXPR u32 PickupStates = 10;
 // Unseen this many stamps in the player's chunk, an instance with an ID goes to sleep
-constexpr u32 LongUnseen = 0x9C5;
+CONSTEXPR u32 LongUnseen = 0x9C5;
 
 // The seconds between two clock times
 f32 SecondsBetween(u32 from, u32 to)
@@ -92,7 +92,7 @@ u32 StampsUnseen(const GameNode* node)
 ChunkData* PlayerChunk()
 {
     Reference* player = g_PlayerInstance;
-    std::uintptr_t instance = player != nullptr ? reinterpret_cast<std::uintptr_t>(player->object) : 0;
+    uintptr_t instance = player != nullptr ? reinterpret_cast<uintptr_t>(player->object) : 0;
     return *reinterpret_cast<ChunkData* const*>(instance + offsetof(ReferencedObject, chunk));
 }
 
@@ -263,11 +263,11 @@ void PickupObjectNode::PacketStarted()
 
 void PickupObjectNode::Launch(f32 gravity, const Vector4* launchVelocity)
 {
-    constexpr f32 MaxSpeed = 40.0f;
-    constexpr f32 MaxSpin = 20.0f;
-    constexpr f32 Radius = 0.25f;
+    CONSTEXPR f32 MaxSpeed = 40.0f;
+    CONSTEXPR f32 MaxSpin = 20.0f;
+    CONSTEXPR f32 Radius = 0.25f;
     // Pushed half a unit above its place
-    constexpr f32 PushHeight = 0.5f;
+    CONSTEXPR f32 PushHeight = 0.5f;
     velocity = *launchVelocity;
     if (!(0.0f < gravity) || body != nullptr)
     {
@@ -317,8 +317,8 @@ void PickupObjectNode::HandleEvent(Reference** handle)
 
 void PickupObjectNode::SetState(TimeClock* clock, u32 state)
 {
-    constexpr f32 AttractDelay = Rounded(0.1);
-    constexpr f32 FleeDelay = Rounded(0.7);
+    CONSTEXPR f32 AttractDelay = Rounded(0.1);
+    CONSTEXPR f32 FleeDelay = Rounded(0.7);
     CustomPickup* pickup = g_CustomPickups[CustomSlot()];
     if (State() == state)
     {
@@ -403,7 +403,7 @@ void PickupObjectNode::SetState(TimeClock* clock, u32 state)
 
 void PickupObjectNode::KickSideways()
 {
-    constexpr f32 Kick = 13.0f;
+    CONSTEXPR f32 Kick = 13.0f;
     ObjectPlace* place = owner->place;
     RotateAndTranslate(place);
     Vector4 facing = *RowOf(&place->matrix, 2);
@@ -522,18 +522,18 @@ u32 PickupObjectNode::Update(TimeClock* clock)
 void PickupObjectNode::FlyToFocus(CustomPickup* pickup, TimeClock* clock)
 {
     // Closer than half a unit it's there
-    constexpr f32 ReachedSquared = 0.25f;
+    CONSTEXPR f32 ReachedSquared = 0.25f;
     // While the player rides something the pull is 4 times as strong
-    constexpr f32 RidingPull = 4.0f;
+    CONSTEXPR f32 RidingPull = 4.0f;
     // A pickup with an ID is pulled by 3 times the custom pull, one without by 5
-    constexpr f32 IdPull = 3.0f;
-    constexpr f32 NoIdPull = 5.0f;
+    CONSTEXPR f32 IdPull = 3.0f;
+    CONSTEXPR f32 NoIdPull = 5.0f;
     // A physics body is pushed by the pull less 0.8 of its velocity
-    constexpr f32 BodyDrag = Rounded(0.8);
+    CONSTEXPR f32 BodyDrag = Rounded(0.8);
     // The share of its velocity kept each update: 0.85, while the player rides something 0.92 with an ID and 0.8 without
-    constexpr f32 VelocityKept = Rounded(0.85);
-    constexpr f32 RidingVelocityKept = Rounded(0.92);
-    constexpr f32 RidingNoIdVelocityKept = Rounded(0.8);
+    CONSTEXPR f32 VelocityKept = Rounded(0.85);
+    CONSTEXPR f32 RidingVelocityKept = Rounded(0.92);
+    CONSTEXPR f32 RidingNoIdVelocityKept = Rounded(0.8);
     ObjectNodeBase* prototype = Prototype();
     InstanceContext* focus = prototype->AwakeFocus();
     if (focus == nullptr)
@@ -648,7 +648,7 @@ void PickupObjectNode::FlyToFocus(CustomPickup* pickup, TimeClock* clock)
 void PickupObjectNode::FlyAway(CustomPickup*, TimeClock* clock)
 {
     // Asleep 40 units from where it started
-    constexpr f32 FarSquared = 1600.0f;
+    CONSTEXPR f32 FarSquared = 1600.0f;
     ObjectPlace* place = owner->place;
     place->SyncPosition();
     Vector4 position = place->position;
@@ -673,7 +673,7 @@ void PickupObjectNode::FlyAway(CustomPickup*, TimeClock* clock)
 
 void StepPickupSpin(TimeClock* clock)
 {
-    constexpr f32 Loop = Rounded(0.8);
+    CONSTEXPR f32 Loop = Rounded(0.8);
     if (clock->flags.running == 0)
     {
         return;
@@ -692,8 +692,8 @@ void StepPickupSpin(TimeClock* clock)
 void InitPickupSpin()
 {
     // A turn about y over the loop, bobbing an eighth of a unit up and down
-    constexpr s32 FrameTurn = 0x555;
-    constexpr f32 Bob = 0.125f;
+    CONSTEXPR s32 FrameTurn = 0x555;
+    CONSTEXPR f32 Bob = 0.125f;
     s32 angle;
     AngleFrom(&angle, 0.0f, AngleRadians);
     g_NextPickupSpinPhase = 0;

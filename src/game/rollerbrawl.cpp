@@ -36,107 +36,107 @@ namespace
 {
 // The script events both characters get: the ball stopping (they stand up out of it) and rolling again (characters.h's
 // EventLongDrop the character gets for a hard fall: falling fast, or squashed for 3 seconds)
-constexpr u32 EventStopped = 0x4C;
-constexpr u32 EventRolling = 0x4D;
+CONSTEXPR u32 EventStopped = 0x4C;
+CONSTEXPR u32 EventRolling = 0x4D;
 
 // The ball: its radius without snow (the snow past 0.4 adds to it), the box its mass is spread over, gravity (times the mass);
 // how its body bounces (0.15), how soft it is (12) and rubs (1.5, 0.5 against spinning and 0.07 times the roll's share against
 // rolling), and its steps
-constexpr f32 BallRadius = Rounded(0.8);
-constexpr f32 SnowWithoutGrowth = Rounded(0.4);
-constexpr f32 BoxSize = Rounded(1.1);
-constexpr f32 Gravity = -35.0f;
-constexpr f32 BallRestitution = Rounded(0.15);
-constexpr f32 BallSoftness = 12.0f;
-constexpr f32 BallFriction = 1.5f;
-constexpr s32 BallSubsteps = 3;
+CONSTEXPR f32 BallRadius = Rounded(0.8);
+CONSTEXPR f32 SnowWithoutGrowth = Rounded(0.4);
+CONSTEXPR f32 BoxSize = Rounded(1.1);
+CONSTEXPR f32 Gravity = -35.0f;
+CONSTEXPR f32 BallRestitution = Rounded(0.15);
+CONSTEXPR f32 BallSoftness = 12.0f;
+CONSTEXPR f32 BallFriction = 1.5f;
+CONSTEXPR s32 BallSubsteps = 3;
 
 // Snow: the most, the mass a unit adds, the shell's scale without any (with snow the ball's radius and the snow less 0.2), what
 // a unit of rolling packs on (sticky ground) and wears off (other ground), how fast lava melts it and the least time a lava
 // contact melts it for
-constexpr f32 MostSnow = 3.0f;
-constexpr f32 SnowMass = Rounded(0.55);
-constexpr f32 ShellScale = Rounded(0.6);
-constexpr f32 ShellInset = Rounded(0.2);
-constexpr f32 SnowGrowth = Rounded(0.01);
-constexpr f32 SnowWear = Rounded(0.02);
-constexpr f32 MeltRate = 0.5f;
-constexpr f32 MeltTime = Rounded(0.6);
+CONSTEXPR f32 MostSnow = 3.0f;
+CONSTEXPR f32 SnowMass = Rounded(0.55);
+CONSTEXPR f32 ShellScale = Rounded(0.6);
+CONSTEXPR f32 ShellInset = Rounded(0.2);
+CONSTEXPR f32 SnowGrowth = Rounded(0.01);
+CONSTEXPR f32 SnowWear = Rounded(0.02);
+CONSTEXPR f32 MeltRate = 0.5f;
+CONSTEXPR f32 MeltTime = Rounded(0.6);
 
 // Rolling: falling faster than this is a hard fall; it stops after 0.35 seconds with no snow, barely moving (its speed and spin
 // squared under 0.4) and the stick under 0.1 (retail's 0.1 squared)
-constexpr f32 FallSpeed = -120.0f;
-constexpr f32 StillMotion = Rounded(0.4);
-constexpr f32 StillStick = 0x1.47ae16p-7f;
-constexpr f32 StillTime = Rounded(0.35);
+CONSTEXPR f32 FallSpeed = -120.0f;
+CONSTEXPR f32 StillMotion = Rounded(0.4);
+CONSTEXPR f32 StillStick = 0x1.47ae16p-7f;
+CONSTEXPR f32 StillTime = Rounded(0.35);
 
 // Stopping: it's turned upright and by a random yaw (a random number below 360 taken as radians, still a random yaw), both
 // characters' knock countdowns a random number below 255. Stopped: it turns upright over 0.5 seconds, and rolls again after 8
 // seconds, or once the stick passes 0.2 (retail's 0.2 squared) or its speed and spin squared pass 0.8
-constexpr f32 RandomYawRange = 360.0f;
-constexpr s32 KnockCountdownRange = 0xFF;
-constexpr f32 MostStopTime = 8.0f;
-constexpr f32 MovingStick = 0x1.47ae16p-5f;
-constexpr f32 MovingMotion = Rounded(0.8);
+CONSTEXPR f32 RandomYawRange = 360.0f;
+CONSTEXPR s32 KnockCountdownRange = 0xFF;
+CONSTEXPR f32 MostStopTime = 8.0f;
+CONSTEXPR f32 MovingStick = 0x1.47ae16p-5f;
+CONSTEXPR f32 MovingMotion = Rounded(0.8);
 
 // The stick's push: in the air along it (8 times the mass); on the ground down at a point 2 along it (its length to the fourth
 // times 10, up to half again as hard against the motion)
-constexpr f32 AirPush = 8.0f;
-constexpr f32 GroundPush = 10.0f;
-constexpr f32 MostAgainstPush = 0.5f;
-constexpr f32 SpinFriction = 0.5f;
-constexpr f32 RollFriction = Rounded(0.07);
+CONSTEXPR f32 AirPush = 8.0f;
+CONSTEXPR f32 GroundPush = 10.0f;
+CONSTEXPR f32 MostAgainstPush = 0.5f;
+CONSTEXPR f32 SpinFriction = 0.5f;
+CONSTEXPR f32 RollFriction = Rounded(0.07);
 // The roll's share of that friction: fast (past 4), 0.5 going with the motion or with the stick let go (under 0.1) and none past
 // 8, else 1 more 18 times the eighth power of the stick's part along the motion; slow (past 0.001), 1 going with it (past 0.01),
 // 5 with the stick let go, else 1 more 10 times that part squared; still, 1.2 over the stick's length and 0.2
-constexpr f32 FastRollSpeed = 4.0f;
-constexpr f32 FreeRollSpeed = 8.0f;
-constexpr f32 LetGoStick = Rounded(0.1);
-constexpr f32 FastRoll = 0.5f;
-constexpr f32 FastAgainstRoll = 18.0f;
-constexpr f32 StillRollSpeed = Rounded(0.001);
-constexpr f32 WithMotion = Rounded(0.01);
-constexpr f32 SlowLetGoRoll = 5.0f;
-constexpr f32 SlowAgainstRoll = 10.0f;
-constexpr f32 StillRoll = Rounded(1.2);
-constexpr f32 StillRollStick = Rounded(0.2);
+CONSTEXPR f32 FastRollSpeed = 4.0f;
+CONSTEXPR f32 FreeRollSpeed = 8.0f;
+CONSTEXPR f32 LetGoStick = Rounded(0.1);
+CONSTEXPR f32 FastRoll = 0.5f;
+CONSTEXPR f32 FastAgainstRoll = 18.0f;
+CONSTEXPR f32 StillRollSpeed = Rounded(0.001);
+CONSTEXPR f32 WithMotion = Rounded(0.01);
+CONSTEXPR f32 SlowLetGoRoll = 5.0f;
+CONSTEXPR f32 SlowAgainstRoll = 10.0f;
+CONSTEXPR f32 StillRoll = Rounded(1.2);
+CONSTEXPR f32 StillRollStick = Rounded(0.2);
 
 // Drags past a speed and a spin of 0.09
-constexpr f32 FreeSpeed = Rounded(0.09);
-constexpr f32 DragShare = Rounded(-0.005);
-constexpr f32 SpinDragShare = Rounded(-0.0025);
+CONSTEXPR f32 FreeSpeed = Rounded(0.09);
+CONSTEXPR f32 DragShare = Rounded(-0.005);
+CONSTEXPR f32 SpinDragShare = Rounded(-0.0025);
 
 // The wobble: a change of velocity past 15 starts one of its sixtieth (at most 0.5), 21 radians a second, fading by 1.5 a second
-constexpr f32 KnockSpeed = 15.0f;
-constexpr f32 WobblePerKnock = Rounded(1.0 / 60.0);
-constexpr f32 MostWobble = 0.5f;
-constexpr f32 WobbleSpeed = 21.0f;
-constexpr f32 WobbleFade = 1.5f;
-constexpr f32 ShakeFalloff = Rounded(0.01);
+CONSTEXPR f32 KnockSpeed = 15.0f;
+CONSTEXPR f32 WobblePerKnock = Rounded(1.0 / 60.0);
+CONSTEXPR f32 MostWobble = 0.5f;
+CONSTEXPR f32 WobbleSpeed = 21.0f;
+CONSTEXPR f32 WobbleFade = 1.5f;
+CONSTEXPR f32 ShakeFalloff = Rounded(0.01);
 
 // Squashed: flattened to a tenth over 0.135 seconds (a third of the time times 20), the hard fall after 3 seconds
-constexpr f32 Third = Rounded(1.0 / 3.0);
-constexpr f32 SquashSpeed = 20.0f;
-constexpr f32 Flattest = Rounded(0.1);
-constexpr f32 Bulge = Rounded(-1.0 / 0.9);
-constexpr f32 SquashTime = 3.0f;
+CONSTEXPR f32 Third = Rounded(1.0 / 3.0);
+CONSTEXPR f32 SquashSpeed = 20.0f;
+CONSTEXPR f32 Flattest = Rounded(0.1);
+CONSTEXPR f32 Bulge = Rounded(-1.0 / 0.9);
+CONSTEXPR f32 SquashTime = 3.0f;
 
 // The exit matrix sits at the ball's bottom raised 0.05
-constexpr f32 ExitRaise = Rounded(0.05);
+CONSTEXPR f32 ExitRaise = Rounded(0.05);
 
 // The skid marks: laid moving faster than 0.1 across, half the radius out either side of the ball's bottom (0.866 of the radius
 // down), 0.16 deep
-constexpr f32 SkidSpeed = Rounded(0.1);
-constexpr f32 SkidOffset = 0.5f;
-constexpr f32 SkidDrop = Rounded(0.866);
-constexpr f32 SkidDepth = Rounded(0.16);
+CONSTEXPR f32 SkidSpeed = Rounded(0.1);
+CONSTEXPR f32 SkidOffset = 0.5f;
+CONSTEXPR f32 SkidDrop = Rounded(0.866);
+CONSTEXPR f32 SkidDepth = Rounded(0.16);
 
 // What's under the ball: a ray 0.1 down from 0.05 above its bottom
-constexpr f32 GroundRayStart = Rounded(0.05);
-constexpr f32 GroundRayLength = Rounded(-0.1);
+CONSTEXPR f32 GroundRayStart = Rounded(0.05);
+CONSTEXPR f32 GroundRayLength = Rounded(-0.1);
 
-constexpr u16 MostHits = 20;
-constexpr u16 MostGroundHits = 8;
+CONSTEXPR u16 MostHits = 20;
+CONSTEXPR u16 MostGroundHits = 8;
 
 SphereBody* BodyOf(CharacterAgent* agent)
 {
@@ -732,7 +732,7 @@ void RollerbrawlVehicle::LaySkidMarks(u32 touching)
 
 void RollerbrawlVehicle::HitInstances()
 {
-    constexpr s32 MostLeftOut = 20;
+    CONSTEXPR s32 MostLeftOut = 20;
 
     s32 leftOutCount = 0;
     SphereBody* body = BodyOf(agent);

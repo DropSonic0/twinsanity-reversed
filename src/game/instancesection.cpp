@@ -146,19 +146,19 @@ extern "C"
 namespace
 {
 // The kinds of an instance section
-constexpr u32 Kinds = LayoutInstances::KindCount;
+CONSTEXPR u32 Kinds = LayoutInstances::KindCount;
 // Paths' vtables are 8 bytes in, triggers' and cameras' 0x50, their destructor first
-constexpr u32 PathVTable = 0x8;
-constexpr u32 TriggerVTable = 0x50;
-constexpr u32 DestroySlot = 1;
+CONSTEXPR u32 PathVTable = 0x8;
+CONSTEXPR u32 TriggerVTable = 0x50;
+CONSTEXPR u32 DestroySlot = 1;
 // A list made by a loader has room for this many, and grows by as many
-constexpr u32 LoadedListGrowth = 10;
+CONSTEXPR u32 LoadedListGrowth = 10;
 // A trigger of this kind is a plain box of its chunk for the sound code
-constexpr u32 SoundBoxKind = 0;
+CONSTEXPR u32 SoundBoxKind = 0;
 // The instances an object instance names are kept linked to its agent
-constexpr u32 KeptLink = 1;
+CONSTEXPR u32 KeptLink = 1;
 // The loaders read their element from a memory stream of the section aligned like this
-constexpr u16 ElementAlignment = 1;
+CONSTEXPR u16 ElementAlignment = 1;
 
 void DestroyKindItem(InstanceKindItem* item, u32 destroyFlags)
 {

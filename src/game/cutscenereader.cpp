@@ -250,7 +250,7 @@ void ReadCutscene(Cutscene* cutscene, Stream* stream)
 
 void MakeCutsceneTracks(Cutscene* cutscene, u8 instanceTracks, u8 soundTracks, u8 emitterTracks)
 {
-    constexpr u8 SoundTrackMade = 1;
+    CONSTEXPR u8 SoundTrackMade = 1;
     if (instanceTracks != 0)
     {
         CutsceneInstanceTrack* tracks = NewArray<CutsceneInstanceTrack>(instanceTracks);

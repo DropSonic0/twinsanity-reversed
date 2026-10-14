@@ -7,7 +7,7 @@
 // with a prompt, and how many are used. A text goes onto the first unused line, and once all nine are used they're scrolled up
 struct TextConsole
 {
-    static constexpr u32 LineCount = 9;
+    static CONSTEXPR u32 LineCount = 9;
 
     String lines[LineCount];
     u8 count;
@@ -34,7 +34,7 @@ extern "C"
 
 namespace
 {
-constexpr u32 ScrollSlot = 6;
+CONSTEXPR u32 ScrollSlot = 6;
 }
 
 void TextConsole::Destroy(u32 destroyFlags)

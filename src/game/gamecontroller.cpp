@@ -39,50 +39,50 @@
 #include "platform/stream.h"
 #include "retail/libc.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace
 {
 // OLEG's pictures the game controller wants: the Crash title's only one, the game over screens of the characters (the tiles'
 // pictures from TilesGameOver: Cortex, Crash, Crash and Cortex, the Mecha-Bandicoot, Nina) and the loading screens (three from
 // TilesLoading)
-constexpr u32 CrashTitlePicture = 0;
-constexpr u32 GameOverCortex = OLEG::TilesGameOver;
-constexpr u32 GameOverCrash = OLEG::TilesGameOver + 1;
-constexpr u32 GameOverCrashAndCortex = OLEG::TilesGameOver + 2;
-constexpr u32 GameOverMecha = OLEG::TilesGameOver + 3;
-constexpr u32 GameOverNina = OLEG::TilesGameOver + 4;
-constexpr u32 LoadingPictures = 3;
+CONSTEXPR u32 CrashTitlePicture = 0;
+CONSTEXPR u32 GameOverCortex = OLEG::TilesGameOver;
+CONSTEXPR u32 GameOverCrash = OLEG::TilesGameOver + 1;
+CONSTEXPR u32 GameOverCrashAndCortex = OLEG::TilesGameOver + 2;
+CONSTEXPR u32 GameOverMecha = OLEG::TilesGameOver + 3;
+CONSTEXPR u32 GameOverNina = OLEG::TilesGameOver + 4;
+CONSTEXPR u32 LoadingPictures = 3;
 // The start-up's files: the language's voices' folder (the language's name after it), the music, the icons, the font, the front
 // end's sounds and the default chunk; the text files' folders (in the language folder) and extension
-constexpr const char* SoundFolder = "Crash6\\";
-constexpr const char* MusicBank = "Crash6\\Music";
-constexpr const char* IconsFile = "StartUp\\Icons.psm";
-constexpr const char* FontFile = "StartUp\\Fonts\\Crash_Euro";
-constexpr const char* FrontEndFile = "StartUp\\Frontend.bin";
-constexpr const char* DefaultChunk = "StartUp\\Default";
-constexpr const char* TextFolders[TextFiles] = {"Code", "AgentLab"};
-constexpr const char* TextExtension = ".txt";
+CONSTEXPR const char* SoundFolder = "Crash6\\";
+CONSTEXPR const char* MusicBank = "Crash6\\Music";
+CONSTEXPR const char* IconsFile = "StartUp\\Icons.psm";
+CONSTEXPR const char* FontFile = "StartUp\\Fonts\\Crash_Euro";
+CONSTEXPR const char* FrontEndFile = "StartUp\\Frontend.bin";
+CONSTEXPR const char* DefaultChunk = "StartUp\\Default";
+CONSTEXPR const char* TextFolders[TextFiles] = {"Code", "AgentLab"};
+CONSTEXPR const char* TextExtension = ".txt";
 // The screens' fades (seconds): most, the longer ones (to and from black, the pictures, the logos' wait), the shortest (a movie's
 // black and the missing controller's screen), and how long the HUD stays when it's shown for a while
-constexpr f32 FadeSeconds = 0.25f;
-constexpr f32 LongFadeSeconds = 0.5f;
-constexpr f32 ShortFadeSeconds = 0x1.99999Ap-4f;
-constexpr f32 HudShownSeconds = 3.0f;
+CONSTEXPR f32 FadeSeconds = 0.25f;
+CONSTEXPR f32 LongFadeSeconds = 0.5f;
+CONSTEXPR f32 ShortFadeSeconds = 0x1.99999Ap-4f;
+CONSTEXPR f32 HudShownSeconds = 3.0f;
 // Every widget slot of OLEG's
-constexpr u64 EveryWidget = ~u64{0};
+CONSTEXPR u64 EveryWidget = ~u64{0};
 // The pause screens of the pause reasons from ReasonStart to ReasonExtras (none for quitting)
-constexpr s32 NoScreen = -1;
-constexpr u32 PauseScreenCount = GameController::ReasonExtras;
-constexpr s32 PauseScreens[PauseScreenCount] = {
+CONSTEXPR s32 NoScreen = -1;
+CONSTEXPR u32 PauseScreenCount = GameController::ReasonExtras;
+CONSTEXPR s32 PauseScreens[PauseScreenCount] = {
     OLEG::ScreenPauseMenu,      OLEG::ScreenNoController, OLEG::ScreenDiscError,  OLEG::ScreenAutosaveOff,
     OLEG::ScreenAutosaveOn,     OLEG::ScreenAutosaveFailed, OLEG::ScreenFourthNotice, NoScreen,
     OLEG::ScreenLevels,         OLEG::ScreenLevels + 1,   OLEG::ScreenLevels + 2, OLEG::ScreenLevels + 3,
     OLEG::ScreenExtras,
 };
 // The last areas of the levels pages but the last (the progress's last area open), and the last page with an area open
-constexpr u32 LevelsPageAreas[3] = {6, 13, 20};
+CONSTEXPR u32 LevelsPageAreas[3] = {6, 13, 20};
 
 u32 LastLevelsPage(u32 area)
 {
@@ -100,30 +100,30 @@ u32 LastLevelsPage(u32 area)
 }
 
 // The front end's sounds
-constexpr u32 FrontEndSounds = 3;
+CONSTEXPR u32 FrontEndSounds = 3;
 // The title: its "press start" (the text, where it's drawn (fractions of the screen), centred, at three quarters of the breathing
 // scale; the frames the title waits before it) and the attract movie's wait (seconds)
-constexpr u32 PressStartText = 0x46;
-constexpr f32 PressStartX = 0.5f;
-constexpr f32 PressStartY = Rounded(0.9);
-constexpr f32 PressStartScale = 0.75f;
-constexpr s32 PressStartFrames = 50;
-constexpr f32 AttractSeconds = 50.0f;
+CONSTEXPR u32 PressStartText = 0x46;
+CONSTEXPR f32 PressStartX = 0.5f;
+CONSTEXPR f32 PressStartY = Rounded(0.9);
+CONSTEXPR f32 PressStartScale = 0.75f;
+CONSTEXPR s32 PressStartFrames = 50;
+CONSTEXPR f32 AttractSeconds = 50.0f;
 // The credits: their folder, music tracks (a new one 19 seconds after the one before, faded in over 3 seconds but the first, in
 // the music group, started at once, looping)
-constexpr const char* CreditsFolder = "Language\\Credits\\";
-constexpr u32 CreditsTracks = 11;
-constexpr u16 CreditsMusic[CreditsTracks] = {0x3A, 0x1C, 0x88, 0x1E, 0x23, 0x25, 0x29, 0x36, 0x3C, 0x3D, 0x1B};
-constexpr f32 CreditsTrackSeconds = 19.0f;
-constexpr f32 CreditsFadeSeconds = 3.0f;
+CONSTEXPR const char* CreditsFolder = "Language\\Credits\\";
+CONSTEXPR u32 CreditsTracks = 11;
+CONSTEXPR u16 CreditsMusic[CreditsTracks] = {0x3A, 0x1C, 0x88, 0x1E, 0x23, 0x25, 0x29, 0x36, 0x3C, 0x3D, 0x1B};
+CONSTEXPR f32 CreditsTrackSeconds = 19.0f;
+CONSTEXPR f32 CreditsFadeSeconds = 3.0f;
 // The gallery's pictures' numbers: two digits at least
-constexpr u32 TwoDigits = 10;
+CONSTEXPR u32 TwoDigits = 10;
 // The wait before OLEG adds the next wumpa fruit to the count, set again for the credits (seconds)
-constexpr f32 WumpaAddSeconds = Rounded(0.15);
+CONSTEXPR f32 WumpaAddSeconds = Rounded(0.15);
 // The message the second character is sent when the two are tied together (to its object node)
-constexpr u32 TiedMessage = 0x39;
+CONSTEXPR u32 TiedMessage = 0x39;
 // The instances the game's reset resets: every one with a node of a kind but the cameras' lens
-constexpr u32 ResetKinds = ~(1u << NodeCameraLens);
+CONSTEXPR u32 ResetKinds = ~(1u << NodeCameraLens);
 
 // One of the loading screens, at random
 u32 RandomLoadingScreen()
@@ -2221,12 +2221,12 @@ void GameController::ResetGame(u32 entry)
 namespace
 {
 // The way into the game the character part's values are made again for when the player's let go
-constexpr u32 PartResetEntry = EntryCheckpoint;
+CONSTEXPR u32 PartResetEntry = EntryCheckpoint;
 
 // An instance's place as the retail code reads it, also when there's no instance (the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 

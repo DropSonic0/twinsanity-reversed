@@ -19,7 +19,7 @@ struct TimeClock;
 class NodeController
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         DestroySlot = 1,
         StartSlot = 2,
@@ -28,7 +28,7 @@ public:
         StopSlot = 5,
     };
 
-    enum Kind : u8
+    enum Kind
     {
         KindJointAim = 0,
         KindMask = 1,
@@ -61,34 +61,37 @@ CHECK_SIZE(NodeController, 0xC);
 union TrailBits
 {
     // The bits making a trail keeps as they were
-    static constexpr u64 KeptOnMaking = 0xF8000000E0000000;
+    enum
+    {
+        KeptOnMaking = 0xF8000000E0000000ULL
+    };
 
     u64 value;
     struct
     {
-        u64 kind : 4;
-        u64 unused4 : 6;
-        u64 space : 4;
-        u64 unused14 : 4;
-        u64 turned : 1;
-        u64 axes : 4;
-        u64 soundGroup : 3;
-        u64 bySpacing : 1;
-        u64 pitchByThreshold : 1;
-        u64 unused28 : 4;
-        u64 shakesCamera : 1;
-        u64 unused33 : 1;
-        u64 volumeGiven : 1;
-        u64 pitchGiven : 1;
-        u64 randomPitch : 1;
-        u64 offsetGiven : 1;
-        u64 contact : 8;
-        u64 soundCount : 4;
-        u64 removalKind : 3;
-        u64 gravityFrame : 1;
-        u64 decalCount : 4;
-        u64 noSurfaceSound : 1;
-        u64 unused59 : 5;
+        u32 kind : 4;
+        u32 unused4 : 6;
+        u32 space : 4;
+        u32 unused14 : 4;
+        u32 turned : 1;
+        u32 axes : 4;
+        u32 soundGroup : 3;
+        u32 bySpacing : 1;
+        u32 pitchByThreshold : 1;
+        u32 unused28 : 4;
+        u32 shakesCamera : 1;
+        u32 unused33 : 1;
+        u32 volumeGiven : 1;
+        u32 pitchGiven : 1;
+        u32 randomPitch : 1;
+        u32 offsetGiven : 1;
+        u32 contact : 8;
+        u32 soundCount : 4;
+        u32 removalKind : 3;
+        u32 gravityFrame : 1;
+        u32 decalCount : 4;
+        u32 noSurfaceSound : 1;
+        u32 unused59 : 5;
     };
 };
 CHECK_SIZE(TrailBits, 8);
@@ -107,7 +110,7 @@ struct TrailArguments
     // moves faster than a threshold (slower than the threshold's negative), while its velocity changed more than that, the same
     // of a vector the retail code never sets, once when its instance's animation starts again (its surface's effects then too),
     // while its trails are stronger than a strength; never else
-    enum Kind : u32
+    enum Kind
     {
         KindAlways = 0,
         KindTimed = 1,
@@ -185,7 +188,7 @@ CHECK_SIZE(AimedJoint, 0xA0);
 class JointAimer : public JointHook
 {
 public:
-    enum Target : u32
+    enum Target
     {
         TargetNone = 0,
         TargetPosition = 1,
@@ -255,7 +258,7 @@ CHECK_SIZE(MaskControllerFlags, 1);
 class MaskController : public NodeController
 {
 public:
-    enum State : u8
+    enum State
     {
         StateInactive = 0,
         StateArriving = 1,
@@ -266,8 +269,11 @@ public:
     };
 
     // Its trails (the invincibility's are the first)
-    static constexpr u32 TrailCount = 12;
-    static constexpr u32 InvincibilityTrails = 3;
+    enum
+    {
+        TrailCount = 12,
+        InvincibilityTrails = 3,
+    };
 
     u8 state;
     MaskControllerFlags flags;
@@ -385,7 +391,10 @@ CHECK_SIZE(SkateControllerFlags, 1);
 class SkateController : public NodeController
 {
 public:
-    static constexpr u32 TrailCount = 8;
+    enum
+    {
+        TrailCount = 8,
+    };
 
     u8 unused0C;
     SkateControllerCounts counts;

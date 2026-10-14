@@ -30,8 +30,8 @@
 #include "game/sound.h"
 #include "game/vehicles.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The commands that work on the playable characters and the agents around them (velocities thrown, the agents' and the player's
 // settings, counters, hits on the instances in an instance's hulls, respawn points, links, vehicles, crates), the damage commands'
@@ -134,9 +134,9 @@ CHECK_SIZE(AddToGunSecondCountCommand, 0x10);
 namespace
 {
 // A skate controller's sound of none
-constexpr u32 NoSkateSound = 0xFFFF;
+CONSTEXPR u32 NoSkateSound = 0xFFFF;
 // A gun's second count (game/characters.h's Gun::AddSecondCount)
-constexpr u32 AmountToken = 0x200;
+CONSTEXPR u32 AmountToken = 0x200;
 // The board's sounds by slot: sliding (on water or ice, on wood), grinding, leaning and landing (on metal, on wood)
 enum BoardSound : u32
 {
@@ -153,8 +153,8 @@ enum BoardSound : u32
 };
 // The instances the queries take, by the kinds of nodes they have: the playable characters and the other agents a hit or a throw
 // reaches
-constexpr u32 CharacterKinds = 1u << NodeCharacter;
-constexpr u32 ObjectKinds = 1u << NodeCrate | 1u << NodeCreature | 1u << NodeGenericObject;
+CONSTEXPR u32 CharacterKinds = 1u << NodeCharacter;
+CONSTEXPR u32 ObjectKinds = 1u << NodeCrate | 1u << NodeCreature | 1u << NodeGenericObject;
 
 ObjectNode* NodeOf(BehaviourRunner* runner)
 {
@@ -169,13 +169,13 @@ InstanceContext* PlayerInstance()
 // The place and the chunk of an instance that may be none (retail reads the words at addresses 8 and 0xA0 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
 ChunkData* RetailChunkOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, chunk);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, chunk);
     return *reinterpret_cast<ChunkData* const*>(address);
 }
 
@@ -371,8 +371,8 @@ u32 ApplyVelocityCommand::ParseToken(const ScriptToken* token)
 // point away hits (none when the ray starts inside one)
 void ApplyVelocityCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 MostHit = 0x20;
-    constexpr u32 HitKinds = CharacterKinds | 1u << NodeCrate | 1u << NodeCreature | 1u << NodeProjectile;
+    CONSTEXPR u16 MostHit = 0x20;
+    CONSTEXPR u32 HitKinds = CharacterKinds | 1u << NodeCrate | 1u << NodeCreature | 1u << NodeProjectile;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     PropertyHolder* properties = PropertiesOf(node);
@@ -434,10 +434,10 @@ void SetAttacksTakenCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 // second contents instead when there are no first ones
 void CreateCrateContents(const CreateCrateContentsCommand* command, Agent*, InstanceContext* instance, BehaviourRunner*)
 {
-    constexpr f32 Above = 0.5f;
-    constexpr f32 Spread = Rounded(0.8);
-    constexpr f32 Drop = Rounded(-0.15);
-    constexpr f32 Stagger = Rounded(0.05);
+    CONSTEXPR f32 Above = 0.5f;
+    CONSTEXPR f32 Spread = Rounded(0.8);
+    CONSTEXPR f32 Drop = Rounded(-0.15);
+    CONSTEXPR f32 Stagger = Rounded(0.05);
     ChunkEntry* chunk = ChunkOfInstance(G_ChunkManager, instance);
     u16 first = command->contents.first;
     u16 second = command->contents.second;
@@ -581,13 +581,13 @@ u32 UnusedOffsetCommand::Size()
 // counter is; less: down by what it lacks of 80; moving away: down by it), kept within 0 and 255
 void CountPlayerApproachCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 Low = 128.0f;
-    constexpr f32 Middle = 192.0f;
-    constexpr f32 Fast = 80.0f;
-    constexpr f32 Slowly = Rounded(0.0125);
-    constexpr f32 Faster = Rounded(0.02);
-    constexpr f32 Fastest = Rounded(0.04);
-    constexpr f32 Most = 255.0f;
+    CONSTEXPR f32 Low = 128.0f;
+    CONSTEXPR f32 Middle = 192.0f;
+    CONSTEXPR f32 Fast = 80.0f;
+    CONSTEXPR f32 Slowly = Rounded(0.0125);
+    CONSTEXPR f32 Faster = Rounded(0.02);
+    CONSTEXPR f32 Fastest = Rounded(0.04);
+    CONSTEXPR f32 Most = 255.0f;
     u32 index = counter.counter;
     f32 count;
     if (counter.agentCounter)
@@ -669,8 +669,8 @@ void CountPlayerApproachCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
 // both) get a contact message of the kinds of hit and 1 damage, or are sent the trigger message instead
 void HitInstancesInBoxesCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 MostHit = 20;
-    constexpr u8 Damage = 1;
+    CONSTEXPR u16 MostHit = 20;
+    CONSTEXPR u8 Damage = 1;
     InstanceContext* instance = NodeOf(runner)->owner;
     s32 hulls = GetHullCount(&instance->collision);
     void* results[MostHit];
@@ -755,15 +755,15 @@ u32 SlideSlot(const CollisionSurface* surface)
 // or kept playing on the board character's node at a volume and a pitch that grow with the speed
 void SetCharacterSurface(SkateController* skate, CollisionSurface* surface, const Vector4* velocity)
 {
-    constexpr f32 VolumePerSpeed = Rounded(0.01);
-    constexpr f32 Volume = Rounded(0.1);
-    constexpr f32 PitchPerSpeed = Rounded(0.06);
-    constexpr f32 Pitch = Rounded(0.4);
-    constexpr f32 GrindingVolume = 0.75f;
-    constexpr f32 LeastPitch = 0.5f;
-    constexpr f32 MostPitch = 3.0f;
-    constexpr f32 LeastVolume = Rounded(0.05);
-    constexpr f32 MostVolume = 1.5f;
+    CONSTEXPR f32 VolumePerSpeed = Rounded(0.01);
+    CONSTEXPR f32 Volume = Rounded(0.1);
+    CONSTEXPR f32 PitchPerSpeed = Rounded(0.06);
+    CONSTEXPR f32 Pitch = Rounded(0.4);
+    CONSTEXPR f32 GrindingVolume = 0.75f;
+    CONSTEXPR f32 LeastPitch = 0.5f;
+    CONSTEXPR f32 MostPitch = 3.0f;
+    CONSTEXPR f32 LeastVolume = Rounded(0.05);
+    CONSTEXPR f32 MostVolume = 1.5f;
     CollisionSurface* last = skate->surface;
     skate->surface = surface;
     if (surface != last || (skate->flags.grinding && !skate->flags.wasGrinding))
@@ -822,12 +822,12 @@ void SetCharacterSurface(SkateController* skate, CollisionSurface* surface, cons
 // A landing's sound, by the surface the board is on (none without one), its volume and its pitch growing with the fall
 void PlayCharacterSurfaceSound(SkateController* skate, f32 fall)
 {
-    constexpr f32 PitchPerFall = Rounded(0.05);
-    constexpr f32 VolumePerFall = Rounded(0.045);
-    constexpr f32 Volume = Rounded(0.2);
-    constexpr f32 LeastPitch = 0.5f;
-    constexpr f32 MostPitch = 2.0f;
-    constexpr f32 MostVolume = Rounded(1.3);
+    CONSTEXPR f32 PitchPerFall = Rounded(0.05);
+    CONSTEXPR f32 VolumePerFall = Rounded(0.045);
+    CONSTEXPR f32 Volume = Rounded(0.2);
+    CONSTEXPR f32 LeastPitch = 0.5f;
+    CONSTEXPR f32 MostPitch = 2.0f;
+    CONSTEXPR f32 MostVolume = Rounded(1.3);
     u32 slot = NoSkateSound;
     if (skate->surface != nullptr)
     {
@@ -868,14 +868,14 @@ void PlayCharacterSurfaceSound(SkateController* skate, f32 fall)
 // A lean's sound, by the surface the board is on (none without one), its volume and its pitch growing with how far across
 void PlayCharacterSurfaceSound2(SkateController* skate, f32 lean)
 {
-    constexpr f32 PitchPerLean = 0.75f;
-    constexpr f32 Pitch = Rounded(0.8);
-    constexpr f32 VolumePerLean = 0.25f;
-    constexpr f32 Volume = Rounded(0.3);
-    constexpr f32 LeastPitch = 0.5f;
-    constexpr f32 MostPitch = 2.0f;
-    constexpr f32 LeastVolume = Rounded(0.2);
-    constexpr f32 MostVolume = 2.0f;
+    CONSTEXPR f32 PitchPerLean = 0.75f;
+    CONSTEXPR f32 Pitch = Rounded(0.8);
+    CONSTEXPR f32 VolumePerLean = 0.25f;
+    CONSTEXPR f32 Volume = Rounded(0.3);
+    CONSTEXPR f32 LeastPitch = 0.5f;
+    CONSTEXPR f32 MostPitch = 2.0f;
+    CONSTEXPR f32 LeastVolume = Rounded(0.2);
+    CONSTEXPR f32 MostVolume = 2.0f;
     u32 slot = NoSkateSound;
     if (skate->surface != nullptr)
     {
@@ -981,7 +981,7 @@ void SetPlayerInputCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
 // link to the player's chunk (when that chunk's RM2 is loaded)
 void WarpToChunkLinkTowardsPlayerCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 InFrontOfWall = 0.5f;
+    CONSTEXPR f32 InFrontOfWall = 0.5f;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     if (GetGameNode(&instance->nodes, NodeCharacter) == nullptr)
@@ -1114,8 +1114,8 @@ void LinkToFocusCharacterCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 // (to its side: to the left, or to the right) faster than 5, down by 1 below 1, kept within 0 and 255 when it's the agent's own
 void CountPlayerCirclingCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 Fast = 5.0f;
-    constexpr f32 Slow = 1.0f;
+    CONSTEXPR f32 Fast = 5.0f;
+    CONSTEXPR f32 Slow = 1.0f;
     GameProgress* progress = &G_GameController->progress;
     InstanceContext* player = progress->Instance(progress->play.character);
     InstanceContext* instance = NodeOf(runner)->owner;
@@ -1375,7 +1375,7 @@ void SetAgentCommand::Execute(TimeClock* clock, BehaviourRunner* runner, Behavio
 // The area play is in set (or the tagged value's), the last area open raised to it (areas past 24 none)
 void SetPlayAreaCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr s32 Areas = 25;
+    CONSTEXPR s32 Areas = 25;
     GameProgress* progress = &G_GameController->progress;
     s32 played = area;
     if (played == FromValue)
@@ -1400,13 +1400,13 @@ void SetPlayAreaCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourL
 // height start falling (their flag 9 set), and the instances around it are told
 void TriggerBalancedCrateFallingCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 MostFound = 0x20;
+    CONSTEXPR u16 MostFound = 0x20;
     // The crates found have their collision active, and are neither asleep nor attached to an agent
-    constexpr u32 Wanted = ReferencedObjectFlags::CollisionActive;
-    constexpr u32 Unwanted = ReferencedObjectFlags::Asleep | ReferencedObjectFlags::Attached;
-    constexpr f32 Start = Rounded(0.1);
-    constexpr f32 Reach = Rounded(3.8);
-    constexpr f32 Margin = 0.5f;
+    CONSTEXPR u32 Wanted = ReferencedObjectFlags::CollisionActive;
+    CONSTEXPR u32 Unwanted = ReferencedObjectFlags::Asleep | ReferencedObjectFlags::Attached;
+    CONSTEXPR f32 Start = Rounded(0.1);
+    CONSTEXPR f32 Reach = Rounded(3.8);
+    CONSTEXPR f32 Margin = 0.5f;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     ChunkData* chunk = instance->chunk;

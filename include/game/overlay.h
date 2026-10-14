@@ -46,7 +46,7 @@ union QueuedShapeFlags
     };
 
     // The bits' masks, for the flags a shape is queued with
-    enum Mask : u32
+    enum Mask
     {
         WithoutMatrix = 0x1,
         OwnColours = 0x2,

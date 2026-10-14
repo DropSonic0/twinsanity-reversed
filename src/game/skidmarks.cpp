@@ -16,31 +16,31 @@ EABI_EXPORT(FUN_0015bd20, LaySkidMark);
 namespace
 {
 // The lists of the screen models freed after the next frame (gamecontroller.h's g_FreedBlocks and g_LastFreedBlocks)
-constexpr s32 FreedListSize = 1024;
+CONSTEXPR s32 FreedListSize = 1024;
 // A trail ends after 4 frames without a mark
-constexpr s32 IdleFramesToEnd = 4;
+CONSTEXPR s32 IdleFramesToEnd = 4;
 
 // A trail fades in over its first 2.5 units: from 0.4 of its length (kept within 0 and 1.1) the width by its 4th root, the depth
 // by its 4th power
-constexpr f32 FadeLength = 2.5f;
-constexpr f32 FadeScale = Rounded(0.4);
-constexpr f32 FadeMost = Rounded(1.1);
+CONSTEXPR f32 FadeLength = 2.5f;
+CONSTEXPR f32 FadeScale = Rounded(0.4);
+CONSTEXPR f32 FadeMost = Rounded(1.1);
 // Each mark's depth is jittered within 0.65 to 1.15 of it, its point by 0.02 along the side
-constexpr f32 DepthJitter = 0.25f;
-constexpr f32 DepthBase = 0.9f;
-constexpr f32 SideJitter = 0.02f;
+CONSTEXPR f32 DepthJitter = 0.25f;
+CONSTEXPR f32 DepthBase = 0.9f;
+CONSTEXPR f32 SideJitter = 0.02f;
 // A mark is laid 0.3 from the last at least, on a stretch shorter than 1.5, on the triangles no more than 0.5 above it
-constexpr f32 MarkSpacing = Rounded(0.3);
-constexpr f32 LongestStretch = 1.5f;
-constexpr f32 MostBelow = 0.5f;
+CONSTEXPR f32 MarkSpacing = Rounded(0.3);
+CONSTEXPR f32 LongestStretch = 1.5f;
+CONSTEXPR f32 MostBelow = 0.5f;
 // A strip's shade: its slope's facing toward the light (1.2, 0.8, 0.5), 48 times it less 24
-constexpr Vector4 ShadeLight = {Rounded(1.2), Rounded(0.8), 0.5f, 1.0f};
-constexpr f32 ShadeScale = 48.0f;
-constexpr f32 ShadeOffset = 24.0f;
+CONSTEXPR Vector4 ShadeLight = {Rounded(1.2), Rounded(0.8), 0.5f, 1.0f};
+CONSTEXPR f32 ShadeScale = 48.0f;
+CONSTEXPR f32 ShadeOffset = 24.0f;
 // White without alpha: the colour a strip's far low corner gets, and the next strip's near low one
-constexpr u32 White = 0x00FFFFFF;
+CONSTEXPR u32 White = 0x00FFFFFF;
 // The marks are drawn with the screen matrix's depth offset 15% larger, against the ground they lie on
-constexpr f32 DrawnDepthBack = Rounded(0.15);
+CONSTEXPR f32 DrawnDepthBack = Rounded(0.15);
 
 // A strip between two points on a triangle, the depth wide: its top corners on the triangle, its low ones lowered by the depth
 // and moved back along the side by it, shaded by the slope (white, its alpha the shade's size, added or taken away by the
@@ -291,8 +291,8 @@ void DropOntoTriangle(const Vector4* point, const CollisionHit* triangle, Vector
 u32 ClipToTriangle(const CollisionHit* triangle, const Vector4* from, const Vector4* to, Vector4* clippedFrom,
                    Vector4* clippedTo)
 {
-    constexpr s32 Edges = 3;
-    constexpr f32 SideEpsilon = Rounded(0.001);
+    CONSTEXPR s32 Edges = 3;
+    CONSTEXPR f32 SideEpsilon = Rounded(0.001);
     Vector4 sides[Edges];
     *clippedFrom = *from;
     *clippedTo = *to;

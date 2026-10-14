@@ -32,12 +32,12 @@ extern "C"
 namespace
 {
 // The screens' texts: a large title in the middle, the choices below it a line apart, the selected one white, the others grey
-constexpr f32 TitleScale = 0.75f;
-constexpr f32 ChoiceScale = 0.5f;
-constexpr f32 TextX = 0.5f;
-constexpr f32 TitleY = Rounded(0.4);
-constexpr f32 ChoicesY = Rounded(0.7);
-constexpr f32 ChoiceSpacing = Rounded(0.05);
+CONSTEXPR f32 TitleScale = 0.75f;
+CONSTEXPR f32 ChoiceScale = 0.5f;
+CONSTEXPR f32 TextX = 0.5f;
+CONSTEXPR f32 TitleY = Rounded(0.4);
+CONSTEXPR f32 ChoicesY = Rounded(0.7);
+CONSTEXPR f32 ChoiceSpacing = Rounded(0.05);
 }
 
 // The screen it shows (its bits' screen), the choice selected and how many there are (the card's saves and the way back,

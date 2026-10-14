@@ -6,24 +6,24 @@
 
 namespace
 {
-constexpr u32 PageSize = 0x1000;
+CONSTEXPR u32 PageSize = 0x1000;
 // A page's share of the pages' memory: its node, its entries and its size class
-constexpr u32 PageCost = sizeof(FixedAllocatorNode) + PageSize + sizeof(u16);
+CONSTEXPR u32 PageCost = sizeof(FixedAllocatorNode) + PageSize + sizeof(u16);
 // The heap's blocks and their sizes
-constexpr u32 HeapAlignment = 0x10;
+CONSTEXPR u32 HeapAlignment = 0x10;
 // A free block is split when more than this is left of it
-constexpr u32 SmallestSplit = 0x20;
+CONSTEXPR u32 SmallestSplit = 0x20;
 // A size word's free bit, for the merge that ORs the sum of two sizes into the whole word
-constexpr u32 FreeBit = 0x80000000;
+CONSTEXPR u32 FreeBit = 0x80000000;
 // MemoryAllocateAligned leaves it in front of an aligned allocation (the word 12 bytes before it), with the block's own address
 // after it (8 bytes before)
-constexpr u32 AlignedMarker = 0xFEDCBA98;
-constexpr s32 AlignedMarkerWord = -3;
-constexpr s32 AlignedBlockWord = -2;
-constexpr s32 NoFit = -1;
-constexpr s32 WorstFit = 1000000000;
+CONSTEXPR u32 AlignedMarker = 0xFEDCBA98;
+CONSTEXPR s32 AlignedMarkerWord = -3;
+CONSTEXPR s32 AlignedBlockWord = -2;
+CONSTEXPR s32 NoFit = -1;
+CONSTEXPR s32 WorstFit = 1000000000;
 // The disk manager's pool; the heap manager's takes what the platform has left after it
-constexpr u32 DiskPoolSize = 0x10A3D70;
+CONSTEXPR u32 DiskPoolSize = 0x10A3D70;
 
 // g_PoolsAllocated's entries
 enum PoolIndex : u32
@@ -33,13 +33,13 @@ enum PoolIndex : u32
 };
 
 // The entries' sizes: 4 bytes apart up to 148, then fewer the bigger they get
-constexpr u32 SizeClassStep = 4;
-constexpr u32 SizeClassSizes[SizeClassCount] = {
+CONSTEXPR u32 SizeClassStep = 4;
+CONSTEXPR u32 SizeClassSizes[SizeClassCount] = {
     4,   8,   12,  16,  20,  24,  28,  32,  36,  40,  44,  48,  52,  56,  60,   64,   68,   72,   76,   80,  84,
     88,  92,  96,  100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144,  148,  156,  160,  168,  176, 184,
     192, 204, 208, 224, 240, 256, 272, 288, 304, 336, 368, 400, 448, 512, 576,  672,  816,  1024, 1360, 2048, 4096,
 };
-constexpr u32 EvenSizeClasses = 37;
+CONSTEXPR u32 EvenSizeClasses = 37;
 
 u8* Bytes(void* memory)
 {
@@ -116,8 +116,8 @@ void*& Field(void* object, u32 memberPointer)
     return *reinterpret_cast<void**>(Bytes(object) + memberPointer - 1);
 }
 
-constexpr u32 NewerField = GCC2_MEMBER_POINTER(FixedAllocatorNode, newer);
-constexpr u32 OlderField = GCC2_MEMBER_POINTER(FixedAllocatorNode, older);
+CONSTEXPR u32 NewerField = GCC2_MEMBER_POINTER(FixedAllocatorNode, newer);
+CONSTEXPR u32 OlderField = GCC2_MEMBER_POINTER(FixedAllocatorNode, older);
 }
 
 extern "C"

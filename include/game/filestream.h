@@ -58,7 +58,7 @@ CHECK_SIZE(FileStreamFlags, 2);
 // archive (once the archive's table is read, the data file is opened and stays open)
 struct FileStream
 {
-    enum ArchiveState : u8
+    enum ArchiveState
     {
         NoArchive = 0,
         // Opening the table, then the data file

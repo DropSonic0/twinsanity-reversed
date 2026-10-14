@@ -22,22 +22,22 @@
 namespace
 {
 // What volumes as fractions are scaled by for the sound processor: a voice's full volume, a reverb's and a group's volume of 1
-constexpr f32 VoiceVolumeScale = Platform::Audio::MaxVolume;
-constexpr f32 ReverbVolumeScale = 32767.0f;
-constexpr f32 GroupVolumeScale = Platform::Audio::FullGroupVolume;
+CONSTEXPR f32 VoiceVolumeScale = Platform::Audio::MaxVolume;
+CONSTEXPR f32 ReverbVolumeScale = 32767.0f;
+CONSTEXPR f32 GroupVolumeScale = Platform::Audio::FullGroupVolume;
 // A reverb's delay and feedback go to the sound processor in 7 bits
-constexpr f32 ReverbSettingScale = 127.0f;
+CONSTEXPR f32 ReverbSettingScale = 127.0f;
 // A silenced voice is let go of at this release rate once it has played more than 10 frames
-constexpr u32 ReleaseRate = 0xD;
-constexpr s32 ReleaseFrames = 10;
+CONSTEXPR u32 ReleaseRate = 0xD;
+CONSTEXPR s32 ReleaseFrames = 10;
 // A sound's parameter goes out with this value in its high byte
-constexpr u32 SoundHighByte = 0xD;
+CONSTEXPR u32 SoundHighByte = 0xD;
 // The sounds the sound processor's table keeps
-constexpr u16 ReservedSounds = 0x100;
+CONSTEXPR u16 ReservedSounds = 0x100;
 // A music player's buffers in the sound processor's memory: a half for each of its streams
-constexpr u32 MusicBufferSize = 0x8000;
-constexpr u32 MusicStreamBuffer = 0x4000;
-constexpr s32 KeepAliveFrames = 36;
+CONSTEXPR u32 MusicBufferSize = 0x8000;
+CONSTEXPR u32 MusicStreamBuffer = 0x4000;
+CONSTEXPR s32 KeepAliveFrames = 36;
 
 // A negative volume plays in the other phase
 s32 Phase(s32 volume)
@@ -200,7 +200,7 @@ extern "C"
     u32 SoundGroupOf(s32 group)
     {
         // Handed to the sound processor with the voice's number in the low half
-        constexpr u32 GroupNumberShift = 16;
+        CONSTEXPR u32 GroupNumberShift = 16;
         switch (group)
         {
         case SecondEffectsGroup:
@@ -860,9 +860,9 @@ void FadeFromCutsceneVolumes()
 namespace
 {
 // The frames a core keeps its reverb without a voice sending to it
-constexpr u32 ReverbKeptFrames = 0x12D;
+CONSTEXPR u32 ReverbKeptFrames = 0x12D;
 // A core without reverb counts as this many free voices when the chunk's reverb picks one
-constexpr s32 ReverbFreeCore = 10000;
+CONSTEXPR s32 ReverbFreeCore = 10000;
 
 bool StealableVoice(const SoundVoice* voice)
 {
@@ -1136,7 +1136,7 @@ u32 SoundBox::Contains(const Vector4* point)
 void UpdateCutsceneVolumes(f32 time)
 {
     // The groups' volumes in cutscenes: a quarter, but the movie group's (the cutscenes' music) left alone
-    static constexpr f32 CutsceneLevels[VolumeGroupCount] = {0.25f, 0.25f, 0.25f, 1.0f};
+    static CONSTEXPR f32 CutsceneLevels[VolumeGroupCount] = {0.25f, 0.25f, 0.25f, 1.0f};
     if (g_CutsceneVolumeMode == OwnVolumes || g_CutsceneVolumeMode == CutsceneVolumes)
     {
         return;
@@ -1174,7 +1174,7 @@ void UpdateCutsceneVolumes(f32 time)
 
 f32 GroupVolumeLevel(s32 group)
 {
-    constexpr f32 Half = 1.0f / (2.0f * GroupVolumeScale);
+    CONSTEXPR f32 Half = 1.0f / (2.0f * GroupVolumeScale);
     return static_cast<f32>(static_cast<u16>(g_GroupVolumes[group].left)) * Half +
            static_cast<f32>(static_cast<u16>(g_GroupVolumes[group].right)) * Half;
 }
@@ -1232,7 +1232,7 @@ s32 ApplyMusicVolume(MusicPlayer* player)
 
 void FadeMusicOut(f32 time, MusicPlayer* player, u32 stops)
 {
-    constexpr f32 ShortestFade = Rounded(0.3);
+    CONSTEXPR f32 ShortestFade = Rounded(0.3);
     player->fadeTime = time;
     if (time < ShortestFade)
     {
@@ -1275,7 +1275,7 @@ MusicPlayer* ConstructMusicPlayer(MusicPlayer* player)
 
 u32 FadeMusic(f32 time, MusicPlayer* player)
 {
-    constexpr f32 Instant = Rounded(1e-05);
+    CONSTEXPR f32 Instant = Rounded(1e-05);
     u32 leftDone = 0;
     u32 rightDone = 0;
     if (player->fadeTime < Instant)
@@ -1314,7 +1314,7 @@ u32 FadeMusic(f32 time, MusicPlayer* player)
 void ReadSoundParameters(u16* parameters, Stream* stream)
 {
     // The pitch and four parameters
-    constexpr u32 SoundParameters = 5;
+    CONSTEXPR u32 SoundParameters = 5;
     for (u32 index = 0; index < SoundParameters; index++)
     {
         stream->ReadS16(reinterpret_cast<s16*>(&parameters[index]));

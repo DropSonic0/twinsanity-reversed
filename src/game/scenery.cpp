@@ -31,13 +31,13 @@ namespace
 {
 // The links an instance is on a cell's list by (InstanceContext::previous and next), as GCC 2.9x member pointers: their offsets
 // plus 1
-constexpr u32 ListPrevious = 0x140 + 1;
-constexpr u32 ListNext = 0x144 + 1;
-constexpr s32 PathEnd = -1;
+CONSTEXPR u32 ListPrevious = 0x140 + 1;
+CONSTEXPR u32 ListNext = 0x144 + 1;
+CONSTEXPR s32 PathEnd = -1;
 // The boxes, items and matrices of a cell's meshes are aligned to the cache's lines
-constexpr u32 CacheLineSize = 0x40;
+CONSTEXPR u32 CacheLineSize = 0x40;
 // The depth left below which a node's children are leaves
-constexpr s32 LeafDepth = 2;
+CONSTEXPR s32 LeafDepth = 2;
 
 // A cache line pulled in ahead of its use
 inline void Touch(const void* address)
@@ -295,7 +295,7 @@ void CollectCellInstancesInView(SceneryCell* cell, InstanceCollector* collector,
 
 namespace
 {
-constexpr u32 CollectorPools = InstanceCollector::PoolCount;
+CONSTEXPR u32 CollectorPools = InstanceCollector::PoolCount;
 
 template <typename T>
 ItemPool<T>* NewPools()
@@ -1248,7 +1248,7 @@ void SceneryNode::Release(u32 releaseInstances, u32 queue)
 SceneryCell* SceneryNode::FindCell(const Vector4* low, const Vector4* high, s32 depthLeft)
 {
     // Farther than any child's middle (1e11)
-    constexpr f32 Far = 0x1.74876Ep+36f;
+    CONSTEXPR f32 Far = 0x1.74876Ep+36f;
     s32 nearest = -1;
     f32 best = Far;
     Vector4 middle = *high;
@@ -1537,7 +1537,7 @@ void SceneryRoot::Collect(u32 kinds, InstanceCollector* collector)
 
 SceneryCell* SceneryRoot::CellOf(InstanceContext* instance, const Matrix4x4* matrix)
 {
-    constexpr f32 Margin = Epsilon;
+    CONSTEXPR f32 Margin = Epsilon;
     const Vector4* low = &instance->collision.box.min;
     const Vector4* high = &instance->collision.box.max;
     Box box;

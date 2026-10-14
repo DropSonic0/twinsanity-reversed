@@ -12,16 +12,16 @@ namespace
 {
 // Points nearer than this are one to the builder, directions one direction (either way), and a plane has points in front or
 // behind beyond this
-constexpr f32 SamePoint = Rounded(0.0001);
-constexpr f32 SameDirection = Rounded(0.001);
-constexpr f32 OffPlane = Rounded(0.001);
+CONSTEXPR f32 SamePoint = Rounded(0.0001);
+CONSTEXPR f32 SameDirection = Rounded(0.001);
+CONSTEXPR f32 OffPlane = Rounded(0.001);
 // A point this near a hull's plane is on it
-constexpr f32 OnHullPlane = Epsilon;
+CONSTEXPR f32 OnHullPlane = Epsilon;
 // The counts and offsets that start a hull (and its file's part)
-constexpr u32 HullHeaderSize = offsetof(CollisionHull, surface);
+CONSTEXPR u32 HullHeaderSize = offsetof(CollisionHull, surface);
 // An edge's two vertex bytes, and a face's byte of its corner count before its corners
-constexpr s32 EdgeSize = sizeof(g_HullBuilderEdges[0]);
-constexpr s32 FaceCountSize = 1;
+CONSTEXPR s32 EdgeSize = sizeof(g_HullBuilderEdges[0]);
+CONSTEXPR s32 FaceCountSize = 1;
 
 f32 Distance(const Vector4* a, const Vector4* b)
 {
@@ -580,7 +580,7 @@ u32 CollectHullPlanesAndNormals()
 
 u32 PackBuiltHull(CollisionHull* hull)
 {
-    constexpr u32 VectorSize = sizeof(Vector4);
+    CONSTEXPR u32 VectorSize = sizeof(Vector4);
     hull->vertexCount = static_cast<u16>(g_HullBuilderPointCount);
     hull->edgeCount = static_cast<u16>(g_HullBuilderCounts.edges);
     hull->planeCount = static_cast<u16>(g_HullBuilderCounts.faces);
@@ -641,23 +641,23 @@ void BuildBoxHull(CollisionHull* hull, const Vector4* min, const Vector4* max)
 {
     // Corners from the bottom of the near side around, the planes of the bottom, near, right, far, left and top faces (their four
     // corners counter-clockwise from outside), an edge direction and a face normal along each axis, and the edges
-    constexpr u16 CornerCount = 8;
-    constexpr u16 FaceCount = 6;
-    constexpr u16 FaceCorners = 4;
-    constexpr u16 AxisCount = 3;
-    constexpr u16 EdgeCount = 12;
+    CONSTEXPR u16 CornerCount = 8;
+    CONSTEXPR u16 FaceCount = 6;
+    CONSTEXPR u16 FaceCorners = 4;
+    CONSTEXPR u16 AxisCount = 3;
+    CONSTEXPR u16 EdgeCount = 12;
     static const u8 FaceOffsets[FaceCount] = {0, 5, 10, 15, 20, 25};
     static const u8 FaceBytes[FaceCount * (FaceCountSize + FaceCorners)] = {4, 0, 1, 2, 3, 4, 0, 4, 5, 1, 4, 1, 5, 6, 2,
                                                                             4, 3, 2, 6, 7, 4, 3, 7, 4, 0, 4, 5, 4, 7, 6};
     static const u8 EdgeBytes[EdgeCount * EdgeSize] = {0, 1, 1, 2, 2, 3, 3, 0, 0, 4, 4, 5, 5, 1, 5, 6, 6, 2, 6, 7, 7, 3, 7, 4};
     // The blob's parts one after the other
-    constexpr u16 PlanesOffset = CornerCount * sizeof(Vector4);
-    constexpr u16 EdgeDirectionsOffset = PlanesOffset + FaceCount * sizeof(Vector4);
-    constexpr u16 FaceNormalsOffset = EdgeDirectionsOffset + AxisCount * sizeof(Vector4);
-    constexpr u16 FaceOffsetsOffset = FaceNormalsOffset + AxisCount * sizeof(Vector4);
-    constexpr u16 FacesOffset = FaceOffsetsOffset + sizeof(FaceOffsets);
-    constexpr u16 EdgesOffset = FacesOffset + sizeof(FaceBytes);
-    constexpr u32 BlobSize = EdgesOffset + sizeof(EdgeBytes);
+    CONSTEXPR u16 PlanesOffset = CornerCount * sizeof(Vector4);
+    CONSTEXPR u16 EdgeDirectionsOffset = PlanesOffset + FaceCount * sizeof(Vector4);
+    CONSTEXPR u16 FaceNormalsOffset = EdgeDirectionsOffset + AxisCount * sizeof(Vector4);
+    CONSTEXPR u16 FaceOffsetsOffset = FaceNormalsOffset + AxisCount * sizeof(Vector4);
+    CONSTEXPR u16 FacesOffset = FaceOffsetsOffset + sizeof(FaceOffsets);
+    CONSTEXPR u16 EdgesOffset = FacesOffset + sizeof(FaceBytes);
+    CONSTEXPR u32 BlobSize = EdgesOffset + sizeof(EdgeBytes);
     hull->planeCount = FaceCount;
     hull->edgeDirectionCount = AxisCount;
     hull->faceNormalCount = AxisCount;
@@ -743,7 +743,7 @@ u32 BuildPyramidHull(CollisionHull* hull, const Vector4* points)
     g_HullBuilderCounts.edgeDirections = 0;
     g_HullBuilderCounts.faceNormals = 0;
     // The apex, then the base's four corners
-    constexpr u32 PyramidPoints = 5;
+    CONSTEXPR u32 PyramidPoints = 5;
     for (u32 index = 0; index < PyramidPoints; index++)
     {
         AddHullPoint(&points[index]);

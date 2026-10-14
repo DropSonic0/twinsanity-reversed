@@ -18,8 +18,8 @@ extern "C"
 namespace
 {
 // A 4:3 picture's width on a 16:9 TV, and a 16:9 picture's height on a 4:3 TV as a share of the width
-constexpr f32 NarrowPictureWidth = 0.75f;
-constexpr f32 WidePictureHeight = 0.5625f;
+CONSTEXPR f32 NarrowPictureWidth = 0.75f;
+CONSTEXPR f32 WidePictureHeight = 0.5625f;
 }
 
 GameMovieController* GameMovieController::Construct(GameMovieController* controller)

@@ -23,8 +23,8 @@
 #include "game/reference.h"
 #include "game/resources.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 extern "C"
 {
@@ -36,18 +36,18 @@ namespace
 {
 // The factory's vtable functions: whether it makes instances, the node of the instance's type, the node of its agent (made from
 // its object's type), its model's node, and an instance to stand in for a new one
-constexpr u32 CanMakeSlot = 1;
-constexpr u32 TypeNodeSlot = 2;
-constexpr u32 ObjectNodeSlot = 3;
-constexpr u32 ModelNodeSlot = 4;
-constexpr u32 StandInSlot = 8;
+CONSTEXPR u32 CanMakeSlot = 1;
+CONSTEXPR u32 TypeNodeSlot = 2;
+CONSTEXPR u32 ObjectNodeSlot = 3;
+CONSTEXPR u32 ModelNodeSlot = 4;
+CONSTEXPR u32 StandInSlot = 8;
 // And the nodes of triggers and of cameras
-constexpr u32 TriggerNodeSlot = 5;
-constexpr u32 CameraNodeSlot = 6;
+CONSTEXPR u32 TriggerNodeSlot = 5;
+CONSTEXPR u32 CameraNodeSlot = 6;
 // The factory's subtype given to a holder
-constexpr u32 FactorySubtypeSlot = 7;
+CONSTEXPR u32 FactorySubtypeSlot = 7;
 // An object instance's index in the starter's receivers of none (its -1)
-constexpr u16 NoReceiverIndex = 0xFFFF;
+CONSTEXPR u16 NoReceiverIndex = 0xFFFF;
 
 // A chunk's data (none while its entry's reference has none)
 ChunkData* DataOf(const ChunkEntry* chunk)
@@ -227,8 +227,8 @@ InstanceContext* MakeTriggerContext(InstanceFactory* factory, ChunkEntry* chunk,
         QueueObject(context);
     }
 
-    constexpr u32 MakeHull = 1;
-    constexpr u32 OwnBoxToo = 1;
+    CONSTEXPR u32 MakeHull = 1;
+    CONSTEXPR u32 OwnBoxToo = 1;
     Vector4 min = {-trigger->scale.x, -trigger->scale.y, -trigger->scale.z, 1.0f};
     SetCollisionBox(&context->collision, &min, &trigger->scale, MakeHull, OwnBoxToo);
     context->flags.value = (context->flags.value | factory->creationFlags) & ~factory->clearedFlags;
@@ -264,14 +264,14 @@ extern "C"
 namespace
 {
 // The objects' subtypes: pickups of subtypes 16 and 17 have nodes of their own, and 16's have no properties
-constexpr u32 PickupNodeSubtype = 0x10;
-constexpr u32 PickupNodeSubtypeEnd = 0x12;
+CONSTEXPR u32 PickupNodeSubtype = 0x10;
+CONSTEXPR u32 PickupNodeSubtypeEnd = 0x12;
 // The room the factory's list of templates starts with, and grows by
-constexpr u32 TemplatesRoom = 10;
+CONSTEXPR u32 TemplatesRoom = 10;
 // The activators a trigger's node tells (a bit per object type) made the kinds of their agents' nodes (and type 9's, which no
 // object is, kind 0x15's)
-constexpr u32 OnlyCharacterActivator = 1u << GameObject::TypeCharacter;
-constexpr u32 ActivatorKinds[][2] = {{1u << GameObject::TypeCharacter, 1u << NodeCharacter},
+CONSTEXPR u32 OnlyCharacterActivator = 1u << GameObject::TypeCharacter;
+CONSTEXPR u32 ActivatorKinds[][2] = {{1u << GameObject::TypeCharacter, 1u << NodeCharacter},
                                      {1u << GameObject::TypeCrate, 1u << NodeCrate},
                                      {1u << GameObject::TypeCreature, 1u << NodeCreature},
                                      {1u << GameObject::TypePickup, 1u << NodePickup},
@@ -282,15 +282,15 @@ constexpr u32 ActivatorKinds[][2] = {{1u << GameObject::TypeCharacter, 1u << Nod
                                      {1u << GameObject::TypeProjectile, 1u << NodeProjectile},
                                      {1u << GameObject::TypeCount, 1u << NodeUnusedObjectType}};
 // ObjectNode::Construct's: whether the node has waypoints (and a word it doesn't read)
-constexpr u32 HasWaypoints = 1;
-constexpr u32 NoWaypoints = 0;
+CONSTEXPR u32 HasWaypoints = 1;
+CONSTEXPR u32 NoWaypoints = 0;
 // The size of a projectile's node (game/projectiles.cpp's ProjectileObjectNode)
-constexpr u32 ProjectileNodeSize = 0xF0;
+CONSTEXPR u32 ProjectileNodeSize = 0xF0;
 // The instance's integer property giving its object and model nodes their near distance: 0 and 0xFF stand for 0 and any
 // (0xFFFF), others are squared
-constexpr u32 NearDistanceProperty = 1;
-constexpr u32 NearDistanceNone = 0;
-constexpr u32 NearDistanceAny = 0xFF;
+CONSTEXPR u32 NearDistanceProperty = 1;
+CONSTEXPR u32 NearDistanceNone = 0;
+CONSTEXPR u32 NearDistanceAny = 0xFF;
 
 static_assert(offsetof(ChunkData, clocks) == 0x154);
 static_assert(offsetof(GameProgress, characters) == 0x80);
@@ -307,7 +307,7 @@ struct PickupNodeTimes : GameNode
 // 0x154)
 TimeClock* ChunkClocks(const ChunkData* chunkData)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(chunkData) + offsetof(ChunkData, clocks);
+    uintptr_t address = reinterpret_cast<uintptr_t>(chunkData) + offsetof(ChunkData, clocks);
     auto* clocks = *reinterpret_cast<TimeClock* const*>(address);
     return clocks != nullptr ? clocks : G_GameClockController->clocks;
 }
@@ -315,7 +315,7 @@ TimeClock* ChunkClocks(const ChunkData* chunkData)
 // A character's handle among the progress's as retail indexes them: character 6 (none) is the first checkpoint's word
 Reference** CharacterHandle(GameProgress* progress, s32 character)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(progress->characters);
+    uintptr_t address = reinterpret_cast<uintptr_t>(progress->characters);
     address += static_cast<u32>(character) * sizeof(Reference*);
     return reinterpret_cast<Reference**>(address);
 }

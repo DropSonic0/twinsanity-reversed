@@ -9,14 +9,14 @@
 #include "game/pads.h"
 #include "game/place.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 EABI_EXPORT(FUN_00162da8, &ControlsHandler::Move);
 
 namespace
 {
-constexpr u32 AxisCount = 2;
-constexpr u32 ActionCount = 7;
+CONSTEXPR u32 AxisCount = 2;
+CONSTEXPR u32 ActionCount = 7;
 
 CharacterAgent* CharacterOf(InstanceContext* instance)
 {
@@ -28,14 +28,14 @@ CharacterAgent* CharacterOf(InstanceContext* instance)
 bool RigAway(InstanceContext* instance)
 {
     void* follow = GetGameNode(&instance->nodes, NodeFollow);
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(follow) + offsetof(FollowNode, camera);
+    uintptr_t address = reinterpret_cast<uintptr_t>(follow) + offsetof(FollowNode, camera);
     return reinterpret_cast<const FollowCameraBits*>(address + offsetof(FollowCamera, bits))->rigAway != 0;
 }
 
 // An instance's place as the retail code reads it, also when there's no instance (the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 

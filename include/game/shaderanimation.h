@@ -11,7 +11,7 @@ class Stream;
 union ShaderAnimationHeader
 {
     // What two animations' headers have to agree in
-    static constexpr u32 FramesAndRate = 0x1FFFFF;
+    enum { FramesAndRate = 0x1FFFFF };
 
     u32 value;
     struct

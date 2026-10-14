@@ -291,7 +291,7 @@ extern "C"
 namespace
 {
 // How much room the tables grow by
-constexpr u16 Growth = 0x40;
+CONSTEXPR u16 Growth = 0x40;
 
 // How each kind's resources are made, deleted and read (the platform's), and its vtables
 template <typename Kind>
@@ -312,11 +312,11 @@ struct Traits<TextureKind>
     {
         Platform::Graphics::ReadTexture(texture, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_TextureTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_TextureTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_TextureTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_TextureReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_TextureSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_TextureTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_TextureTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_TextureTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_TextureReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_TextureSectionReaderVTable;
 };
 
 template <>
@@ -334,11 +334,11 @@ struct Traits<MaterialKind>
     {
         Platform::Graphics::ReadMaterial(material, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_MaterialTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_MaterialTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_MaterialTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_MaterialReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_MaterialSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_MaterialTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_MaterialTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_MaterialTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_MaterialReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_MaterialSectionReaderVTable;
 };
 
 template <>
@@ -356,11 +356,11 @@ struct Traits<ModelKind>
     {
         Platform::Graphics::ReadModel(model, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_ModelTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_ModelTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_ModelTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_ModelReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_ModelSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_ModelTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_ModelTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_ModelTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_ModelReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_ModelSectionReaderVTable;
 };
 
 template <>
@@ -378,11 +378,11 @@ struct Traits<RigidModelKind>
     {
         Platform::Graphics::ReadRigidModel(model, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_RigidModelTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_RigidModelTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_RigidModelTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_RigidModelReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_RigidModelSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_RigidModelTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_RigidModelTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_RigidModelTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_RigidModelReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_RigidModelSectionReaderVTable;
 };
 
 template <>
@@ -400,11 +400,11 @@ struct Traits<SkinKind>
     {
         Platform::Graphics::ReadSkin(skin, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_SkinTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_SkinTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_SkinTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_SkinReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_SkinSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_SkinTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_SkinTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_SkinTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_SkinReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_SkinSectionReaderVTable;
 };
 
 template <>
@@ -422,11 +422,11 @@ struct Traits<BlendSkinKind>
     {
         Platform::Graphics::ReadBlendSkin(skin, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_BlendSkinTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_BlendSkinTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_BlendSkinTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_BlendSkinReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_BlendSkinSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_BlendSkinTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_BlendSkinTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_BlendSkinTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_BlendSkinReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_BlendSkinSectionReaderVTable;
 };
 
 template <>
@@ -444,11 +444,11 @@ struct Traits<MeshKind>
     {
         Platform::Graphics::ReadMesh(mesh, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_MeshTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_MeshTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_MeshTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_MeshReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_MeshSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_MeshTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_MeshTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_MeshTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_MeshReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_MeshSectionReaderVTable;
 };
 
 template <>
@@ -466,11 +466,11 @@ struct Traits<LodKind>
     {
         Platform::Graphics::ReadLod(lod, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_LodTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_LodTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_LodTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_LodReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_LodSectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_LodTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_LodTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_LodTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_LodReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_LodSectionReaderVTable;
 };
 
 template <>
@@ -488,11 +488,11 @@ struct Traits<SkyKind>
     {
         Platform::Graphics::ReadSky(sky, stream);
     }
-    static constexpr const GccVTableEntry* VTable = g_SkyTableVTable;
-    static constexpr const GccVTableEntry* NamedVTable = g_SkyTableNamedVTable;
-    static constexpr const GccVTableEntry* BaseVTable = g_SkyTableBaseVTable;
-    static constexpr const GccVTableEntry* ReaderVTable = g_SkyReaderVTable;
-    static constexpr const GccVTableEntry* SectionReaderVTable = g_SkySectionReaderVTable;
+    static CONSTEXPR const GccVTableEntry* VTable = g_SkyTableVTable;
+    static CONSTEXPR const GccVTableEntry* NamedVTable = g_SkyTableNamedVTable;
+    static CONSTEXPR const GccVTableEntry* BaseVTable = g_SkyTableBaseVTable;
+    static CONSTEXPR const GccVTableEntry* ReaderVTable = g_SkyReaderVTable;
+    static CONSTEXPR const GccVTableEntry* SectionReaderVTable = g_SkySectionReaderVTable;
 };
 
 // A reference let go of through the table, or the resource deleted when it was made outside the tables

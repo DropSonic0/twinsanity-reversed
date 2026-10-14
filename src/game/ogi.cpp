@@ -21,8 +21,8 @@ Platform::Graphics::ModelLights LightsAt(const ChunkLights* lights)
 }
 
 // The classes of the models' items: a model node, an OGI and an animation
-constexpr u32 OgiClassId = 0x1407;
-constexpr u32 AnimationClassId = 0x1702;
+CONSTEXPR u32 OgiClassId = 0x1407;
+CONSTEXPR u32 AnimationClassId = 0x1702;
 }
 
 extern "C"
@@ -63,7 +63,7 @@ void DestroyModelItemBuilder(void* builder, u32 destroyFlags)
 void DrawOgi(GameOGI* ogi, const Matrix4x4* matrix, JointMatrices* joints, const BlendShapeWeights* blendShapes,
              const ChunkLights* lights, u32 mode)
 {
-    constexpr s32 MostShapes = 3;
+    CONSTEXPR s32 MostShapes = 3;
     Matrix4x4* matrices = joints->start;
     if (matrices != nullptr && joints->frame + 1 < g_RenderedFrames)
     {
@@ -403,10 +403,10 @@ void DrawInstanceModel(InstanceContext* instance, const Matrix4x4* chunkMatrix, 
 
 void DrawQueuedInstances()
 {
-    constexpr u32 WhollyInView = 1;
-    constexpr u32 Clipped = 2;
+    CONSTEXPR u32 WhollyInView = 1;
+    CONSTEXPR u32 Clipped = 2;
     // The clipped instances are queued from the array's end
-    constexpr s32 LastSlot = sizeof(g_DrawnInstances) / sizeof(g_DrawnInstances[0]) - 1;
+    CONSTEXPR s32 LastSlot = sizeof(g_DrawnInstances) / sizeof(g_DrawnInstances[0]) - 1;
     if (g_DrawnInstanceCount == 0)
     {
         return;

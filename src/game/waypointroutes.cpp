@@ -38,7 +38,7 @@ FUN_0020b6e8:
 namespace
 {
 // How high the lift raises the point per unit
-constexpr f32 LiftHeight = 4.5f;
+CONSTEXPR f32 LiftHeight = 4.5f;
 
 // The vector's x, y and z times a number
 void Scale(Vector4* vector, f32 scale)

@@ -16,15 +16,15 @@
 namespace
 {
 // A direction whose x and z squared add up to no more than this (1e-06) is straight up or down
-constexpr f32 FlatEpsilon = 0x1.0c6f7ap-20f;
+CONSTEXPR f32 FlatEpsilon = 0x1.0c6f7ap-20f;
 // What a step or a key comes to when it's stepped back past 0
-constexpr u8 SteppedBeforeFirst = 0xFF;
+CONSTEXPR u8 SteppedBeforeFirst = 0xFF;
 // Motions 11 and 12 (nameless in the AgentLab tool) are stepped as a ground chase and an air chase
-constexpr u32 SecondGroundChase = 11;
-constexpr u32 SecondAirChase = 12;
+CONSTEXPR u32 SecondGroundChase = 11;
+CONSTEXPR u32 SecondAirChase = 12;
 // A projectile's gravity when the packet gives no Power, and how far a chase leans at most when it gives no Bounce
-constexpr f32 DefaultProjectileGravity = 40.0f;
-constexpr f32 DefaultChaseMostLean = 80.0f;
+CONSTEXPR f32 DefaultProjectileGravity = 40.0f;
+CONSTEXPR f32 DefaultChaseMostLean = 80.0f;
 
 // The physics' parameters by motion: a spring's power and damping; a projectile's speed along the ground, its speed up and its
 // gravity; a chase's share of the turn toward the target made per second (the packet's Duration), how much it leans into turns
@@ -378,7 +378,7 @@ void Physics::Reset()
 
 Waypoints* Waypoints::Construct(Waypoints* waypoints)
 {
-    constexpr u32 Growth = 10;
+    CONSTEXPR u32 Growth = 10;
     waypoints->positions.capacity = Growth;
     waypoints->positions.growth = Growth;
     waypoints->positions.count = 0;
@@ -754,7 +754,7 @@ void StartPacketMotion(BehaviourRunner* runner, TimeClock* clock)
         }
 
         // Following the keys, the rotation faces the next one
-        constexpr u32 FollowsKeys = 2;
+        CONSTEXPR u32 FollowsKeys = 2;
         if (key != nullptr && motionKind - Packet::LinearInterpolation < FollowsKeys && !waypoints->flags.stopped)
         {
             u32 current = waypoints->key;
@@ -1056,7 +1056,7 @@ void StartPacketMotion(BehaviourRunner* runner, TimeClock* clock)
                 }
 
                 // A turn of no time is over in a ten thousandth of a second
-                constexpr f32 InstantTurnInverse = 10000.0f;
+                CONSTEXPR f32 InstantTurnInverse = 10000.0f;
                 motion->inverseDuration = InverseOf(motion->duration, InstantTurnInverse);
             }
         }
@@ -1910,7 +1910,7 @@ u32 StepSpring(f32 elapsed, ObjectNode* node, BehaviourRunner* runner, ControlPa
 {
     // Pulled to the target by the power times the distance: done once within the tolerance, else (with a negative deceleration)
     // once it doesn't overshoot any more, else once the motion's and the physics' velocities have died down
-    constexpr f32 Settled = 0x1.47ae14p-4f;
+    CONSTEXPR f32 Settled = 0x1.47ae14p-4f;
     f32 tolerance = runner->tolerance;
     Translator* translator = node->translator;
     const Vector4* target = &translator->target;
@@ -2137,7 +2137,7 @@ f32 AcceleratedFraction(ObjectNode* node, ControlPacket* packet, f32 seconds)
 {
     // The distance covered speeding up for the acceleration's time, at full speed, and slowing down for the deceleration's
     // time, over the whole distance (Bounce and DecDist are the times; left as they were in retail when not given, and unused)
-    constexpr f32 NoDistance = 1000000.0f;
+    CONSTEXPR f32 NoDistance = 1000000.0f;
     f32 duration = node->motion->duration;
     f32 times[2] = {};
     bool accelerates = packet->GetFloat(ControlPacket::Bounce, node->properties, &times[0]) != 0;
@@ -2293,8 +2293,8 @@ Vector4 Cross(const Vector4& a, const Vector4& b)
 f32 TurnSlowedSpeed(f32 turn, Physics* physics, MotionState* motion)
 {
     // The share of the speed taken away: the turn times the drag in hundredths, 90% at most
-    constexpr f32 DragScale = 100.0f;
-    constexpr f32 MostSlowed = Rounded(0.9);
+    CONSTEXPR f32 DragScale = 100.0f;
+    CONSTEXPR f32 MostSlowed = Rounded(0.9);
     f32 drag = physics->parameters[ChaseTurnDrag];
     f32 speed = motion->chaseSpeed;
     if (0.0f < drag)
@@ -2425,7 +2425,7 @@ u32 StepAirChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
 u32 StepRiddenAirChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
 {
     // A target straight above or below is taken a little to the side
-    constexpr f32 Nudge = Rounded(0.01);
+    CONSTEXPR f32 Nudge = Rounded(0.01);
     Vector4 here;
     if (ChaseArrived(node, runner, &here))
     {
@@ -2490,7 +2490,7 @@ u32 StepRiddenAirChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
 u32 StepClimbingChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
 {
     // What it touches is a floor when its normal's y is above this
-    constexpr f32 FloorSlope = Rounded(0.3);
+    CONSTEXPR f32 FloorSlope = Rounded(0.3);
 
     Vector4 here;
     if (ChaseArrived(node, runner, &here))
@@ -2626,8 +2626,8 @@ u32 StepClimbingChase(f32 elapsed, ObjectNode* node, BehaviourRunner* runner)
         {
             // Going down, pressed into the surface the harder the nearer its normal's y is to a half (2 on a floor or a wall, 6
             // on a slope of 60°)
-            constexpr f32 LeastPress = 2.0f;
-            constexpr f32 PressGrowth = 8.0f;
+            CONSTEXPR f32 LeastPress = 2.0f;
+            CONSTEXPR f32 PressGrowth = 8.0f;
             f32 press = -(__builtin_fabsf(0.5f - __builtin_fabsf(0.5f - normal.y)) * PressGrowth + LeastPress);
             move = {(along.x + normal.x * press) * 0.5f, (along.y + normal.y * press) * 0.5f, (along.z + normal.z * press) * 0.5f,
                     1.0f};
@@ -2696,7 +2696,7 @@ void RollAlongX(f32 radius, ObjectNode* node, Vector4* moved)
 
 void RollAlongY(f32 radius, ObjectNode* node, Vector4* moved)
 {
-    constexpr f32 Least = Rounded(0.001);
+    CONSTEXPR f32 Least = Rounded(0.001);
     f32 length = __builtin_sqrtf(moved->x * moved->x + moved->y * moved->y + moved->z * moved->z);
     if (!(Least < length))
     {
@@ -2735,7 +2735,7 @@ void RollAlongY(f32 radius, ObjectNode* node, Vector4* moved)
 f32 SteerTowards(f32 share, f32 lean, f32 mostLean, InstanceContext* instance, const Vector4* target)
 {
     // A facing within this cosine of the target is facing it
-    constexpr f32 Facing = Rounded(0.99999);
+    CONSTEXPR f32 Facing = Rounded(0.99999);
     bool leans = lean != 0.0f;
     ObjectPlace* place = instance->place;
     share = share < 1.0f ? share : 1.0f;
@@ -2833,8 +2833,8 @@ f32 SteerTowards(f32 share, f32 lean, f32 mostLean, InstanceContext* instance, c
 f32 SteerBodyTowards(f32 share, f32 lean, InstanceContext* instance, const Vector4* target, u32 facingOnly)
 {
     // How far the up leans: the target's direction times the lean, raised and added to the current up
-    constexpr f32 Raise = 1.5f;
-    constexpr f32 Keep = 1.25f;
+    CONSTEXPR f32 Raise = 1.5f;
+    CONSTEXPR f32 Keep = 1.25f;
     ObjectPlace* place = instance->place;
     place->SyncPosition();
     Vector4 toward = *target;

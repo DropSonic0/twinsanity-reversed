@@ -9,12 +9,12 @@
 
 namespace
 {
-constexpr const char* NoPath = "Nothing";
-constexpr const char* NewPath = "Initialising";
+CONSTEXPR const char* NoPath = "Nothing";
+CONSTEXPR const char* NewPath = "Initialising";
 // A read too big for the reader takes what the reader has in whole blocks of this, the rest straight from the file
-constexpr u32 ReadBlockSize = 0x40;
-constexpr u32 SoundBankBufferSize = 0x800;
-constexpr u32 SamplesPathSize = 0x100;
+CONSTEXPR u32 ReadBlockSize = 0x40;
+CONSTEXPR u32 SoundBankBufferSize = 0x800;
+CONSTEXPR u32 SamplesPathSize = 0x100;
 
 // The reader through its vtable, as the retail code calls it
 Stream* Reader(FileStream* stream)
@@ -671,7 +671,7 @@ extern "C"
     MusicTrack* FindMusicTrack(SoundBankFiles* bank, u32 track)
     {
         // The header: how many tracks, a word, then the tracks
-        constexpr u32 TracksOffset = 8;
+        CONSTEXPR u32 TracksOffset = 8;
         u8* header = bank->header;
         u32 last = *reinterpret_cast<const u32*>(header) - 1;
         u32 index = track < last ? track : last;

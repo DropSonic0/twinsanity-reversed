@@ -21,93 +21,93 @@ namespace
 {
 // The script events run on the character: pinning the creature and pinned by it (characters.h's EventLongDrop when it falls
 // fast)
-constexpr u32 EventPins = 0x67;
-constexpr u32 EventPinned = 0x69;
+CONSTEXPR u32 EventPins = 0x67;
+CONSTEXPR u32 EventPinned = 0x69;
 
 // The ball: a sphere body of a unit mass in a 2.5 box, how it bounces and rubs, and its steps (its cache keeps the triangles of
 // the surfaces solid to the player's probes)
-constexpr f32 BallRadius = Rounded(0.8);
-constexpr f32 BallMass = 1.0f;
-constexpr f32 BallSize = 2.5f;
-constexpr f32 BallRestitution = 0.35f;
-constexpr f32 BallSoftness = 6.0f;
-constexpr f32 BallFriction = 1.5f;
-constexpr f32 BallSpinFriction = 0.5f;
-constexpr f32 BallRollFriction = Rounded(0.07);
-constexpr s32 BallSubsteps = 3;
+CONSTEXPR f32 BallRadius = Rounded(0.8);
+CONSTEXPR f32 BallMass = 1.0f;
+CONSTEXPR f32 BallSize = 2.5f;
+CONSTEXPR f32 BallRestitution = 0.35f;
+CONSTEXPR f32 BallSoftness = 6.0f;
+CONSTEXPR f32 BallFriction = 1.5f;
+CONSTEXPR f32 BallSpinFriction = 0.5f;
+CONSTEXPR f32 BallRollFriction = Rounded(0.07);
+CONSTEXPR s32 BallSubsteps = 3;
 // The two sides of the ball (made units), in the body's space
-constexpr f32 SideX = Rounded(1.1);
-constexpr f32 SideZ = Rounded(0.4);
+CONSTEXPR f32 SideX = Rounded(1.1);
+CONSTEXPR f32 SideZ = Rounded(0.4);
 // The starting velocity's speed (which retail never gives it)
-constexpr f32 StartSpeed = 32.0f;
+CONSTEXPR f32 StartSpeed = 32.0f;
 // The exit stands on the ball's bottom, 0.05 above it
-constexpr f32 ExitLift = Rounded(0.05);
+CONSTEXPR f32 ExitLift = Rounded(0.05);
 
 // Rolling: gravity, the event of a fast fall
-constexpr f32 RollGravity = 35.0f;
-constexpr f32 FellSpeed = 40.0f;
+CONSTEXPR f32 RollGravity = 35.0f;
+CONSTEXPR f32 FellSpeed = 40.0f;
 // The character's push: in the air along the stick (8 times it), on the ground down at the point 2 along it (its length times
 // 10, half again when it pushes against the motion)
-constexpr f32 AirPush = 8.0f;
-constexpr f32 GroundPush = 10.0f;
-constexpr f32 MostAgainstPush = 0.5f;
+CONSTEXPR f32 AirPush = 8.0f;
+CONSTEXPR f32 GroundPush = 10.0f;
+CONSTEXPR f32 MostAgainstPush = 0.5f;
 // The drags: speeds and spins under 0.09 have none, past it a share of the rest
-constexpr f32 DragFreeSpeed = Rounded(0.09);
-constexpr f32 DragShare = -0.005f;
-constexpr f32 SpinDragShare = -0.0025f;
+CONSTEXPR f32 DragFreeSpeed = Rounded(0.09);
+CONSTEXPR f32 DragShare = -0.005f;
+CONSTEXPR f32 SpinDragShare = -0.0025f;
 // The wobble: a change of velocity over 15 (and over the wobble) starts one (a 60th of it, within 0.5) and shakes the camera, one
 // over 43 only turns its axis; it swings 21 radians a second and fades 1.5 of itself a second
-constexpr f32 WobbleStart = 15.0f;
-constexpr f32 WobbleAxisOnly = 43.0f;
-constexpr f32 WobbleShare = Rounded(1.0 / 60.0);
-constexpr f32 MostWobble = 0.5f;
-constexpr f32 WobbleShakeFalloff = 0.01f;
-constexpr f32 WobbleSwing = 21.0f;
-constexpr f32 WobbleFade = 1.5f;
+CONSTEXPR f32 WobbleStart = 15.0f;
+CONSTEXPR f32 WobbleAxisOnly = 43.0f;
+CONSTEXPR f32 WobbleShare = Rounded(1.0 / 60.0);
+CONSTEXPR f32 MostWobble = 0.5f;
+CONSTEXPR f32 WobbleShakeFalloff = 0.01f;
+CONSTEXPR f32 WobbleSwing = 21.0f;
+CONSTEXPR f32 WobbleFade = 1.5f;
 
 // Who's on top: the character's side's height over 0.68 (under -0.68 the creature's), kept while over 0.58; on top 1.7 seconds
 // (the creature 1.5) pins, a pin lasts 4 and turns the body over 0.7
-constexpr f32 OnTop = Rounded(0.68);
-constexpr f32 StaysOnTop = 0.58f;
-constexpr f32 CharacterPinTime = Rounded(1.7);
-constexpr f32 CreaturePinTime = 1.5f;
-constexpr f32 PinTime = 4.0f;
-constexpr f32 InversePinTurnTime = Rounded(1.0 / 0.7);
+CONSTEXPR f32 OnTop = Rounded(0.68);
+CONSTEXPR f32 StaysOnTop = 0.58f;
+CONSTEXPR f32 CharacterPinTime = Rounded(1.7);
+CONSTEXPR f32 CreaturePinTime = 1.5f;
+CONSTEXPR f32 PinTime = 4.0f;
+CONSTEXPR f32 InversePinTurnTime = Rounded(1.0 / 0.7);
 // The pushes of a frame shorter than this (squared) don't count against each other
-constexpr f32 PushEpsilon = 0.0001f;
+CONSTEXPR f32 PushEpsilon = 0.0001f;
 
 // The creature: its pushes no longer than 2; heading home at 6 a second, done within 6 or spinning faster than 30, wandering
 // past 9 heads home again; tactic 2 lasts 1.5 seconds
-constexpr f32 MostPush = 2.0f;
-constexpr f32 HomeSpeed = 6.0f;
-constexpr f32 HomeRadius = 6.0f;
-constexpr f32 HomeSpinLimit = 30.0f;
-constexpr f32 WanderLimit = 9.0f;
-constexpr f32 VelocityHomeTime = 1.5f;
+CONSTEXPR f32 MostPush = 2.0f;
+CONSTEXPR f32 HomeSpeed = 6.0f;
+CONSTEXPR f32 HomeRadius = 6.0f;
+CONSTEXPR f32 HomeSpinLimit = 30.0f;
+CONSTEXPR f32 WanderLimit = 9.0f;
+CONSTEXPR f32 VelocityHomeTime = 1.5f;
 // The struggle: a new push one time in 60 less its side's height squared times 40, of a length squared between the round's
 // least and most (the last round's longer); pressing when the creature's side faces up more than 0.707
-constexpr s32 StruggleOdds = 60;
-constexpr f32 StruggleOddsScale = 40.0f;
-constexpr f32 RestingLeast = 0.25f;
-constexpr f32 RestingMost = 0.35f;
-constexpr f32 StruggleLeast = 0.5f;
-constexpr f32 StruggleMost = Rounded(0.8);
-constexpr f32 LastRoundLeast = 0.75f;
-constexpr f32 LastRoundMost = 1.05f;
-constexpr f32 PressFacing = Rounded(0.707);
+CONSTEXPR s32 StruggleOdds = 60;
+CONSTEXPR f32 StruggleOddsScale = 40.0f;
+CONSTEXPR f32 RestingLeast = 0.25f;
+CONSTEXPR f32 RestingMost = 0.35f;
+CONSTEXPR f32 StruggleLeast = 0.5f;
+CONSTEXPR f32 StruggleMost = Rounded(0.8);
+CONSTEXPR f32 LastRoundLeast = 0.75f;
+CONSTEXPR f32 LastRoundMost = 1.05f;
+CONSTEXPR f32 PressFacing = Rounded(0.707);
 // Pressing down: toward the character's side laid flat (its length times 5 and 2 more), a quarter of the way from the velocity,
 // no longer than 0.4 and 0.3 a second more up to 1.3; done after 2.4 seconds or once its own side faces down
-constexpr f32 PressSpeed = 5.0f;
-constexpr f32 PressSpeedBase = 2.0f;
-constexpr f32 PressShare = 0.25f;
-constexpr f32 PressPushBase = Rounded(0.4);
-constexpr f32 PressPushGrowth = Rounded(0.3);
-constexpr f32 MostPressPush = 1.3f;
-constexpr f32 PressTime = Rounded(2.4);
+CONSTEXPR f32 PressSpeed = 5.0f;
+CONSTEXPR f32 PressSpeedBase = 2.0f;
+CONSTEXPR f32 PressShare = 0.25f;
+CONSTEXPR f32 PressPushBase = Rounded(0.4);
+CONSTEXPR f32 PressPushGrowth = Rounded(0.3);
+CONSTEXPR f32 MostPressPush = 1.3f;
+CONSTEXPR f32 PressTime = Rounded(2.4);
 
 // The gauge: rising over 1.7 seconds of the character on top, falling over 1.5 of the creature (retail's 1 / 1.7 rounded down)
-constexpr f32 InverseCharacterPinTime = 0x1.2d2d2cp-1f;
-constexpr f32 InverseCreaturePinTime = Rounded(1.0 / 1.5);
+CONSTEXPR f32 InverseCharacterPinTime = 0x1.2d2d2cp-1f;
+CONSTEXPR f32 InverseCreaturePinTime = Rounded(1.0 / 1.5);
 
 DynamicBody* BodyOf(InstanceContext* instance)
 {

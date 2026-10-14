@@ -9,11 +9,11 @@
 namespace
 {
 // The walks' vtable slots
-constexpr u32 SlotDestroy = 1;
-constexpr u32 SlotFirst = 2;
-constexpr u32 SlotAtEnd = 3;
-constexpr u32 SlotItem = 4;
-constexpr u32 SlotNext = 5;
+CONSTEXPR u32 SlotDestroy = 1;
+CONSTEXPR u32 SlotFirst = 2;
+CONSTEXPR u32 SlotAtEnd = 3;
+CONSTEXPR u32 SlotItem = 4;
+CONSTEXPR u32 SlotNext = 5;
 
 template <typename T>
 ItemPool<T>* ConstructPool(ItemPool<T>* pool, const GccVTableEntry* vtable)

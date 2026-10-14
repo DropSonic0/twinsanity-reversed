@@ -73,31 +73,31 @@ EABI_EXPORT(FUN_00254868, ClampLengthToShorter);
 namespace
 {
 
-constexpr u16 MostTouched = 64;
-constexpr u16 MostVolumes = 32;
+CONSTEXPR u16 MostTouched = 64;
+CONSTEXPR u16 MostVolumes = 32;
 // The share of a push out of a triangle or a hull the instance moves by
-constexpr f32 PushShare = Rounded(0.99);
+CONSTEXPR f32 PushShare = Rounded(0.99);
 // The impulses (squared) past which the agents are told of a collision, with a physics body's sphere
-constexpr f32 ToldImpulse = Rounded(0.001);
-constexpr f32 ToldSphereImpulse = Rounded(0.01);
+CONSTEXPR f32 ToldImpulse = Rounded(0.001);
+CONSTEXPR f32 ToldSphereImpulse = Rounded(0.01);
 // A push's knock: the push along the velocity times this, doubled
-constexpr f32 PushKnock = Rounded(0.3);
+CONSTEXPR f32 PushKnock = Rounded(0.3);
 // A slide's knock: the slope times this
-constexpr f32 SlopeKnock = Rounded(0.3);
+CONSTEXPR f32 SlopeKnock = Rounded(0.3);
 // What it grips with once it touches something
-constexpr f32 TouchGrip = Rounded(0.8);
+CONSTEXPR f32 TouchGrip = Rounded(0.8);
 // A normal's y above which it's ground, and below which (either way) a wall
-constexpr f32 GroundNormalY = Rounded(0.7);
-constexpr f32 WallNormalY = Rounded(0.3);
+CONSTEXPR f32 GroundNormalY = Rounded(0.7);
+CONSTEXPR f32 WallNormalY = Rounded(0.3);
 // Below any rise out of a triangle
-constexpr f32 NoRise = -10000.0f;
+CONSTEXPR f32 NoRise = -10000.0f;
 // The rates its contact normal follows a normal at (while it steers itself, while it follows the surface) and turns upright at
 // (or its restitution times the share) once it has touched nothing for the time
-constexpr f32 SteeringNormalRate = 6.0f;
-constexpr f32 SurfaceNormalRate = 5.0f;
-constexpr f32 UprightRate = 21.0f;
-constexpr f32 UprightRateShare = 1.5f;
-constexpr f32 UprightAfter = Rounded(0.2);
+CONSTEXPR f32 SteeringNormalRate = 6.0f;
+CONSTEXPR f32 SurfaceNormalRate = 5.0f;
+CONSTEXPR f32 UprightRate = 21.0f;
+CONSTEXPR f32 UprightRateShare = 1.5f;
+CONSTEXPR f32 UprightAfter = Rounded(0.2);
 
 u32 MotionKind(const ObjectRigidBody* body)
 {
@@ -646,7 +646,7 @@ void BumpInstance(ObjectRigidBody* body, InstanceContext* other)
 // they are beyond the box's reach (squared, at least 0.01), at most the radius
 void RepelFrom(ObjectRigidBody* body, Vector4* sphere, InstanceQuery* query, Vector4* push)
 {
-    constexpr f32 LeastApart = Rounded(0.01);
+    CONSTEXPR f32 LeastApart = Rounded(0.01);
     *push = *sphere;
     f32 radius = sphere->w;
     f32 radiusSquared = radius * radius;
@@ -898,7 +898,7 @@ void CollideRigidBodyWithWorld(ObjectRigidBody* body)
 // Each triangle the sphere touches takes it its friction's share of the way out
 u32 SlideAgainstWorld(ObjectRigidBody* body, const Vector4* sphere)
 {
-    constexpr f32 SlideKnock = 25.0f;
+    CONSTEXPR f32 SlideKnock = 25.0f;
     f32 radius = sphere->w;
     Vector4 start = *sphere;
     start.w = 1.0f;
@@ -1224,7 +1224,7 @@ u32 TouchHull(ObjectRigidBody* body, InstanceContext* other, Vector4* push, Vect
     }
 
     // The pushes that count toward the contact normal: those not against it
-    constexpr f32 AgainstNormal = Rounded(-0.1);
+    CONSTEXPR f32 AgainstNormal = Rounded(-0.1);
     Normalize(push);
     if (body->bits.gripped && body->grip == 0.0f)
     {
@@ -1345,7 +1345,7 @@ u32 SlideAlong(f32 elapsed, ObjectRigidBody* body, Vector4* normal, Vector4* vel
 void RightRigidBody(f32 elapsed, ObjectRigidBody* body, Vector4* up)
 {
     // How far it's pressed against what it stands on each frame
-    constexpr f32 Press = Rounded(-0.07);
+    CONSTEXPR f32 Press = Rounded(-0.07);
     if (!body->bits.touchingInstance && !body->bits.touchingWorld && UprightAfter < body->untouchedTime)
     {
         f32 rate = body->bits.ownNormalRate ? body->restitution * UprightRateShare : UprightRate;

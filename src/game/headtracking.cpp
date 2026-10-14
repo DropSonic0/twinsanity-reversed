@@ -125,8 +125,8 @@ u32 TurnHead(HeadTracking* tracking, InstanceContext* instance, const Vector4* t
     if (tracking->bits.returning)
     {
         // A spring pulling the turns back to rest
-        constexpr f32 Pull = 1000.0f;
-        constexpr f32 Drag = 250.0f;
+        CONSTEXPR f32 Pull = 1000.0f;
+        CONSTEXPR f32 Drag = 250.0f;
         f32 pull = tracking->stiffness * Pull;
         f32 drag = tracking->stiffness * (tracking->damping * Drag);
         tracking->pitchSpeed = tracking->pitchSpeed + (-tracking->pitch * pull - tracking->pitchSpeed * drag) * elapsed;
@@ -135,8 +135,8 @@ u32 TurnHead(HeadTracking* tracking, InstanceContext* instance, const Vector4* t
     else
     {
         // A spring turning the head's y axis down to the target and its x axis across to it
-        constexpr f32 Pull = 2000.0f;
-        constexpr f32 Drag = 166.0f;
+        CONSTEXPR f32 Pull = 2000.0f;
+        CONSTEXPR f32 Drag = 166.0f;
         Vector4& direction = tracking->direction;
         direction = *target;
         const Vector4* head = RowOf(&tracking->matrix, PositionRow);
@@ -242,12 +242,12 @@ void StartHeadTracking(HeadTracking* tracking, ObjectNode* node)
 void StepHeadTracking(HeadTracking* tracking, TimeClock* clock, ObjectNode* node)
 {
     // It isn't stepped while its instance's seen stamp is past this less its settings' limit (when that's below 0xFF)
-    constexpr u32 UnseenLimit = 0x640;
-    constexpr u32 NoUnseenLimit = 0xFF;
+    CONSTEXPR u32 UnseenLimit = 0x640;
+    CONSTEXPR u32 NoUnseenLimit = 0xFF;
     // How its weight fades each step, the least it looks at a target with, the turns it counts as back at rest
-    constexpr f32 WeightFade = Rounded(0.97);
-    constexpr f32 LeastWeight = Rounded(0.05);
-    constexpr f32 AtRest = Rounded(0.005);
+    CONSTEXPR f32 WeightFade = Rounded(0.97);
+    CONSTEXPR f32 LeastWeight = Rounded(0.05);
+    CONSTEXPR f32 AtRest = Rounded(0.005);
     InstanceContext* instance = node->owner;
     const HeadTrackingSettings* settings = tracking->settings;
     u32 seen = instance->seen;

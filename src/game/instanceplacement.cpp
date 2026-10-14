@@ -14,9 +14,9 @@
 namespace
 {
 // The way into the game an instance put back at its first place leaves its chunk for
-constexpr u32 PlacesWay = 1;
+CONSTEXPR u32 PlacesWay = 1;
 // ChunkMakeGlobal moving the instance whatever state its chunk is in
-constexpr u32 NoStateCheck = 0;
+CONSTEXPR u32 NoStateCheck = 0;
 
 void TakeRotation(InstancePlacement* placement, InstanceContext* instance)
 {

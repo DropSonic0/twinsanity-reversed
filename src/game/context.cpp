@@ -24,11 +24,11 @@ namespace
 {
 // The seconds a frame must have left for more of each kind of background work. The first round of a frame keeps going while it
 // has them, the rounds after do a step each
-constexpr f32 ChunkLoadingTime = Rounded(0.0016954);
-constexpr f32 DestroyingTime = Rounded(0.0013563);
-constexpr f32 ResourcesTime = Rounded(0.0010173);
-constexpr f32 CompactionTime = Rounded(0.0006782);
-constexpr f32 StepTime = Rounded(0.001);
+CONSTEXPR f32 ChunkLoadingTime = Rounded(0.0016954);
+CONSTEXPR f32 DestroyingTime = Rounded(0.0013563);
+CONSTEXPR f32 ResourcesTime = Rounded(0.0010173);
+CONSTEXPR f32 CompactionTime = Rounded(0.0006782);
+CONSTEXPR f32 StepTime = Rounded(0.001);
 }
 
 extern "C"

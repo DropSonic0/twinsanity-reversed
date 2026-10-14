@@ -22,31 +22,31 @@ enum SetupState : s32
 
 // Frames to wait before looking for a pad again when none answers (for every pad), and the frames the controller waits for pad 0
 // to be set up when it's made
-constexpr s32 ReconnectDelay = 60;
-constexpr s32 SetupFrames = 60;
+CONSTEXPR s32 ReconnectDelay = 60;
+CONSTEXPR s32 SetupFrames = 60;
 // The information cleared when it's made: up to 12 bytes past the report
-constexpr u32 ClearedInformation = 0x5A0;
+CONSTEXPR u32 ClearedInformation = 0x5A0;
 // The driver's memory's alignment
-constexpr u32 DriverAlignment = 64;
+CONSTEXPR u32 DriverAlignment = 64;
 // The actuators: the small motor's and the big one's (their values the motors'), and none
-constexpr u32 SmallMotor = 0;
-constexpr u32 BigMotor = 1;
-constexpr u8 NoActuator = 0xFF;
+CONSTEXPR u32 SmallMotor = 0;
+CONSTEXPR u32 BigMotor = 1;
+CONSTEXPR u8 NoActuator = 0xFF;
 // The sticks' raw values' dead zone and range
-constexpr s32 StickDeadZone = 0x20;
-constexpr s32 StickRange = 0xFF;
+CONSTEXPR s32 StickDeadZone = 0x20;
+CONSTEXPR s32 StickRange = 0xFF;
 // A button is down when it's pressed further
-constexpr f32 ButtonDown = Rounded(0.05);
+CONSTEXPR f32 ButtonDown = Rounded(0.05);
 // The report's bytes (Platform::Pads::ReportByte: the buttons' high byte is GamePadInformation::buttons' high byte)
 using namespace Platform::Pads;
 // The report's sticks' middle
-constexpr u8 StickRawMiddle = 0x80;
+CONSTEXPR u8 StickRawMiddle = 0x80;
 // The report's buttons with none pressed (each is 0 while it's pressed)
-constexpr u32 ReportButtonsUp = 0xFFFF;
+CONSTEXPR u32 ReportButtonsUp = 0xFFFF;
 
-constexpr f32 PerPressure = Rounded(1.0 / 255.0);
-constexpr f32 StickMiddle = 127.5f;
-constexpr f32 PerStick = Rounded(1.0 / 127.5);
+CONSTEXPR f32 PerPressure = Rounded(1.0 / 255.0);
+CONSTEXPR f32 StickMiddle = 127.5f;
+CONSTEXPR f32 PerStick = Rounded(1.0 / 127.5);
 
 // The flags the setup sets cleared
 void ClearSetUp(GamePadInformation* info)

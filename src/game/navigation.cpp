@@ -327,7 +327,7 @@ u8 PathFinder::CollectInside(const Box* box, Route* route)
 
 void PathFinder::NewSearch()
 {
-    constexpr u32 StampLimit = 0x8000;
+    CONSTEXPR u32 StampLimit = 0x8000;
     g_PathSearchStamp++;
     if (g_PathSearchStamp != StampLimit)
     {
@@ -436,8 +436,8 @@ void AiNavigation::Link(PathFinder* finder, u32 chunkIndex)
 Route* PathFinder::Search(RouteRequest* request)
 {
     // The open list starts in the middle, its last entry is the one before the last
-    constexpr u32 Middle = 0x7F;
-    constexpr u32 LastTail = 0xFE;
+    CONSTEXPR u32 Middle = 0x7F;
+    CONSTEXPR u32 LastTail = 0xFE;
     NewSearch();
     this->request = request;
     u32 tail = Middle;
@@ -578,8 +578,8 @@ f32 GamePathFinder::Estimate(const Vector4* a, const Vector4* b)
 
 f32 GamePathFinder::StepCost(const AiPath* path, const AiPosition* from, const AiPosition* to)
 {
-    constexpr f32 Blocked = -1.0f;
-    constexpr f32 Weight = 100.0f;
+    CONSTEXPR f32 Blocked = -1.0f;
+    CONSTEXPR f32 Weight = 100.0f;
     if (to->flags.blocked || from->flags.blocked)
     {
         return Blocked;

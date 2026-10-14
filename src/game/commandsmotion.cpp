@@ -18,8 +18,8 @@
 #include "game/reference.h"
 #include "game/shadows.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The commands that warp and turn an agent's instance, strafe and move it toward a designator, push it along what it
 // perceives, set its keys and the trajectory controller's wobble, link it to the nearest AI position, set its head tracking's
@@ -53,7 +53,7 @@ ObjectNode* NodeOf(BehaviourRunner* runner)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 ObjectNode* ObjectNodeOf(InstanceContext* instance)
@@ -111,7 +111,7 @@ InstanceContext* ReceiverInstance(BehaviourRunner* runner, u8 index)
 // The place of an instance that may be none (retail reads the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -367,7 +367,7 @@ void RotateAgentCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourL
 // Retail bug: outside the start's space the distance is measured from what the stack held (the origin here)
 void StrafeTowardsTargetCommand::Execute(TimeClock* clock, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 TooShort = Rounded(0.1);
+    CONSTEXPR f32 TooShort = Rounded(0.1);
     ObjectNode* node = NodeOf(runner);
     Vector4 to = {0.0f, 0.0f, 0.0f, 1.0f};
     DesignatorTarget(node, target.designator, &to, true);
@@ -603,7 +603,7 @@ void PickLinkedObjectNearPlayerCommand::Execute(TimeClock*, BehaviourRunner* run
     if (pick.marksBusy)
     {
         // The instance marked busy (at address 4 without one)
-        std::uintptr_t address = reinterpret_cast<std::uintptr_t>(chosen) + offsetof(ReferencedObject, flags);
+        uintptr_t address = reinterpret_cast<uintptr_t>(chosen) + offsetof(ReferencedObject, flags);
         reinterpret_cast<ReferencedObjectFlags*>(address)->busy = 1;
     }
 }
@@ -614,7 +614,7 @@ void PickLinkedObjectNearPlayerCommand::Execute(TimeClock*, BehaviourRunner* run
 // the range's start (made 0 for good when it's none) to before its end; the last key
 void SetKeyCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 Far = 1e8f;
+    CONSTEXPR f32 Far = 1e8f;
     ObjectNode* node = NodeOf(runner);
     Waypoints* waypoints = KeyWaypoints(node);
     u8 index = key.index;
@@ -688,7 +688,7 @@ void SetKeyCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*
 // The agent's instance attached to its chunk's AI position nearest it when that's within 10
 void LinkToNearestPointCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 NearSquared = 100.0f;
+    CONSTEXPR f32 NearSquared = 100.0f;
     InstanceContext* instance = runner->agentNode->owner;
     ChunkEntry* chunk = ChunkOfInstance(G_ChunkManager, instance);
     Vector4 position = PositionOf(instance);
@@ -1079,7 +1079,7 @@ void SpawnResidentAgentCommand::Execute(TimeClock*, BehaviourRunner* runner, Beh
     if (spawned != nullptr)
     {
         s32 id = spawned->id;
-        std::uintptr_t entry = id != -1 ? reinterpret_cast<std::uintptr_t>(&g_InstanceIds->entries[id]) : 0;
+        uintptr_t entry = id != -1 ? reinterpret_cast<uintptr_t>(&g_InstanceIds->entries[id]) : 0;
         *reinterpret_cast<InstanceContext**>(entry + offsetof(InstanceIds::Entry, spawner)) = instance;
         ObjectNode* spawnedNode = ObjectNodeOf(spawned);
         Agent* spawnedAgent = spawnedNode->agent;

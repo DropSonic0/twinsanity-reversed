@@ -17,13 +17,13 @@ namespace
 {
 // The trigger nodes' vtable functions: a check begins, an instance entered (and the second kind of entry), entered or stayed,
 // and left
-constexpr u32 SlotBeginCheck = 11;
-constexpr u32 SlotEntered = 12;
-constexpr u32 SlotEnteredSecond = 13;
-constexpr u32 SlotEnteredOrStayed = 14;
-constexpr u32 SlotLeft = 15;
+CONSTEXPR u32 SlotBeginCheck = 11;
+CONSTEXPR u32 SlotEntered = 12;
+CONSTEXPR u32 SlotEnteredSecond = 13;
+CONSTEXPR u32 SlotEnteredOrStayed = 14;
+CONSTEXPR u32 SlotLeft = 15;
 // The handles a reference set holds
-constexpr u32 SetHandles = sizeof(ReferenceSet::handles) / sizeof(Reference*);
+CONSTEXPR u32 SetHandles = sizeof(ReferenceSet::handles) / sizeof(Reference*);
 
 void ReleaseAll(ReferenceSet* set)
 {

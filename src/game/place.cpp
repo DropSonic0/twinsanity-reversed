@@ -21,8 +21,8 @@ extern "C"
 
 namespace
 {
-constexpr u32 PlaceClassId = 0x1507;
-constexpr u32 PointClassId = 0x150D;
+CONSTEXPR u32 PlaceClassId = 0x1507;
+CONSTEXPR u32 PointClassId = 0x150D;
 
 bool IsNoMove(const Vector4* move)
 {

@@ -15,10 +15,10 @@
 namespace
 {
 // The bits of a switch argument SetRestartable's parser writes (the whole low byte)
-constexpr u32 SwitchByte = 0xFF;
+CONSTEXPR u32 SwitchByte = 0xFF;
 
 // The smallest scale QueueObjectVideo's parser takes
-constexpr f32 SmallestVideoScale = Rounded(0.01);
+CONSTEXPR f32 SmallestVideoScale = Rounded(0.01);
 
 // A tagged value made a float or an integer and given the token's value
 void ParseTaggedFloat(const ScriptToken* token, TaggedValue* value)

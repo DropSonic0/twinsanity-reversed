@@ -20,8 +20,8 @@
 #include "game/rigidbody.h"
 #include "retail/libc.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The Humiliskate: the character skating on the other one used as a board. It has no body: four substeps a frame it steers,
 // collides with the rails and the ground of its collision cache and with the instances around it, keeps its speed within its
@@ -55,168 +55,168 @@ namespace
 // The script events: riding (the character and the board both; 1 more leaning left, 2 right, 3 more riding backwards), riding
 // crouched (the character; 1 more leaning right, 2 left), a trick landed, the half spin and the flip (both), grinding (3 more
 // backwards), the jump and the crash (both); characters.h's EventNone for none
-constexpr u32 EventRiding = 0x56;
-constexpr u32 EventLeft = 1;
-constexpr u32 EventRight = 2;
-constexpr u32 EventBackwards = 3;
-constexpr u32 EventCrouched = 0x5C;
-constexpr u32 EventCrouchedRight = 0x5D;
-constexpr u32 EventCrouchedLeft = 0x5E;
-constexpr u32 EventTrickLanded = 0x5F;
-constexpr u32 EventHalfSpin = 0x60;
-constexpr u32 EventFlip = 0x61;
-constexpr u32 EventGrinding = 0x62;
-constexpr u32 EventGrindingBackwards = 0x63;
-constexpr u32 EventJump = 0x6D;
-constexpr u32 EventCrash = 0x6E;
+CONSTEXPR u32 EventRiding = 0x56;
+CONSTEXPR u32 EventLeft = 1;
+CONSTEXPR u32 EventRight = 2;
+CONSTEXPR u32 EventBackwards = 3;
+CONSTEXPR u32 EventCrouched = 0x5C;
+CONSTEXPR u32 EventCrouchedRight = 0x5D;
+CONSTEXPR u32 EventCrouchedLeft = 0x5E;
+CONSTEXPR u32 EventTrickLanded = 0x5F;
+CONSTEXPR u32 EventHalfSpin = 0x60;
+CONSTEXPR u32 EventFlip = 0x61;
+CONSTEXPR u32 EventGrinding = 0x62;
+CONSTEXPR u32 EventGrindingBackwards = 0x63;
+CONSTEXPR u32 EventJump = 0x6D;
+CONSTEXPR u32 EventCrash = 0x6E;
 
 // The instances it hits: the solid ones (dynamic scenery's hulls, characters, crates, creatures, generic objects and pay gates),
 // those with either flag, at most 20, and at most 19 attached to the characters left out with the other character
-constexpr u32 HitFlags = ReferencedObjectFlags::ReceivesTriggerSignals | ReferencedObjectFlags::CollisionActive;
-constexpr u16 MostHits = 20;
-constexpr s32 MostLeftOut = 20;
+CONSTEXPR u32 HitFlags = ReferencedObjectFlags::ReceivesTriggerSignals | ReferencedObjectFlags::CollisionActive;
+CONSTEXPR u16 MostHits = 20;
+CONSTEXPR s32 MostLeftOut = 20;
 
-constexpr f32 InverseTwoPi = 0x1.45f306p-3f;
+CONSTEXPR f32 InverseTwoPi = 0x1.45f306p-3f;
 
 // The board: its ellipsoid's radii, how far around it it looks, gravity, how far below its middle the riders stand, how fast it
 // starts along the character's heading, and its top speeds
-constexpr f32 BoardRadiusX = Rounded(0.6);
-constexpr f32 BoardRadiusY = Rounded(0.6);
-constexpr f32 BoardRadiusZ = Rounded(0.8);
-constexpr f32 BoardReach = 1.0f;
-constexpr f32 BoardGravity = 35.0f;
-constexpr f32 RiderHeight = Rounded(0.4);
-constexpr f32 StartSpeed = 10.0f;
-constexpr f32 CrouchedTopSpeed = 35.0f;
-constexpr f32 TopSpeed = 25.0f;
+CONSTEXPR f32 BoardRadiusX = Rounded(0.6);
+CONSTEXPR f32 BoardRadiusY = Rounded(0.6);
+CONSTEXPR f32 BoardRadiusZ = Rounded(0.8);
+CONSTEXPR f32 BoardReach = 1.0f;
+CONSTEXPR f32 BoardGravity = 35.0f;
+CONSTEXPR f32 RiderHeight = Rounded(0.4);
+CONSTEXPR f32 StartSpeed = 10.0f;
+CONSTEXPR f32 CrouchedTopSpeed = 35.0f;
+CONSTEXPR f32 TopSpeed = 25.0f;
 
 // A frame is four substeps; in the air the up turns back upright 2.5 a second
-constexpr s32 Substeps = 4;
-constexpr f32 SubstepShare = 0.25f;
-constexpr f32 UprightRate = 2.5f;
+CONSTEXPR s32 Substeps = 4;
+CONSTEXPR f32 SubstepShare = 0.25f;
+CONSTEXPR f32 UprightRate = 2.5f;
 
 // The jump: 13 up the board's y axis, then 0.1 seconds before the next and 0.2 before rails count again
-constexpr f32 JumpSpeed = 13.0f;
-constexpr f32 JumpCooldown = Rounded(0.1);
-constexpr f32 RailCooldown = Rounded(0.2);
+CONSTEXPR f32 JumpSpeed = 13.0f;
+CONSTEXPR f32 JumpCooldown = Rounded(0.1);
+CONSTEXPR f32 RailCooldown = Rounded(0.2);
 
 // Steering: the root of the stick across the board times 1.2 (within 1), jittered on the ground by the speed times a random 1.4
 // either way over 32; radians a second 4 on the ground (1.3 crouched) and 2 in the air. Leaning past 0.6 across, until back
 // under 0.3
-constexpr f32 SteerScale = Rounded(1.2);
-constexpr f32 SteerJitter = Rounded(1.4);
-constexpr f32 JitterShare = 1.0f / 32.0f;
-constexpr f32 GroundTurnRate = 4.0f;
-constexpr f32 CrouchedTurnRate = 1.3f;
-constexpr f32 AirTurnRate = 2.0f;
-constexpr f32 LeanStart = Rounded(0.6);
-constexpr f32 LeanEnd = Rounded(0.3);
+CONSTEXPR f32 SteerScale = Rounded(1.2);
+CONSTEXPR f32 SteerJitter = Rounded(1.4);
+CONSTEXPR f32 JitterShare = 1.0f / 32.0f;
+CONSTEXPR f32 GroundTurnRate = 4.0f;
+CONSTEXPR f32 CrouchedTurnRate = 1.3f;
+CONSTEXPR f32 AirTurnRate = 2.0f;
+CONSTEXPR f32 LeanStart = Rounded(0.6);
+CONSTEXPR f32 LeanEnd = Rounded(0.3);
 
 // The cache's box: the board's reach and 0.2 more around it (the instances' and the hulls': 0.1 more); its triangles
-constexpr f32 CacheMargin = Rounded(0.2);
-constexpr f32 InstanceMargin = Rounded(0.1);
-constexpr s32 MostTriangles = 0x100;
+CONSTEXPR f32 CacheMargin = Rounded(0.2);
+CONSTEXPR f32 InstanceMargin = Rounded(0.1);
+CONSTEXPR s32 MostTriangles = 0x100;
 
 // The rails: at most 30 among at most 32 steep triangles (their normals within 0.5 of level) across its way (within 0.707 of
 // square to its heading); a ridge of two such triangles facing each other (their normals' dot product between -0.99 and -0.5)
 // sharing two corners (within 0.1); a rail is the one it's on when its ends are within 0.1 of its ends
-constexpr s32 MostRails = 30;
-constexpr s32 MostRailTriangles = 32;
-constexpr s32 TriangleCorners = 3;
-constexpr f32 SteepLimit = 0.5f;
-constexpr f32 AcrossLimit = Rounded(0.707);
-constexpr f32 RailBoxMargin = 0.01f;
-constexpr f32 RidgeLeast = Rounded(-0.99);
-constexpr f32 RidgeMost = -0.5f;
-constexpr f32 SamePoint = 0.01f;
-constexpr f32 NoRail = -1e10f;
+CONSTEXPR s32 MostRails = 30;
+CONSTEXPR s32 MostRailTriangles = 32;
+CONSTEXPR s32 TriangleCorners = 3;
+CONSTEXPR f32 SteepLimit = 0.5f;
+CONSTEXPR f32 AcrossLimit = Rounded(0.707);
+CONSTEXPR f32 RailBoxMargin = 0.01f;
+CONSTEXPR f32 RidgeLeast = Rounded(-0.99);
+CONSTEXPR f32 RidgeMost = -0.5f;
+CONSTEXPR f32 SamePoint = 0.01f;
+CONSTEXPR f32 NoRail = -1e10f;
 // A rail it touches: its triangle (its second corner 0.1 lower) touched by the board's ellipsoid grown by a fifth
-constexpr f32 RailRadiiScale = Rounded(1.2);
-constexpr f32 RailHullDrop = Rounded(0.1);
+CONSTEXPR f32 RailRadiiScale = Rounded(1.2);
+CONSTEXPR f32 RailHullDrop = Rounded(0.1);
 
 // Grinding: pulled 0.4 above the rail at 5 a second at most; eased toward the speed 25 less 11 times the slope (3.5 times its
 // rise, within 1) by at most 12 a second; turned toward the rail by at most 150 a second (12 times that)
-constexpr f32 RailRaise = Rounded(0.4);
-constexpr f32 RailPull = 5.0f;
-constexpr f32 RailSlopeScale = 3.5f;
-constexpr f32 RailSpeed = 25.0f;
-constexpr f32 RailSlopeSpeed = 11.0f;
-constexpr f32 RailAcceleration = 12.0f;
-constexpr f32 RailTurnSpeed = 150.0f;
-constexpr f32 RailTurnRate = 12.0f;
+CONSTEXPR f32 RailRaise = Rounded(0.4);
+CONSTEXPR f32 RailPull = 5.0f;
+CONSTEXPR f32 RailSlopeScale = 3.5f;
+CONSTEXPR f32 RailSpeed = 25.0f;
+CONSTEXPR f32 RailSlopeSpeed = 11.0f;
+CONSTEXPR f32 RailAcceleration = 12.0f;
+CONSTEXPR f32 RailTurnSpeed = 150.0f;
+CONSTEXPR f32 RailTurnRate = 12.0f;
 
 // The ground: a quarter of each push out of a triangle
-constexpr f32 PushShare = 0.25f;
+CONSTEXPR f32 PushShare = 0.25f;
 
 // The ground's response: the up eased by 0.04 of the normal; hitting it faster than 2 halves the speed into it, or past 3
 // against the way it goes (the normal against the flat motion past -0.5) a crash bounces it 1.3 times; the slide across the
 // board rubbed off by the friction (45 times it a second, over 1 to 4 the more the board faces its motion, by 1.414 and the
 // up's y) and the board turned with a tenth of it (10 a second at most); on the ground when the normal's y passes 0.2
-constexpr f32 UpEase = 0.04f;
-constexpr f32 HardHit = -2.0f;
-constexpr f32 HardHitShare = 0.5f;
-constexpr f32 CrashSpeed = 3.0f;
-constexpr f32 CrashFacing = -0.5f;
-constexpr f32 CrashBounce = 1.3f;
-constexpr f32 MostGrip = 4.0f;
-constexpr f32 GripScale = Rounded(3.2);
-constexpr f32 LeastGrip = 1.0f;
-constexpr f32 FrictionScale = 45.0f;
-constexpr f32 SlideScale = Rounded(1.414);
-constexpr f32 SlideTurnShare = Rounded(0.1);
-constexpr f32 SlideTurnSpeed = 10.0f;
-constexpr f32 StandingNormal = Rounded(0.2);
+CONSTEXPR f32 UpEase = 0.04f;
+CONSTEXPR f32 HardHit = -2.0f;
+CONSTEXPR f32 HardHitShare = 0.5f;
+CONSTEXPR f32 CrashSpeed = 3.0f;
+CONSTEXPR f32 CrashFacing = -0.5f;
+CONSTEXPR f32 CrashBounce = 1.3f;
+CONSTEXPR f32 MostGrip = 4.0f;
+CONSTEXPR f32 GripScale = Rounded(3.2);
+CONSTEXPR f32 LeastGrip = 1.0f;
+CONSTEXPR f32 FrictionScale = 45.0f;
+CONSTEXPR f32 SlideScale = Rounded(1.414);
+CONSTEXPR f32 SlideTurnShare = Rounded(0.1);
+CONSTEXPR f32 SlideTurnSpeed = 10.0f;
+CONSTEXPR f32 StandingNormal = Rounded(0.2);
 
 // The rider's hull test (not crouched): an ellipsoid of 0.45 by 0.6 0.8 up the board's y axis
-constexpr f32 RiderRadiusXZ = 0.45f;
-constexpr f32 RiderRadiusY = Rounded(0.6);
-constexpr f32 RiderLift = Rounded(0.8);
+CONSTEXPR f32 RiderRadiusXZ = 0.45f;
+CONSTEXPR f32 RiderRadiusY = Rounded(0.6);
+CONSTEXPR f32 RiderLift = Rounded(0.8);
 
 // Under 5 going forward on flat ground (the up's y past 0.866) it speeds up 10 a second
-constexpr f32 SlowSpeed = 5.0f;
-constexpr f32 FlatUp = 0.866f;
-constexpr f32 SpeedUp = 10.0f;
+CONSTEXPR f32 SlowSpeed = 5.0f;
+CONSTEXPR f32 FlatUp = 0.866f;
+CONSTEXPR f32 SpeedUp = 10.0f;
 
 // The up's turn: none for an axis shorter than this
-constexpr f32 AxisEpsilon = 1e-4f;
+CONSTEXPR f32 AxisEpsilon = 1e-4f;
 
 // The skid marks: on the ground moving faster than 0.1 flat, 0.866 of its y radius down, offset by half the up, wider the more
 // it slides (0.3 more 0.4 times the root of 1.001 less the motion's along its heading squared), 0.16 deep jittered 0.01
-constexpr f32 SkidSpeed = Rounded(0.1);
-constexpr f32 SkidDrop = 0.866f;
-constexpr f32 SkidUpShift = 0.5f;
-constexpr f32 SkidWidthBase = Rounded(1.001);
-constexpr f32 SkidWidthScale = Rounded(0.4);
-constexpr f32 SkidWidthLeast = Rounded(0.3);
-constexpr f32 SkidDepth = 0.16f;
-constexpr f32 SkidJitter = 0.01f;
+CONSTEXPR f32 SkidSpeed = Rounded(0.1);
+CONSTEXPR f32 SkidDrop = 0.866f;
+CONSTEXPR f32 SkidUpShift = 0.5f;
+CONSTEXPR f32 SkidWidthBase = Rounded(1.001);
+CONSTEXPR f32 SkidWidthScale = Rounded(0.4);
+CONSTEXPR f32 SkidWidthLeast = Rounded(0.3);
+CONSTEXPR f32 SkidDepth = 0.16f;
+CONSTEXPR f32 SkidJitter = 0.01f;
 
 // The suspension: a landing squashes it 1.6 times the fall; a spring of -1.5 damped 0.015, within 0.5
-constexpr f32 LandingSquash = Rounded(-1.6);
-constexpr f32 SuspensionSpring = -1.5f;
-constexpr f32 SuspensionDamping = 0.015f;
-constexpr f32 MostSquash = 0.5f;
+CONSTEXPR f32 LandingSquash = Rounded(-1.6);
+CONSTEXPR f32 SuspensionSpring = -1.5f;
+CONSTEXPR f32 SuspensionDamping = 0.015f;
+CONSTEXPR f32 MostSquash = 0.5f;
 // The board character squashed by it (widened 0.4 times), the rider raised 0.6 times it
-constexpr f32 SquashWiden = Rounded(0.4);
-constexpr f32 RiderSquash = Rounded(0.6);
+CONSTEXPR f32 SquashWiden = Rounded(0.4);
+CONSTEXPR f32 RiderSquash = Rounded(0.6);
 
 // The ground below: a ray 10 down and 4 ahead, 10 when it hits nothing
-constexpr f32 RayDrop = -10.0f;
-constexpr f32 RayAhead = 4.0f;
-constexpr f32 NoGround = 10.0f;
+CONSTEXPR f32 RayDrop = -10.0f;
+CONSTEXPR f32 RayAhead = 4.0f;
+CONSTEXPR f32 NoGround = 10.0f;
 
 // Tricks off a ramp: 0.03 seconds in the air higher than 3, a flip with more than 0.519 seconds of fall to go, a half spin with
 // more than 0.362; the flip eased 5.1 times what's left and 1.4 a second, the spin 7.5 times and 1 a second. A landed trick
 // shows for 0.5 seconds, leaving a rail for 0.2
-constexpr f32 TrickAirTime = 0.03f;
-constexpr f32 TrickHeight = 3.0f;
-constexpr f32 FlipTime = 0x1.09aa84p-1f;
-constexpr f32 SpinTime = 0x1.727b8ap-2f;
-constexpr f32 FlipEase = 5.1f;
-constexpr f32 FlipRate = 1.4f;
-constexpr f32 SpinEase = 7.5f;
-constexpr f32 LandedTime = 0.5f;
-constexpr f32 OffRailTime = Rounded(0.2);
+CONSTEXPR f32 TrickAirTime = 0.03f;
+CONSTEXPR f32 TrickHeight = 3.0f;
+CONSTEXPR f32 FlipTime = 0x1.09aa84p-1f;
+CONSTEXPR f32 SpinTime = 0x1.727b8ap-2f;
+CONSTEXPR f32 FlipEase = 5.1f;
+CONSTEXPR f32 FlipRate = 1.4f;
+CONSTEXPR f32 SpinEase = 7.5f;
+CONSTEXPR f32 LandedTime = 0.5f;
+CONSTEXPR f32 OffRailTime = Rounded(0.2);
 
 ObjectNode* ObjectNodeOf(InstanceContext* instance)
 {
@@ -258,7 +258,7 @@ void RunOnBoard(HumiliskateVehicle* vehicle, u32 event)
 {
     auto* node = static_cast<AgentNode*>(GetGameNode(&vehicle->other->instance->nodes, NodeCharacter));
     Agent* board = node != nullptr ? node->agent : nullptr;
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(board) + offsetof(Agent, instance);
+    uintptr_t address = reinterpret_cast<uintptr_t>(board) + offsetof(Agent, instance);
     RunAgentEvent(board, event, *reinterpret_cast<const u32*>(address), 0, 0);
 }
 

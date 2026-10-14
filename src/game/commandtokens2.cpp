@@ -12,13 +12,13 @@
 namespace
 {
 // The vtable's parser of one token, which the commands sharing a class have each of their own
-constexpr u32 ParseTokenSlot = 7;
+CONSTEXPR u32 ParseTokenSlot = 7;
 
 // Every bit of what Keep keeps (KeepFlags')
-constexpr u32 EveryKept = 0x3F;
+CONSTEXPR u32 EveryKept = 0x3F;
 
 // A priority above the most: the starter's own (SetBehaviourPriority's execution)
-constexpr u32 StarterPriority = 0xFF;
+CONSTEXPR u32 StarterPriority = 0xFF;
 
 // A setting a token gives: On gives it on, Off gives it off, any other value neither
 void GiveSetting(GivenSettings* settings, const ScriptToken* token, u32 bit)
@@ -1336,8 +1336,8 @@ void NoOp568Command::ParseTokens(const ScriptTokenList* tokens)
 void SetVehicleHumiliskateCommand::ParseTokens(const ScriptTokenList* tokens)
 {
     // These speeds unless the tokens give others
-    constexpr f32 DefaultTopSpeed = 25.0f;
-    constexpr f32 DefaultCrouchedSpeed = 35.0f;
+    CONSTEXPR f32 DefaultTopSpeed = 25.0f;
+    CONSTEXPR f32 DefaultCrouchedSpeed = 35.0f;
     SetTaggedType(&topSpeed, TaggedValue::TypeFloat);
     topSpeed.SetFloat(DefaultTopSpeed);
     SetTaggedType(&crouchedSpeed, TaggedValue::TypeFloat);

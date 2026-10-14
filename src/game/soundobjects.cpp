@@ -40,21 +40,21 @@ CHECK_OFFSET(ChunkMatrixCache, matrices, 0x50);
 namespace
 {
 // A pool grows by a quarter of its first room and this many more
-constexpr s32 ExtraGrowth = 10;
+CONSTEXPR s32 ExtraGrowth = 10;
 // The pools' first room
-constexpr s32 InstanceSoundsRoom = 0x80;
-constexpr s32 MusicEmittersRoom = 0x20;
+CONSTEXPR s32 InstanceSoundsRoom = 0x80;
+CONSTEXPR s32 MusicEmittersRoom = 0x20;
 // The share of its volume an interleaved music emitter is still heard at
-constexpr f32 HeardShare = Rounded(0.001);
+CONSTEXPR f32 HeardShare = Rounded(0.001);
 // The level a sound is still heard at
-constexpr f32 HeardLevel = Rounded(0.005);
-constexpr f32 ThreePi = 0x1.2d97c8p+3f;
-constexpr f32 FourPi = 0x1.921fb6p+3f;
-constexpr f32 Root2Half = 0x1.6a09e6p-1f;
+CONSTEXPR f32 HeardLevel = Rounded(0.005);
+CONSTEXPR f32 ThreePi = 0x1.2d97c8p+3f;
+CONSTEXPR f32 FourPi = 0x1.921fb6p+3f;
+CONSTEXPR f32 Root2Half = 0x1.6a09e6p-1f;
 // How much a sound's pitch falls when it's behind the listener
-constexpr f32 BehindPitch = Rounded(0.01);
+CONSTEXPR f32 BehindPitch = Rounded(0.01);
 // A reverb's delay and feedback at their most (7 bits)
-constexpr u32 MostReverbSetting = 0x7F;
+CONSTEXPR u32 MostReverbSetting = 0x7F;
 
 // A reference taken once more
 void Retain(Reference* reference)
@@ -580,7 +580,7 @@ s32 InstanceSoundIteratorCount(const SoundPoolIterator<InstanceSound>* iterator)
 
 GameSound* MakeSoundItem(void*, u32 classId)
 {
-    constexpr u32 SoundClassId = 0x1E00;
+    CONSTEXPR u32 SoundClassId = 0x1E00;
     if (classId != SoundClassId)
     {
         return nullptr;
@@ -787,7 +787,7 @@ u32 PlayInstanceSound(f32 volume, f32 pitch, GameSound* sound, u32 group, Instan
 u32 PlayInstanceSoundById(f32 volume, f32 pitch, u32 id, u32 group, InstanceContext* instance, s32 voiceKind, s32 last)
 {
     // The school's kid herd (School_KidHerd_SFX) never repeats
-    constexpr u32 KidHerdSound = 0x1BF;
+    CONSTEXPR u32 KidHerdSound = 0x1BF;
     GameSound* sound = SoundById(static_cast<u16>(id));
     if (sound == nullptr)
     {
@@ -904,8 +904,8 @@ u32 UpdateVoiceAt(SoundVoice* voice, GameSound* sound, const Vector4* position)
 
 u32 SoundAtPlace(f32 volume, f32 range, f32 lastAngle, s32 pitch, const Vector4* position, f32* out)
 {
-    constexpr f32 ShareOfFront = 0.75f;
-    constexpr f32 Behind = 0.25f;
+    CONSTEXPR f32 ShareOfFront = 0.75f;
+    CONSTEXPR f32 Behind = 0.25f;
     auto* heard = reinterpret_cast<HeardSound*>(out);
     if (range == 0.0f)
     {
@@ -1487,13 +1487,13 @@ s32 PlayMusicRequest(u32 slot, const MusicRequest* source)
 {
     // The main slot's tracks fade into each other over 3 seconds, tracks 0x3D and 0x3E over 1, and tracks 7 and 0x1E cut in;
     // into a silent main slot every track cuts in but 0x1B, faded in over a second
-    constexpr u32 CutInTrack = 7;
-    constexpr u32 SecondCutInTrack = 0x1E;
-    constexpr u32 QuickFadeTracks = 0x3D;
-    constexpr u32 QuickFadeTrackCount = 2;
-    constexpr u32 FadedInTrack = 0x1B;
-    constexpr f32 TrackFadeTime = 3.0f;
-    constexpr f32 QuickFadeTime = 1.0f;
+    CONSTEXPR u32 CutInTrack = 7;
+    CONSTEXPR u32 SecondCutInTrack = 0x1E;
+    CONSTEXPR u32 QuickFadeTracks = 0x3D;
+    CONSTEXPR u32 QuickFadeTrackCount = 2;
+    CONSTEXPR u32 FadedInTrack = 0x1B;
+    CONSTEXPR f32 TrackFadeTime = 3.0f;
+    CONSTEXPR f32 QuickFadeTime = 1.0f;
     MusicPlayer* current = SlotPlayer(slot);
     MusicPlayer* player = FirstStoppedPlayer();
     MusicRequest request = *source;

@@ -7,7 +7,7 @@
 
 namespace
 {
-constexpr u32 ScratchSize = 0x800;
+CONSTEXPR u32 ScratchSize = 0x800;
 
 // A memory stream's values are wherever they are: they're copied as unaligned
 template <typename T>

@@ -15,10 +15,10 @@
 namespace
 {
 // How many readers a storage's queue and stack have room for, and the blocks its stream reads in
-constexpr u32 BufferCapacity = 0x5DC;
-constexpr s16 StackCapacity = 0x800;
-constexpr u32 FileReadersBlock = 0x10000;
-constexpr u32 MainReadersBlock = 0x20000;
+CONSTEXPR u32 BufferCapacity = 0x5DC;
+CONSTEXPR s16 StackCapacity = 0x800;
+CONSTEXPR u32 FileReadersBlock = 0x10000;
+CONSTEXPR u32 MainReadersBlock = 0x20000;
 
 void PushFront(GameReadersStorage* storage, GenericItemReader* reader)
 {
@@ -307,12 +307,12 @@ extern "C"
 namespace
 {
 // What FileStreamRead is told: to wait for the bytes, or to have the stream read them in the background
-constexpr s32 WaitForRead = 1;
-constexpr s32 ReadInBackground = 0;
+CONSTEXPR s32 WaitForRead = 1;
+CONSTEXPR s32 ReadInBackground = 0;
 // The size a file close reader hands its section reader
-constexpr u32 FileClosedSize = 0xFFFFFFFF;
+CONSTEXPR u32 FileClosedSize = 0xFFFFFFFF;
 // A sub items reader's disk handle of its memory let go of by a restart
-constexpr s32 ReleasedDiskHandle = -2;
+CONSTEXPR s32 ReleasedDiskHandle = -2;
 
 // The base's destructor, which every reader's ends with
 void DestroyReader(GenericItemReader* reader, u32 flags)
@@ -929,7 +929,7 @@ extern "C"
 
     void AddResourcePackageToLoadQueue(ItemInterface* item, const char* path, s32 inArchive)
     {
-        constexpr u32 PackageOptions = SubItemsReaderOptions::OnDisk | SubItemsReaderOptions::ClampsToFile;
+        CONSTEXPR u32 PackageOptions = SubItemsReaderOptions::OnDisk | SubItemsReaderOptions::ClampsToFile;
         u32 flags = inArchive != 0 ? PackageOptions | SubItemsReaderOptions::FromArchive : PackageOptions;
         GameReadersStorage* storage = g_ReadersStorages[MainReaders];
         auto* package = static_cast<PackageSectionReader*>(MemoryAllocate(sizeof(PackageSectionReader)));

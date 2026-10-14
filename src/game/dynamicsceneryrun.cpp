@@ -19,8 +19,8 @@ EABI_EXPORT(GetDynamicSceneryRotationResult, ReadTrackAngle);
 namespace
 {
 // A model's animation frames a second, and a frame's seconds
-constexpr f32 ModelFramesPerSecond = 25.0f;
-constexpr f32 SecondsPerModelFrame = Rounded(0.04);
+CONSTEXPR f32 ModelFramesPerSecond = 25.0f;
+CONSTEXPR f32 SecondsPerModelFrame = Rounded(0.04);
 
 // The resource of an ID from a graphics table with a reference taken, through the table's vtable
 template <typename Table>

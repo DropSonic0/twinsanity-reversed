@@ -16,7 +16,7 @@ EABI_EXPORT(FUN_00188a90, TurnToward);
 namespace
 {
 // Rotations this near each other (1 less their cosine) are slerped along a straight line
-constexpr f32 StraightWithin = 0x1.99999ap-5f;
+CONSTEXPR f32 StraightWithin = 0x1.99999ap-5f;
 
 // The arc cosine of any value (radians), by its magnitude's
 f32 ArcCosine(f32 cosine)

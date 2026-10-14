@@ -18,8 +18,8 @@
 #include "game/reference.h"
 #include "game/resources.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The commands that set an agent's focus (an instance or a position), its agent references and its stored position from
 // designators, keys, messages and linked objects, set and change counters, unlink and run behaviours on linked objects, restart
@@ -104,7 +104,7 @@ GameObject* ObjectOf(ObjectNode* node)
 // The place of an instance that may be none (retail reads the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -672,7 +672,7 @@ void SetFocusCounterCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 // away from the player, else a joint's, else the receiver's or the designator's, noise added when asked
 void SetFocusPositionCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 Axes = 3;
+    CONSTEXPR u32 Axes = 3;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     Vector4 position = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -872,8 +872,8 @@ namespace
 InstanceContext* LinkedById(const InstanceContext* owner)
 {
     s32 id = owner->id;
-    std::uintptr_t entries = reinterpret_cast<std::uintptr_t>(g_InstanceIds);
-    std::uintptr_t entry = id != -1 ? entries + static_cast<u32>(id) * sizeof(InstanceIds::Entry) : 0;
+    uintptr_t entries = reinterpret_cast<uintptr_t>(g_InstanceIds);
+    uintptr_t entry = id != -1 ? entries + static_cast<u32>(id) * sizeof(InstanceIds::Entry) : 0;
     if (entry == 0)
     {
         return nullptr;
@@ -1295,7 +1295,7 @@ void NowTurnRightCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
 // instance without a contact); turning toward it instead when asked
 void PositionWarpCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 AboveWithoutContact = 1.5f;
+    CONSTEXPR f32 AboveWithoutContact = 1.5f;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     Vector4 position = PositionOrAhead(instance, target.turns);

@@ -4,7 +4,7 @@
 #include "game/math.h"
 #include "game/save.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 // The system module's statics, made at start-up, and the copy protection they arm
 
@@ -28,14 +28,14 @@ extern "C"
 namespace
 {
 // The countdown: 17100 frames, another 3286 for each minute of the clock past a multiple of 8 and one for each second
-constexpr s32 ArmedFrames = 0x42CC;
-constexpr s32 FramesPerMinute = 0xCD6;
+CONSTEXPR s32 ArmedFrames = 0x42CC;
+CONSTEXPR s32 FramesPerMinute = 0xCD6;
 // The instruction it breaks (bits 5, 7 and 19 cleared): 4 bytes before 64 for each of the counter's frames past this
-constexpr std::uintptr_t BrokenCode = 0x158290;
-constexpr u32 BrokenBits = 0xFFF7FF5F;
+CONSTEXPR uintptr_t BrokenCode = 0x158290;
+CONSTEXPR u32 BrokenBits = 0xFFF7FF5F;
 // The frame counter goes round at this, counting two a frame
-constexpr s32 FrameCounterWrap = 0x20A6;
-constexpr s32 NoiseThreshold = 0x58;
+CONSTEXPR s32 FrameCounterWrap = 0x20A6;
+CONSTEXPR s32 NoiseThreshold = 0x58;
 }
 
 void InitSystemStatics(s32 initialise, s32 priority)
@@ -84,7 +84,7 @@ u32 CopyProtectionStep()
         {
             // It counts down again from the frame's number, and the code is broken
             g_CopyrightCountdown = frame;
-            std::uintptr_t instruction = BrokenCode + (static_cast<u32>(frame) << 6) - 4;
+            uintptr_t instruction = BrokenCode + (static_cast<u32>(frame) << 6) - 4;
             *reinterpret_cast<volatile u32*>(instruction) &= BrokenBits;
         }
     }
@@ -96,6 +96,6 @@ u32 CopyProtectionStep()
     }
 
     // A word after the countdown, the frame counter's number of words on
-    std::uintptr_t word = reinterpret_cast<uintptr_t>(&g_CopyrightCountdown) + (static_cast<u32>(index) << 2);
+    uintptr_t word = reinterpret_cast<uintptr_t>(&g_CopyrightCountdown) + (static_cast<u32>(index) << 2);
     return *reinterpret_cast<const s32*>(word) < NoiseThreshold;
 }

@@ -32,9 +32,9 @@ extern "C"
 namespace
 {
 // The destructor's vtable slot
-constexpr u32 DestructorSlot = 1;
+CONSTEXPR u32 DestructorSlot = 1;
 // The digits a number of a cutscene's file name is formatted into
-constexpr u32 NumberDigits = 16;
+CONSTEXPR u32 NumberDigits = 16;
 
 // The part after the playing one asked for while the playing one has a full part's frames: read into a new cutscene
 void ReadNextPart(VideoController* controller)

@@ -26,7 +26,7 @@
 #include "game/vehicles.h"
 #include "game/view.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 // The conditions' checks: a score (1 or 0 for the yes or no ones) for the agent's node, the level and the clock's time
 
@@ -199,8 +199,8 @@ const Vector4& PositionOf(GameNode* node)
 // The trajectory controller's cycle about an axis in turns (its 65536ths of a turn made degrees, then turns)
 f32 CycleTurns(GameNode* node, u32 axis)
 {
-    constexpr f32 DegreesPerAngleUnit = 360.0f / FullTurnAngle;
-    constexpr f32 TurnsPerDegree = Rounded(1.0 / 360.0);
+    CONSTEXPR f32 DegreesPerAngleUnit = 360.0f / FullTurnAngle;
+    CONSTEXPR f32 TurnsPerDegree = Rounded(1.0 / 360.0);
     if (!TakesPackets(node))
     {
         return 0.0f;
@@ -261,7 +261,7 @@ AgentPart* AgentPartOf(GameNode* node)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 // The instance of the character played
@@ -310,8 +310,8 @@ f32 FocusFlag(GameNode* node, u32 flag)
 // The pad of a player (else none): the first's, and the second's
 GamePad* PadOf(u32 player)
 {
-    constexpr u32 PlayerOne = 1;
-    constexpr u32 PlayerTwo = 2;
+    CONSTEXPR u32 PlayerOne = 1;
+    CONSTEXPR u32 PlayerTwo = 2;
     GameController* controller = g_ConditionsGameController;
     if (player == PlayerOne)
     {
@@ -1110,7 +1110,7 @@ f32 CoverSearchEndedCondition::Check(GameNode* node, BehaviourLevel*, const u32*
 // The node's knock countdown, a share of its most (255)
 f32 KnockCountdownCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 PerCount = Rounded(1.0 / 255.0);
+    CONSTEXPR f32 PerCount = Rounded(1.0 / 255.0);
     if (!TakesPackets(node))
     {
         return 0.0f;
@@ -1644,7 +1644,7 @@ f32 EdgeStartNodeFlag2DuplicateCondition::Check(GameNode* node, BehaviourLevel*,
 // None of the airborne flag and flags 2, 4 and 6 (no position: no)
 f32 EdgeStartNodeFlagsClearCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr u32 Flags =
+    CONSTEXPR u32 Flags =
         AiPositionFlags::Airborne | AiPositionFlags::AlwaysTaken | AiPositionFlags::NeverTaken | AiPositionFlags::ScriptFlag6;
     AiPosition* position = StepPosition(Node(node)->waypoints);
     return YesNo(position != nullptr && (position->flags.value & Flags) == 0);
@@ -2007,11 +2007,11 @@ f32 GotAnyFocusCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 namespace
 {
 // How far above an instance's feet the checks look from and at
-constexpr f32 EyeHeight = 0.5f;
+CONSTEXPR f32 EyeHeight = 0.5f;
 // How many instances the queries of the lines of sight, of the ground probes and of the overlaps find at most
-constexpr u32 SightResults = 0x80;
-constexpr u32 ProbeResults = 0x40;
-constexpr u32 OverlapResults = 0x10;
+CONSTEXPR u32 SightResults = 0x80;
+CONSTEXPR u32 ProbeResults = 0x40;
+CONSTEXPR u32 OverlapResults = 0x10;
 
 // An instance's place's position (made up to date first)
 Vector4 PlacePosition(InstanceContext* instance)
@@ -2277,8 +2277,8 @@ f32 PlayerVisibleCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 // line 1000 units long, on the ground) than its box reaches
 f32 ShotAtMeCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 ShotSeconds = Rounded(0.2);
-    constexpr f32 AimLength = 1000.0f;
+    CONSTEXPR f32 ShotSeconds = Rounded(0.2);
+    CONSTEXPR f32 AimLength = 1000.0f;
     InstanceContext* operated = g_OperatedInstance != nullptr ? static_cast<InstanceContext*>(g_OperatedInstance->object) : nullptr;
     if (operated == nullptr)
     {
@@ -2324,8 +2324,8 @@ namespace
 // (the up axis across the way) or the left, reaches the character
 f32 SightFromBeside(GameNode* node, bool right)
 {
-    constexpr f32 NearSquared = 625.0f;
-    constexpr f32 BlockedShare = Rounded(1.8);
+    CONSTEXPR f32 NearSquared = 625.0f;
+    CONSTEXPR f32 BlockedShare = Rounded(1.8);
     InstanceContext* played = PlayedInstance();
     InstanceContext* instance = node->owner;
     if (!instance->flags.inDrawnCell)
@@ -2472,7 +2472,7 @@ f32 HeadCanSeePlayerCondition::Check(GameNode* node, BehaviourLevel*, const u32*
 // and its line of sight reaching it: twice the threshold
 f32 HeadCanSeeNearPlayerCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 NearSquared = 1600.0f;
+    CONSTEXPR f32 NearSquared = 1600.0f;
     InstanceContext* played = PlayedInstance();
     Vector4 head;
     Vector4 direction;
@@ -2561,8 +2561,8 @@ f32 PlayerHeadCanSeeMeCondition::Check(GameNode* node, BehaviourLevel*, const u3
 // bit more than twice the threshold
 f32 CanFallCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 Above = 2.0f;
-    constexpr f32 Margin = Rounded(0.1);
+    CONSTEXPR f32 Above = 2.0f;
+    CONSTEXPR f32 Margin = Rounded(0.1);
     Vector4 start = PlacePosition(node->owner);
     start.y = start.y + Above;
     Vector4 drop = {0.0f, -(threshold + Above), 0.0f, 1.0f};
@@ -2824,7 +2824,7 @@ f32 NearestPointEdgeDistanceSquaredCondition::Check(GameNode* node, BehaviourLev
 namespace
 {
 // How far above their feet the checks of the focus, the route and the camera look from and at
-constexpr f32 FocusEyeHeight = Rounded(0.8);
+CONSTEXPR f32 FocusEyeHeight = Rounded(0.8);
 
 // The node's focus as the conditions take it: whether it has one (an asleep focus instance forgotten), its position (a focus
 // instance's place's) and the focus instance (none for a focus position)
@@ -3406,8 +3406,8 @@ f32 TargetToSideCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 // one, no motion block and the motion's velocity's square below 0.001
 f32 IsRestingCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 BodyRest = Rounded(0.05);
-    constexpr f32 MotionRest = Rounded(0.001);
+    CONSTEXPR f32 BodyRest = Rounded(0.05);
+    CONSTEXPR f32 MotionRest = Rounded(0.001);
     ObjectNode* object = Node(node);
     if (object->rigidBody != nullptr)
     {
@@ -3447,9 +3447,9 @@ void MakeProbeQuery(InstanceQuery* query, void** results)
     query->skipped[1] = nullptr;
 }
 
-constexpr f32 ProbeAbove = 8.0f;
-constexpr f32 ProbeDown = -16.0f;
-constexpr f32 NoGround = 10000.0f;
+CONSTEXPR f32 ProbeAbove = 8.0f;
+CONSTEXPR f32 ProbeDown = -16.0f;
+CONSTEXPR f32 NoGround = 10000.0f;
 }
 
 // Probing 16 units down from 8 above the focus position (not a focus instance's), where it stopped (8 units below the start
@@ -3481,8 +3481,8 @@ f32 GroundBelowFocusPositionCondition::Check(GameNode* node, BehaviourLevel*, co
 // less 8 (none: 10000)
 f32 GroundBelowPointAheadCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 Ahead = 5.0f;
-    constexpr u32 Behind = 1;
+    CONSTEXPR f32 Ahead = 5.0f;
+    CONSTEXPR u32 Behind = 1;
     InstanceContext* owner = node->owner;
     Vector4 position = PlacePosition(owner);
     Vector4 forward = PlaceAxis(owner, ZAxis);
@@ -3646,7 +3646,7 @@ f32 SpeedTowardsNextKeyCondition::Check(GameNode* node, BehaviourLevel*, const u
 // 1 when the instance's own box, raised by its height (and 0.01) at its place, overlaps solid instances
 f32 BoxAboveIsOverlappedCondition::Check(GameNode* node, BehaviourLevel*, const u32*)
 {
-    constexpr f32 Margin = Rounded(0.01);
+    CONSTEXPR f32 Margin = Rounded(0.01);
     InstanceContext* owner = node->owner;
     ObjectPlace* place = owner->place;
     RotateAndTranslate(place);

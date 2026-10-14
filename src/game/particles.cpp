@@ -59,44 +59,44 @@ enum ParticleVersion : s32
     LegacyVersion = 0x20,
 };
 // The blend modes past 3 a legacy file has are 4 more than they are now
-constexpr s8 LegacyBlendShift = 4;
+CONSTEXPR s8 LegacyBlendShift = 4;
 // The legacy files' records at the end of a system
-constexpr s32 LegacyRecords = 4;
-constexpr f32 DefaultCutOffRadius = 25.0f;
+CONSTEXPR s32 LegacyRecords = 4;
+CONSTEXPR f32 DefaultCutOffRadius = 25.0f;
 // A draw distance of 2 or less is none
-constexpr f32 NoDrawCutOff = 2.0f;
-constexpr f32 FarDrawCutOff = 0x1.E847FCp+19f;
-constexpr f32 DefaultUnusedFloat6 = 0.5f;
-constexpr f32 DefaultDistortion = 0.125f;
-constexpr s16 DefaultStarPoints = 5;
-constexpr f32 DefaultStarRadiusRatio = 0.5f;
+CONSTEXPR f32 NoDrawCutOff = 2.0f;
+CONSTEXPR f32 FarDrawCutOff = 0x1.E847FCp+19f;
+CONSTEXPR f32 DefaultUnusedFloat6 = 0.5f;
+CONSTEXPR f32 DefaultDistortion = 0.125f;
+CONSTEXPR s16 DefaultStarPoints = 5;
+CONSTEXPR f32 DefaultStarRadiusRatio = 0.5f;
 // The culling box of the old files: the box generator's reach over the life, plus the biggest size (ten thousandths), three
 // quarters of it; 10 for the others
-constexpr f32 TenThousandth = 0x1.A36E2Ep-14f;
-constexpr f32 ExtentShare = 0.75f;
-constexpr f32 OtherExtent = 10.0f;
+CONSTEXPR f32 TenThousandth = 0x1.A36E2Ep-14f;
+CONSTEXPR f32 ExtentShare = 0.75f;
+CONSTEXPR f32 OtherExtent = 10.0f;
 // A runtime's blocks hold 32 particles (12 hexagons)
-constexpr s32 BlockParticles = 32;
-constexpr s32 HexagonBlockParticles = 12;
-constexpr s16 MaxBlockParticles = MaxEmitterBlocks * BlockParticles;
-constexpr s16 MaxHexagonParticles = MaxEmitterBlocks * HexagonBlockParticles;
-constexpr s16 NoSwitch = -1;
-constexpr f32 DefaultBounceFactor = 0x1.CCCCCCp-1f;
+CONSTEXPR s32 BlockParticles = 32;
+CONSTEXPR s32 HexagonBlockParticles = 12;
+CONSTEXPR s16 MaxBlockParticles = MaxEmitterBlocks * BlockParticles;
+CONSTEXPR s16 MaxHexagonParticles = MaxEmitterBlocks * HexagonBlockParticles;
+CONSTEXPR s16 NoSwitch = -1;
+CONSTEXPR f32 DefaultBounceFactor = 0x1.CCCCCCp-1f;
 // Two events a block
-constexpr s32 EventsPerBlock = 2;
-constexpr f32 PalFrame = 0x1.47AE14p-6f;
-constexpr f32 NtscFrame = 0x1.111112p-6f;
+CONSTEXPR s32 EventsPerBlock = 2;
+CONSTEXPR f32 PalFrame = 0x1.47AE14p-6f;
+CONSTEXPR f32 NtscFrame = 0x1.111112p-6f;
 // The texture rectangles' pixels get 2^19 more, so only their low 10 bits survive the GS's fixed point
-constexpr f32 TexturePixelBias = 0x1.0p+19f;
+CONSTEXPR f32 TexturePixelBias = 0x1.0p+19f;
 // A block's release is due four frames on
-constexpr u32 ReleaseDelay = 4;
-constexpr f32 NoSphere = -1.0f;
+CONSTEXPR u32 ReleaseDelay = 4;
+CONSTEXPR f32 NoSphere = -1.0f;
 // A new runtime's camera distance until it's run: far away
-constexpr f32 NotRunDistance = 0x1.E847E0p+19f;
+CONSTEXPR f32 NotRunDistance = 0x1.E847E0p+19f;
 // The distance of a chunk not drawn this frame
-constexpr f32 NoViewDistance = 0x1.312D00p+23f;
+CONSTEXPR f32 NoViewDistance = 0x1.312D00p+23f;
 // What the reader's set-up returns (nothing reads it)
-constexpr u32 ReaderSet = 0x65;
+CONSTEXPR u32 ReaderSet = 0x65;
 
 // The random spreads' and starts' axes for the radial generators: the radius (the emit's: the speed), the yaw and the tilt
 enum RadialAxis : u32
@@ -206,7 +206,7 @@ void QueueBlockRelease(u8* block, const ParticleSystem* system)
 }
 
 // A dead particle's life scale: its life is over at once
-constexpr f32 DeadParticle = 32768.0f;
+CONSTEXPR f32 DeadParticle = 32768.0f;
 
 // The block's particles made none
 void ClearBlock(u8* block, s32 particles)
@@ -247,9 +247,9 @@ void ListDrawEntry(ParticleDrawEntry* entry, const ParticleSystem* system)
 }
 
 // A stopped runtime is looked at again in 50 frames and up to 7 more, a released one past a turn of the wheel
-constexpr s16 RestPhaseBase = 0x32;
-constexpr s32 RestPhaseSpread = 8;
-constexpr s16 ReleasedPhase = 0x21;
+CONSTEXPR s16 RestPhaseBase = 0x32;
+CONSTEXPR s32 RestPhaseSpread = 8;
+CONSTEXPR s16 ReleasedPhase = 0x21;
 
 // The runtime put first in a wheel slot's list
 void PushEmitter(EmitterRuntime* runtime, EmitterRuntime** slot)
@@ -264,8 +264,8 @@ void PushEmitter(EmitterRuntime* runtime, EmitterRuntime** slot)
 }
 
 // A free block's particles are born far in the future
-constexpr f32 FreeSpawnTime = 0x1.2A05F2p+33f;
-constexpr f32 FreeLifeScale = 128.0f;
+CONSTEXPR f32 FreeSpawnTime = 0x1.2A05F2p+33f;
+CONSTEXPR f32 FreeLifeScale = 128.0f;
 
 // The event taken out of the current frame's list
 void TakeOutOfFrame(ParticleEvent* event)
@@ -344,8 +344,8 @@ f32 SampleCurve(const ParticleKey* keys, f32 fraction)
 }
 
 // A particle's life is the render table's 64 steps; a turn's 65536ths as a float
-constexpr f32 LifeSteps = Platform::Graphics::ParticleRenderSteps;
-constexpr f32 UnitsPerTurn = FullTurnAngle;
+CONSTEXPR f32 LifeSteps = Platform::Graphics::ParticleRenderSteps;
+CONSTEXPR f32 UnitsPerTurn = FullTurnAngle;
 
 // The runtime's slot past its blocks' particles: the first again
 void WrapSlot(EmitterRuntime* runtime)
@@ -393,7 +393,7 @@ void StartRangeRecord(ParticleRecord* record, const ParticleSystem* system)
 // A life up to 1/0.7 longer (of rand's 2^31)
 f32 RandomLifeScale(const ParticleSystem* system)
 {
-    constexpr f32 LongerLife = 0x1.6DB6DCp-31f;
+    CONSTEXPR f32 LongerLife = 0x1.6DB6DCp-31f;
     f32 longer = system->lifeTime * static_cast<f32>(GetRand()) * LongerLife;
     return LifeSteps / (system->lifeTime + longer);
 }
@@ -699,7 +699,7 @@ extern "C"
 
     void AbandonParticleSection()
     {
-        constexpr s32 FileLetGo = -2;
+        CONSTEXPR s32 FileLetGo = -2;
         if (g_ParticleReaderSet == 0)
         {
             g_ParticleReader->Rewind();
@@ -2802,13 +2802,13 @@ extern "C"
     ParticleRecord* GenParticle_Line(EmitterRuntime* runtime, ParticleSystem* system)
     {
         // Up to 0.3 either way of rand's 2^31 along the line, 1 to 2.5 along the other
-        constexpr f32 AlongScale = 0x1.333334p-32f;
-        constexpr f32 AlongReach = 0x1.333334p-2f;
-        constexpr f32 OutScale = 0x1.8p-31f;
-        constexpr f32 OutBase = 1.0f;
-        constexpr f32 OutAlong = 1.5f;
-        constexpr s32 LineAngle = 0x36B0;
-        constexpr s32 OutAngle = 0x7530;
+        CONSTEXPR f32 AlongScale = 0x1.333334p-32f;
+        CONSTEXPR f32 AlongReach = 0x1.333334p-2f;
+        CONSTEXPR f32 OutScale = 0x1.8p-31f;
+        CONSTEXPR f32 OutBase = 1.0f;
+        CONSTEXPR f32 OutAlong = 1.5f;
+        CONSTEXPR s32 LineAngle = 0x36B0;
+        CONSTEXPR s32 OutAngle = 0x7530;
         WrapSlot(runtime);
         ParticleRecord* record = TakeRecord(runtime, BlockParticles);
         StartRangeRecord(record, system);
@@ -2894,7 +2894,7 @@ extern "C"
 
     ParticleRecord* GenParticle_Star(EmitterRuntime* runtime, ParticleSystem* system)
     {
-        constexpr f32 HalfTurnUnits = HalfTurnAngle;
+        CONSTEXPR f32 HalfTurnUnits = HalfTurnAngle;
         WrapSlot(runtime);
         if (DrawsHexagons(system))
         {
@@ -3016,16 +3016,16 @@ extern "C"
         InitDecalPool(&g_DecalData);
         Platform::Graphics::InitParticleGraphics();
         // System 0: one particle a frame of a second's life, 500 big, grey, half alpha, on the first 256 pixels square
-        constexpr u16 NullMaxParticles = 100;
-        constexpr f32 NullUnusedFloat1 = 40000.0f;
-        constexpr f32 NullGrey = 64.0f;
-        constexpr f32 NullAlpha = 64.0f;
-        constexpr f32 NullSize = 500.0f;
-        constexpr f32 NullRotationRange = 360.0f;
-        constexpr f32 NullTextureEnd = 256.0f;
+        CONSTEXPR u16 NullMaxParticles = 100;
+        CONSTEXPR f32 NullUnusedFloat1 = 40000.0f;
+        CONSTEXPR f32 NullGrey = 64.0f;
+        CONSTEXPR f32 NullAlpha = 64.0f;
+        CONSTEXPR f32 NullSize = 500.0f;
+        CONSTEXPR f32 NullRotationRange = 360.0f;
+        CONSTEXPR f32 NullTextureEnd = 256.0f;
         ParticleSystem& none = g_ParticleSystems[0];
         RetailLibc::MemorySet(&none, 0, sizeof(none));
-        constexpr char NullName[] = "null";
+        CONSTEXPR char NullName[] = "null";
         for (u32 letter = 0; letter < sizeof(NullName); letter++)
         {
             none.name[letter] = NullName[letter];
@@ -3070,7 +3070,7 @@ extern "C"
 
     void KillParticles()
     {
-        constexpr f32 TimeMoved = 10.0f;
+        CONSTEXPR f32 TimeMoved = 10.0f;
         for (s32 index = 0; index < static_cast<s32>(MaxEmitterRuntimes); index++)
         {
             EmitterRuntime& runtime = g_EmitterRuntimes[index];
@@ -3126,13 +3126,13 @@ extern "C"
 
     void BuildParticleRenderTable(ParticleSystem* system)
     {
-        constexpr f32 TextureSixteenths = 16.0f;
-        constexpr f32 StepShare = 1.0f / Platform::Graphics::ParticleRenderSteps;
-        constexpr f32 Half = 0.5f;
-        constexpr f32 HexagonReach = 0.25f;
+        CONSTEXPR f32 TextureSixteenths = 16.0f;
+        CONSTEXPR f32 StepShare = 1.0f / Platform::Graphics::ParticleRenderSteps;
+        CONSTEXPR f32 Half = 0.5f;
+        CONSTEXPR f32 HexagonReach = 0.25f;
         // The hexagons' six corners, a sixth of a turn apart
-        constexpr u32 HexagonCorners = 6;
-        constexpr s32 HexagonAngles[HexagonCorners] = {0, 0x2AAA, 0x5555, 0x8000, 0xAAAA, 0xD555};
+        CONSTEXPR u32 HexagonCorners = 6;
+        CONSTEXPR s32 HexagonAngles[HexagonCorners] = {0, 0x2AAA, 0x5555, 0x8000, 0xAAAA, 0xD555};
         if (system->renderTable == nullptr)
         {
             system->renderTable = g_RenderTablePool[g_RenderTablePoolTop];
@@ -3230,8 +3230,8 @@ extern "C"
 
     void GenCode5_PullInRandomLife(EmitterRuntime*, ParticleSystem* system, ParticleRecord* record)
     {
-        constexpr f32 PullIn = -0x1.333334p-1f;
-        constexpr f32 PullDown = 0x1.99999Ap-2f;
+        CONSTEXPR f32 PullIn = -0x1.333334p-1f;
+        CONSTEXPR f32 PullDown = 0x1.99999Ap-2f;
         f32 x = record->start[0];
         f32 z = record->start[2];
         f32 flat = __builtin_sqrtf(x * x + z * z);
@@ -3243,7 +3243,7 @@ extern "C"
 
     void GenCode6_Velocity5_4xStart(EmitterRuntime*, ParticleSystem*, ParticleRecord* record)
     {
-        constexpr f32 Times = 0x1.59999Ap+2f;
+        CONSTEXPR f32 Times = 0x1.59999Ap+2f;
         record->velocity[0] = record->start[0] * Times;
         record->velocity[1] = record->start[1] * Times;
         record->velocity[2] = record->start[2] * Times;
@@ -3423,12 +3423,12 @@ extern "C"
 namespace
 {
 // A page's startup file, and the extension of the path made for each page of the default chunk's
-constexpr const char* PageFile = "startup\\%s%d.ptc";
-constexpr const char* PageExtension = ".ptl";
+CONSTEXPR const char* PageFile = "startup\\%s%d.ptc";
+CONSTEXPR const char* PageExtension = ".ptl";
 // The default particle data's decals' startup file
-constexpr const char* DecalFile = "Startup\\decal.ptc";
+CONSTEXPR const char* DecalFile = "Startup\\decal.ptc";
 // The blocks of particles made at start-up
-constexpr s32 StartupBlocks = 0x80;
+CONSTEXPR s32 StartupBlocks = 0x80;
 }
 
 extern "C"

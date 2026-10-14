@@ -22,20 +22,20 @@ namespace
 {
 // The rate the positioner's place follows at (the share of the way a second), the radius it keeps from the collision and from the
 // instances' hulls, and the distance it goes back to after a trigger's camera
-constexpr f32 DefaultRate = 6.0f;
-constexpr f32 DefaultRadius = Rounded(0.4);
-constexpr f32 DefaultDistance = 10.0f;
+CONSTEXPR f32 DefaultRate = 6.0f;
+CONSTEXPR f32 DefaultRadius = Rounded(0.4);
+CONSTEXPR f32 DefaultDistance = 10.0f;
 // A blend asked for without a trigger
-constexpr f32 AskedBlendSeconds = 2.0f;
-constexpr u32 EveryInstance = 0xFFFFFFFF;
-constexpr s32 MostQueried = 0x10;
+CONSTEXPR f32 AskedBlendSeconds = 2.0f;
+CONSTEXPR u32 EveryInstance = 0xFFFFFFFF;
+CONSTEXPR s32 MostQueried = 0x10;
 // What the box around the camera that the collision and the instances near it are gathered in is grown by
-constexpr f32 GatherMargin = Rounded(0.1);
+CONSTEXPR f32 GatherMargin = Rounded(0.1);
 // The view checks look from a unit above the followed object
-constexpr f32 EyeHeight = 1.0f;
+CONSTEXPR f32 EyeHeight = 1.0f;
 // What a restart clears of the positioner's bits and state: their low halves
-constexpr u64 PositionerLowBits = 0xFFFFFFFF;
-constexpr u32 PositionerStateLowBits = 0xFFFF;
+CONSTEXPR u64 PositionerLowBits = 0xFFFFFFFF;
+CONSTEXPR u32 PositionerStateLowBits = 0xFFFF;
 
 f32 StepSeconds(const TimeClock* clock)
 {
@@ -151,10 +151,10 @@ s32 BlendAngles(s32 start, s32 end, f32 share)
 
 FollowCameraPositioner* FollowCameraPositioner::Construct(FollowCameraPositioner* positioner, f32 distance, const s32* pitch)
 {
-    constexpr f32 DistanceSpeed = 5.0f;
+    CONSTEXPR f32 DistanceSpeed = 5.0f;
     // Degrees a second
-    constexpr f32 ProbePushRate = 180.0f;
-    constexpr u8 Unused384 = 60;
+    CONSTEXPR f32 ProbePushRate = 180.0f;
+    CONSTEXPR u8 Unused384 = 60;
     CameraPositioner::ConstructBase(positioner);
     positioner->instance = nullptr;
     positioner->vtable = g_FollowCameraPositionerVTable;
@@ -388,7 +388,7 @@ void FollowCameraPositioner::ClearBlocked()
 
 void FollowCameraPositioner::EaseBackOff()
 {
-    constexpr f32 Ease = Rounded(0.05);
+    CONSTEXPR f32 Ease = Rounded(0.05);
     backOff = backOff + (__builtin_fabsf(facing + facing) - backOff) * Ease;
 }
 
@@ -419,8 +419,8 @@ u32 FollowCameraPositioner::SegmentBlocked(const Vector4* from, const Vector4* t
 
 void FollowCameraPositioner::TimeBlocked(const Vector4* point, const Vector4* goal, const Vector4*, TimeClock* clock)
 {
-    constexpr f32 LongSeconds = Rounded(0.7);
-    constexpr f32 AWhileSeconds = Rounded(0.2);
+    CONSTEXPR f32 LongSeconds = Rounded(0.7);
+    CONSTEXPR f32 AWhileSeconds = Rounded(0.2);
     if (ViewBlocked(point, goal) == 0)
     {
         ClearBlocked();
@@ -530,7 +530,7 @@ void FollowCameraPositioner::PlaceFor(const Vector4* point, Vector4* out, u32 co
 void FollowCameraPositioner::MoveToward(const Vector4* point, const Vector4* goal, u32 jumped)
 {
     // A shake that turns the view less than this leaves it as it is
-    constexpr f32 Steady = Rounded(0.001);
+    CONSTEXPR f32 Steady = Rounded(0.001);
     f32 share = bits.atTriggerRate != 0 ? triggerRate : ownRate;
     share = share * stepSeconds;
     if (1.0f < share || state.cut != 0)
@@ -656,9 +656,9 @@ u32 FollowCameraPositioner::Probe(const Vector4* point, const Vector4* goal, u32
 {
     // The side probes' ends around the camera are behind it; it pulls in only further than PullFurther; it casts at most
     // MostCasts probes
-    constexpr f32 CameraDepth = Rounded(-0.42);
-    constexpr f32 PullFurther = 2.0f;
-    constexpr s32 MostCasts = 4;
+    CONSTEXPR f32 CameraDepth = Rounded(-0.42);
+    CONSTEXPR f32 PullFurther = 2.0f;
+    CONSTEXPR s32 MostCasts = 4;
     s32 cast = 0;
     ProbeHits hits;
     hits.value = 0;
@@ -882,7 +882,7 @@ u32 FollowCameraPositioner::Probe(const Vector4* point, const Vector4* goal, u32
 
 u32 FollowCameraPositioner::ProbeRates(const Vector4* point, s32* pitchRate, s32* yawRate, f32* distanceRate, u32 keep)
 {
-    constexpr f32 PullRate = -20.0f;
+    CONSTEXPR f32 PullRate = -20.0f;
     if (bits.probesOff != 0)
     {
         *pitchRate = 0;
@@ -1158,9 +1158,9 @@ u32 FollowCameraPositioner::StepBlenders(TimeClock* clock)
 
 void FollowCameraPositioner::MeasureFacing()
 {
-    constexpr f32 Margin = Rounded(0.1);
+    CONSTEXPR f32 Margin = Rounded(0.1);
     // Takes what's past the margin to the whole range (1 / 0.9)
-    constexpr f32 Spread = 0x1.1c71c8p+0f;
+    CONSTEXPR f32 Spread = 0x1.1c71c8p+0f;
     f32 cosine = 0.0f;
     f32 sine = 0.0f;
     if (bits.restarted == 0 && bits.noFacingTilt == 0 && bits.stickTurned == 0)
@@ -1217,7 +1217,7 @@ void FollowCameraPositioner::MeasureFacing()
 u32 FollowCameraPositioner::PushOutOfHulls(const Vector4* goal, const Vector4* from, Vector4* out)
 {
     // The radius grows a unit a second while the hulls push it, up to MostRadius
-    constexpr f32 MostRadius = 0.5f;
+    CONSTEXPR f32 MostRadius = 0.5f;
     Vector4 reached = *goal;
     u32 pushed = 0;
     if (bits.pushedOutOfHull != 0)
@@ -1294,7 +1294,7 @@ u32 FollowCameraPositioner::PushOutOfHulls(const Vector4* goal, const Vector4* f
 
 u32 FollowCameraPositioner::PushOffCollision(const Vector4* goal, const Vector4* point, Vector4* out)
 {
-    constexpr f32 Clearance = Rounded(0.01);
+    CONSTEXPR f32 Clearance = Rounded(0.01);
     u32 pushed = 0;
     Vector4 reached = *goal;
     if (state.cut == 0)
@@ -1390,11 +1390,11 @@ u32 FollowCameraPositioner::FindClearPlace(const Vector4* goal, const Vector4* f
 {
     // Where the view stops within NearDistance of the point is no place; the pull back from where it stops further than the
     // radius and NearDistance (squared) is the radius, NearDistance and PullMargin, else ShortPull
-    constexpr f32 NearDistance = 2.0f;
-    constexpr f32 NearSquared = NearDistance * NearDistance;
-    constexpr f32 PullMargin = Rounded(0.1);
-    constexpr f32 ShortPull = Rounded(0.2);
-    constexpr f32 Behind = -10.0f;
+    CONSTEXPR f32 NearDistance = 2.0f;
+    CONSTEXPR f32 NearSquared = NearDistance * NearDistance;
+    CONSTEXPR f32 PullMargin = Rounded(0.1);
+    CONSTEXPR f32 ShortPull = Rounded(0.2);
+    CONSTEXPR f32 Behind = -10.0f;
     f32 radius = collisionRadius;
     f32 longPull = (radius + NearDistance) + PullMargin;
     f32 farSquared = radius * radius + NearSquared;
@@ -1471,7 +1471,7 @@ u32 FollowCameraPositioner::FindClearPlace(const Vector4* goal, const Vector4* f
 u32 FollowCameraPositioner::ViewBlocked(const Vector4* point, const Vector4* other)
 {
     // Within 2 (squared)
-    constexpr f32 NearSquared = 4.0f;
+    CONSTEXPR f32 NearSquared = 4.0f;
     if (bits.skipsViewCheck != 0)
     {
         return 0;
@@ -1495,7 +1495,7 @@ u32 FollowCameraPositioner::ViewBlocked(const Vector4* point, const Vector4* oth
 
 void FollowCameraPositioner::FollowKeyed(KeyedCamera* keys)
 {
-    constexpr f32 Ease = Rounded(0.05);
+    CONSTEXPR f32 Ease = Rounded(0.05);
     TimeClock* clock = &G_GameClockController->clocks[FirstClock];
     if (keys->playing == 0)
     {
@@ -1531,7 +1531,7 @@ void FollowCameraPositioner::FollowKeyed(KeyedCamera* keys)
 void FollowCameraPositioner::CheckTargetStill()
 {
     // A squared speed
-    constexpr f32 Still = Rounded(1e-4);
+    CONSTEXPR f32 Still = Rounded(1e-4);
     const Vector4* velocity = &target->velocity;
     f32 speedSquared = __builtin_fabsf(velocity->x * velocity->x + velocity->y * velocity->y + velocity->z * velocity->z);
     if (!(speedSquared <= Still) || (bits.stickTurning != 0 && bits.alwaysTakesValues == 0))
@@ -2165,11 +2165,11 @@ u32 FollowCameraPositioner::CanChangeChunk(ChunkData*, ChunkLinkData* link)
 void FollowCameraPositioner::Tilt(Vector4*, Vector4* turned)
 {
     // The tilt toward the target's facing (radians, by its facing and sideways values), more past the target's fast speed
-    constexpr f32 FastSpeed = 3.0f;
-    constexpr f32 FastPitchTilt = Rounded(0.2);
-    constexpr f32 PitchTilt = Rounded(0.05);
-    constexpr f32 FastYawTilt = 0.25f;
-    constexpr f32 YawTilt = Rounded(0.12);
+    CONSTEXPR f32 FastSpeed = 3.0f;
+    CONSTEXPR f32 FastPitchTilt = Rounded(0.2);
+    CONSTEXPR f32 PitchTilt = Rounded(0.05);
+    CONSTEXPR f32 FastYawTilt = 0.25f;
+    CONSTEXPR f32 YawTilt = Rounded(0.12);
     if (bits.tilts == 0)
     {
         return;
@@ -2390,8 +2390,8 @@ void FollowCameraTarget::ObjectPoint(ObjectPlace* place, Vector4* out)
 
 void FollowCameraTarget::EaseHeight(f32 seconds, const Vector4* followedPoint, Vector4* out)
 {
-    constexpr f32 RiseRate = 5.0f;
-    constexpr f32 Margin = Rounded(0.1);
+    CONSTEXPR f32 RiseRate = 5.0f;
+    CONSTEXPR f32 Margin = Rounded(0.1);
     f32 ground = groundHeight;
     f32 eased = easedHeight;
     if (eased < ground)
@@ -2442,7 +2442,7 @@ void FollowCameraTarget::EaseHeight(f32 seconds, const Vector4* followedPoint, V
 void FollowCameraTarget::Step(TimeClock* clock)
 {
     // A camera point this near (squared) the last point isn't blended to (unless the trigger blends when near)
-    constexpr f32 NearSquared = 15.0f;
+    CONSTEXPR f32 NearSquared = 15.0f;
     ReferencedObject* object = followed != nullptr ? followed->object : nullptr;
     if (object == nullptr)
     {

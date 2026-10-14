@@ -12,8 +12,8 @@
 #include "game/reference.h"
 #include "retail/libc.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The target lock Nina's claw and the gun aim with: a hull ahead of the character that picks the best instance of its node kinds
 // in it, keeps it a little while it's out of sight, and shows a marker on it
@@ -25,18 +25,18 @@ namespace
 {
 // The kinds of the nodes the search asks for (characters, crates, pickups, creatures, generic objects, grabbables, pay gates,
 // graples, projectiles and kind 0x15) and how many instances it ranks at most
-constexpr u32 SearchedKinds = 1u << NodeCharacter | 1u << NodeCrate | 1u << NodePickup | 1u << NodeCreature |
+CONSTEXPR u32 SearchedKinds = 1u << NodeCharacter | 1u << NodeCrate | 1u << NodePickup | 1u << NodeCreature |
                               1u << NodeGenericObject | 1u << NodeGrabbable | 1u << NodePayGate | 1u << NodeGraple |
                               1u << NodeProjectile | 1u << NodeUnusedObjectType;
-constexpr u16 MostFound = 0x40;
+CONSTEXPR u16 MostFound = 0x40;
 // How much being off the hull's middle counts against an instance (times its squared distance), and where a kind's priority goes
 // in an instance's score (its top byte, above any distance)
-constexpr f32 OffMiddleWeight = 100.0f;
-constexpr u32 PriorityShift = 24;
+CONSTEXPR f32 OffMiddleWeight = 100.0f;
+CONSTEXPR u32 PriorityShift = 24;
 // A target is kept for a quarter of a second after it was last the best
-constexpr f32 KeepSeconds = 0.25f;
+CONSTEXPR f32 KeepSeconds = 0.25f;
 // The marker stands this far in front of the target, toward the camera
-constexpr f32 MarkerDistance = 2.0f;
+CONSTEXPR f32 MarkerDistance = 2.0f;
 
 InstanceContext* ObjectOf(const Reference* handle)
 {
@@ -46,14 +46,14 @@ InstanceContext* ObjectOf(const Reference* handle)
 // An object's place as the retail code reads it, also when there's no object (the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
 // The agent of an agent node as the retail code reads it, also when there's no node (the word at address 0x18 then)
 Agent* RetailAgentOf(const AgentNode* node)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(node) + offsetof(AgentNode, agent);
+    uintptr_t address = reinterpret_cast<uintptr_t>(node) + offsetof(AgentNode, agent);
     return *reinterpret_cast<Agent* const*>(address);
 }
 

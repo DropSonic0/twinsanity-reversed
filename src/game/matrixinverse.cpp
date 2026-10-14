@@ -4,10 +4,10 @@
 
 namespace
 {
-constexpr u32 MatrixElements = 16;
+CONSTEXPR u32 MatrixElements = 16;
 
 // An element's index: its row times 4 plus its column
-constexpr u32 ElementOf(u32 row, u32 column)
+CONSTEXPR u32 ElementOf(u32 row, u32 column)
 {
     return row * 4 + column;
 }

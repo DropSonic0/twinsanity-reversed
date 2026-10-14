@@ -28,14 +28,14 @@ extern "C"
 namespace
 {
 // The track a queued cutscene asks for (its music plays in the context music's slot, in the movie group)
-constexpr u32 QueuedTrack = 1;
+CONSTEXPR u32 QueuedTrack = 1;
 // The skip hint and the disc error's title: their colours (the colour table's), size and places (the hint's further left)
-constexpr ColourIndex SkipHintColour = ColourYellow;
-constexpr ColourIndex DiscErrorColour = ColourMagenta;
-constexpr f32 TextScale = 0.5f;
-constexpr f32 SkipHintX = Rounded(0.83);
-constexpr f32 DiscErrorX = Rounded(0.85);
-constexpr f32 CutsceneTextY = Rounded(0.12);
+CONSTEXPR ColourIndex SkipHintColour = ColourYellow;
+CONSTEXPR ColourIndex DiscErrorColour = ColourMagenta;
+CONSTEXPR f32 TextScale = 0.5f;
+CONSTEXPR f32 SkipHintX = Rounded(0.83);
+CONSTEXPR f32 DiscErrorX = Rounded(0.85);
+CONSTEXPR f32 CutsceneTextY = Rounded(0.12);
 
 // A track's place made the origin's (its w kept)
 void PlaceAtOrigin(Vector4* position)

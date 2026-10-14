@@ -430,7 +430,7 @@ void ClearCountedValueCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
 namespace
 {
 // The instance flag that makes it move backwards along its attachments' path
-constexpr u32 BackwardsFlag = 0x80;
+CONSTEXPR u32 BackwardsFlag = 0x80;
 
 bool TakesPackets(GameNode* node)
 {
@@ -703,7 +703,7 @@ void RestoreOwnObjectCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
 namespace
 {
 // The highest priority a script gives (past it the starter's own is taken)
-constexpr u32 MostPriority = 100;
+CONSTEXPR u32 MostPriority = 100;
 }
 
 extern "C"
@@ -858,8 +858,8 @@ void ReduceHitPointsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 namespace
 {
 // The most a node's counted value is, and below which it counts as none
-constexpr f32 MostCountedValue = 1.0f;
-constexpr f32 NoCountedValue = Rounded(1e-06);
+CONSTEXPR f32 MostCountedValue = 1.0f;
+CONSTEXPR f32 NoCountedValue = Rounded(1e-06);
 
 InstanceContext* PlayedCharacter()
 {
@@ -1119,10 +1119,10 @@ void DestroyMeCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLev
 namespace
 {
 // A physics body's flag 0x10: it touched another body this step
-constexpr u32 BodyTouchedBody = 0x10;
+CONSTEXPR u32 BodyTouchedBody = 0x10;
 // A physics body's flags 0x20 and 0x40: either lets the playable characters push it (game/objectnode.h's MotionBlockBody)
-constexpr u32 BodyPushable20 = 0x20;
-constexpr u32 BodyPushable40 = 0x40;
+CONSTEXPR u32 BodyPushable20 = 0x20;
+CONSTEXPR u32 BodyPushable40 = 0x40;
 
 template <typename T>
 void Switch(u32 setting, T* word, T bit)
@@ -1443,7 +1443,7 @@ void DoParticleCommand::ExecuteOn(GameNode* node)
 namespace
 {
 // No channel of the sound processor
-constexpr u32 NoChannel = 0xFF;
+CONSTEXPR u32 NoChannel = 0xFF;
 
 u8& TrackedSound(ObjectNode* node)
 {
@@ -1525,8 +1525,8 @@ void PlaySlotSound(ObjectNode* node, u32 slot, u32 tracked)
 
 void DoSoundCommand::ExecuteOn(GameNode* node)
 {
-    constexpr f32 LoudestVolume = 5.0f;
-    constexpr f32 ShakeThreshold = Rounded(0.01);
+    CONSTEXPR f32 LoudestVolume = 5.0f;
+    CONSTEXPR f32 ShakeThreshold = Rounded(0.01);
     auto* agent = static_cast<ObjectNode*>(node);
     f32 volumeGiven = -1.0f;
     if (flags.volumeGiven != 0)
@@ -1708,7 +1708,7 @@ void BeginMusicCommand::ExecuteOn(GameNode* node)
 
 void CreateDamageCommand::ExecuteOn(GameNode* node)
 {
-    constexpr u32 MostHit = 0x40;
+    CONSTEXPR u32 MostHit = 0x40;
     auto* agent = static_cast<ObjectNode*>(node);
     u32 found = 0;
     ContactMessage message;
@@ -1853,9 +1853,9 @@ namespace
 // A projectile's node keeps its own state where an object node keeps its frame's move (game/projectiles.cpp's
 // ProjectileObjectNode): its state bits (it homes in on its target, it doesn't bounce off what's bullets bounce back), the
 // trigger message it sends, the references to its target and to who shot it; and the state it's launched in
-constexpr u32 ProjectileHoming = 0x100000;
-constexpr u32 ProjectileNoBounce = 0x200000;
-constexpr u32 ProjectileLaunched = 2;
+CONSTEXPR u32 ProjectileHoming = 0x100000;
+CONSTEXPR u32 ProjectileNoBounce = 0x200000;
+CONSTEXPR u32 ProjectileLaunched = 2;
 
 struct ProjectileState
 {

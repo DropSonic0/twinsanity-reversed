@@ -11,8 +11,8 @@
 #include "game/reference.h"
 #include "game/rigidbody.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 EABI_EXPORT(FUN_0015ffe8, &Vehicle::Frame);
 EABI_EXPORT(FUN_001608d8, &WallClingVehicle::Frame);
@@ -22,29 +22,29 @@ EABI_EXPORT(FUN_001504b0, &WallClingVehicle::Collide);
 namespace
 {
 // The kinds of nodes of the instances the sphere body Start gives the character collides with
-constexpr u32 BodyCollisionKinds = 1u << NodeDynamicScenery | 1u << NodeRigidBody | 1u << NodeCrate | 1u << NodeCreature
+CONSTEXPR u32 BodyCollisionKinds = 1u << NodeDynamicScenery | 1u << NodeRigidBody | 1u << NodeCrate | 1u << NodeCreature
                                    | 1u << NodeGenericObject;
 // The script event the wall cling runs on its character every frame it goes on
-constexpr u32 EventWallCling = 0x22;
+CONSTEXPR u32 EventWallCling = 0x22;
 
 // The wall cling: its box (0.58 wide, 1.8 high, standing on its position); the fall (4.5 a second faster each second, never past
 // 4.5); the stick steering it along its x axis (6 times the stick's part along it less its speed that way, within 3, times 25 a
 // second)
-constexpr f32 ClingHalfWidth = 0.29f;
-constexpr f32 ClingHeight = 1.8f;
-constexpr f32 ClingGravity = 4.5f;
-constexpr f32 ClingFallSpeed = 4.5f;
-constexpr f32 SteerScale = 6.0f;
-constexpr f32 MaxSteer = 3.0f;
-constexpr f32 SteerRate = 25.0f;
+CONSTEXPR f32 ClingHalfWidth = 0.29f;
+CONSTEXPR f32 ClingHeight = 1.8f;
+CONSTEXPR f32 ClingGravity = 4.5f;
+CONSTEXPR f32 ClingFallSpeed = 4.5f;
+CONSTEXPR f32 SteerScale = 6.0f;
+CONSTEXPR f32 MaxSteer = 3.0f;
+CONSTEXPR f32 SteerRate = 25.0f;
 // Its contacts: gathered within a frame's motion and half a unit more, with the solid instances but the character's own
-constexpr f32 ReachMargin = 0.5f;
+CONSTEXPR f32 ReachMargin = 0.5f;
 // A push out of the contacts longer than 0.001 whose direction rises more than 0.707 is a landing; the wall must be within 0.5
 // along its z axis, and it creeps 0.02 toward it when there's room
-constexpr f32 PushEpsilon = Rounded(0.001);
-constexpr f32 LandingRise = Rounded(0.707);
-constexpr f32 WallReach = 0.5f;
-constexpr f32 WallCreep = 0.02f;
+CONSTEXPR f32 PushEpsilon = Rounded(0.001);
+CONSTEXPR f32 LandingRise = Rounded(0.707);
+CONSTEXPR f32 WallReach = 0.5f;
+CONSTEXPR f32 WallCreep = 0.02f;
 
 DynamicBody* BodyOf(const CharacterAgent* agent)
 {
@@ -54,7 +54,7 @@ DynamicBody* BodyOf(const CharacterAgent* agent)
 // The place of an instance that may be none (retail reads the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 }

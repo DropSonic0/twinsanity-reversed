@@ -39,8 +39,8 @@ void RenderView::SetProjection(CameraLensNode* lens)
 
 void RenderView::Update(f32 aspect)
 {
-    constexpr f32 SameAspect = LengthEpsilon;
-    static constexpr Vector4 Forward = {0.0f, 0.0f, 1.0f, 0.0f};
+    CONSTEXPR f32 SameAspect = LengthEpsilon;
+    static CONSTEXPR Vector4 Forward = {0.0f, 0.0f, 1.0f, 0.0f};
     ReferencedObject* object = cameraObject != nullptr ? cameraObject->object : nullptr;
     if (object == nullptr)
     {

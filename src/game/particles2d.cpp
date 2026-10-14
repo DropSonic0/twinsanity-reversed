@@ -11,8 +11,8 @@
 namespace
 {
 // A radial particle's direction's scale (it's kept in 16 bit) and its speed per unit of that
-constexpr f32 DirectionScale = 8192.0f;
-constexpr f32 DirectionSpeed = 0x1.0p-15f;
+CONSTEXPR f32 DirectionScale = 8192.0f;
+CONSTEXPR f32 DirectionSpeed = 0x1.0p-15f;
 
 // The 16 bit direction a radial particle keeps in its w
 struct Direction

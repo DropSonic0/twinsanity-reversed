@@ -190,16 +190,16 @@ extern "C"
 
 namespace
 {
-constexpr u32 ProjectileStates = 13;
+CONSTEXPR u32 ProjectileStates = 13;
 // What its flight is stopped by: the collision's surfaces solid to objects, and the instances with a node of the kinds
 // (characters, crates, creatures, generic objects, grabbables, pay gates and type 9's; but characters for the player's shots)
 // and the flag 4
-constexpr u32 PlayersShotHitKinds = 1u << NodeCrate | 1u << NodeCreature | 1u << NodeGenericObject | 1u << NodeGrabbable |
+CONSTEXPR u32 PlayersShotHitKinds = 1u << NodeCrate | 1u << NodeCreature | 1u << NodeGenericObject | 1u << NodeGrabbable |
                                     1u << NodePayGate | 1u << NodeUnusedObjectType;
-constexpr u32 HitKinds = PlayersShotHitKinds | 1u << NodeCharacter;
+CONSTEXPR u32 HitKinds = PlayersShotHitKinds | 1u << NodeCharacter;
 // The character's jump states of the radial blast (its hang to its fall): a downward blast
-constexpr u32 DownwardBlastFirst = JumpController::StateBlastHang;
-constexpr u32 DownwardBlastStates = JumpController::StateBlastFalling - JumpController::StateBlastHang + 1;
+CONSTEXPR u32 DownwardBlastFirst = JumpController::StateBlastHang;
+CONSTEXPR u32 DownwardBlastStates = JumpController::StateBlastFalling - JumpController::StateBlastHang + 1;
 
 f32 SecondsBetween(u32 from, u32 to)
 {
@@ -262,7 +262,7 @@ Reference* CopyHandle(Reference* handle)
 
 ProjectileObjectNode* ProjectileObjectNode::Construct(ProjectileObjectNode* node)
 {
-    constexpr f32 AimHeight = Rounded(0.6);
+    CONSTEXPR f32 AimHeight = Rounded(0.6);
     ConstructPrototype(node);
     node->vtable = g_ProjectileObjectNodeVTable;
     node->velocity = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -464,7 +464,7 @@ void ProjectileObjectNode::SetState(TimeClock* clock, u32 state)
 
 u32 ProjectileObjectNode::Update(TimeClock* clock)
 {
-    constexpr f32 EndingTime = 0.5f;
+    CONSTEXPR f32 EndingTime = 0.5f;
     if (clock->flags.running == 0)
     {
         return GameNode::Update(clock);
@@ -510,10 +510,10 @@ u32 ProjectileObjectNode::Update(TimeClock* clock)
 
 void ProjectileObjectNode::Fly(TimeClock* clock)
 {
-    constexpr f32 MostFlight = Rounded(2.2);
+    CONSTEXPR f32 MostFlight = Rounded(2.2);
     // The query allows 40 results where retail's array has room for 32 (the line of sight keeps only the instance it hits)
-    constexpr u16 MostResults = 40;
-    constexpr u32 ResultsRoom = 32;
+    CONSTEXPR u16 MostResults = 40;
+    CONSTEXPR u32 ResultsRoom = 32;
     f32 flown = SecondsBetween(launchTime, clock->time);
     f32 step = LastAdvance(clock);
     if (MostFlight < flown)
@@ -638,10 +638,10 @@ void ProjectileObjectNode::Fly(TimeClock* clock)
 
 void ProjectileObjectNode::BounceOff(TimeClock* clock, InstanceContext* other, const Vector4* point)
 {
-    constexpr f32 BounceInterval = Rounded(0.3);
+    CONSTEXPR f32 BounceInterval = Rounded(0.3);
     // The way from the middle scaled by 0.25 to 1 on each axis
-    constexpr f32 Spread = 0.75f;
-    constexpr f32 LeastSpread = 0.25f;
+    CONSTEXPR f32 Spread = 0.75f;
+    CONSTEXPR f32 LeastSpread = 0.25f;
     f32 now = static_cast<f32>(static_cast<s32>(clock->time)) * g_SecondsPerClockUnit;
     if (!(BounceInterval < now - lastBounce))
     {
@@ -722,8 +722,8 @@ void ProjectileObjectNode::BounceOffFocus(TimeClock* clock)
 void ProjectileObjectNode::Aim(CustomProjectile*)
 {
     // Closer than a hundredth of a unit it isn't turned to the target
-    constexpr f32 NearSquared = Rounded(1e-4);
-    constexpr f32 BlastPitch = 90.0f;
+    CONSTEXPR f32 NearSquared = Rounded(1e-4);
+    CONSTEXPR f32 BlastPitch = 90.0f;
     // The character that operates the shooter (its parent when it has one), whose instance the game keeps as the one operated
     auto* shooterInstance = static_cast<InstanceContext*>(owner->collision.leftOut);
     InstanceContext* operated = shooterInstance->parent != nullptr ? shooterInstance->parent : shooterInstance;
@@ -863,7 +863,7 @@ void ResetCustomProjectiles()
 
 void SetUpCustomProjectile(CodeModel* model)
 {
-    constexpr f32 HitScale = 10.0f;
+    CONSTEXPR f32 HitScale = 10.0f;
     u8 slot = model->slot;
     g_CustomProjectilePacks[slot] = model->packs;
     g_CustomProjectileCommands[slot] = model->command;
@@ -911,8 +911,8 @@ u32 ProjectileStateOfId(u16* id)
 
 void MakePyramidHull()
 {
-    constexpr f32 HalfWidth = Rounded(0.1);
-    constexpr f32 HalfHeight = 4.0f;
+    CONSTEXPR f32 HalfWidth = Rounded(0.1);
+    CONSTEXPR f32 HalfHeight = 4.0f;
     Vector4 points[5] = {
         {0.0f, 0.0f, 0.0f, 1.0f},
         {-HalfWidth, -HalfHeight, 1.0f, 1.0f},

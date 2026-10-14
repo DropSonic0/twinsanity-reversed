@@ -9,9 +9,9 @@ namespace
 {
 // The unit square's corners a sprite is drawn between (y up), and its corners around its middle a turned sprite's matrix places,
 // in the texture area's order (its corner, the corner a height from it, the one a width from it, the opposite one)
-constexpr Vector4 SquareStart = {0.0f, 1.0f, 0.0f, 1.0f};
-constexpr Vector4 SquareEnd = {1.0f, 0.0f, 0.0f, 1.0f};
-constexpr Vector4 TurnedCorners[4] = {
+CONSTEXPR Vector4 SquareStart = {0.0f, 1.0f, 0.0f, 1.0f};
+CONSTEXPR Vector4 SquareEnd = {1.0f, 0.0f, 0.0f, 1.0f};
+CONSTEXPR Vector4 TurnedCorners[4] = {
     {-0.5f, 0.5f, 0.0f, 1.0f},
     {-0.5f, -0.5f, 0.0f, 1.0f},
     {0.5f, 0.5f, 0.0f, 1.0f},
@@ -19,8 +19,8 @@ constexpr Vector4 TurnedCorners[4] = {
 };
 
 // A ring's squareness that leaves it an ellipse, its arrays' vertexes for each point
-constexpr f32 RoundEpsilon = Epsilon;
-constexpr u32 PointVertexes = 2;
+CONSTEXPR f32 RoundEpsilon = Epsilon;
+CONSTEXPR u32 PointVertexes = 2;
 
 // A colour curve's value at t: between two points, made with the game's vector maths, its w (the alpha) is 1
 Vector4 SampleColours(const Vector4Curve* curve, f32 t)

@@ -17,14 +17,14 @@ EABI_EXPORT(FUN_0018fe08, MoveSpringPoints);
 
 namespace
 {
-constexpr f32 DefaultStiffness = 1000.0f;
+CONSTEXPR f32 DefaultStiffness = 1000.0f;
 // Springs whose ends are nearer pull nothing
-constexpr f32 MinimumSpringLength = 0x1.0624dep-10f;
+CONSTEXPR f32 MinimumSpringLength = 0x1.0624dep-10f;
 // A step longer than a 50th of a second takes its passes once for every whole 50th of a second in it
-constexpr f32 LongStep = 0x1.47ae14p-6f;
-constexpr f32 PassesPerSecond = 50.0f;
+CONSTEXPR f32 LongStep = 0x1.47ae14p-6f;
+CONSTEXPR f32 PassesPerSecond = 50.0f;
 // The room the arrays are made with and grow by
-constexpr u32 ArrayRoom = 10;
+CONSTEXPR u32 ArrayRoom = 10;
 
 void DestroyIterator(ArrayIterator* iterator, const GccVTableEntry* base, u32 flags)
 {

@@ -11,10 +11,10 @@
 
 namespace
 {
-constexpr u32 FlagWords = 8;
-constexpr u32 FlagCount = 0x100;
+CONSTEXPR u32 FlagWords = 8;
+CONSTEXPR u32 FlagCount = 0x100;
 // How many chunks' navigations the path finder goes through
-constexpr u16 PathFinderChunks = 0x40;
+CONSTEXPR u16 PathFinderChunks = 0x40;
 }
 
 // The store saved with the game, and the one that isn't (read and written as nothing)

@@ -6,11 +6,11 @@
 namespace
 {
 // What the buffers grow by
-constexpr u32 CapacityStep = 0x20;
+CONSTEXPR u32 CapacityStep = 0x20;
 // StringConstructFloat writes the numbers between these plainly, the others with an exponent, and 3 decimals
-constexpr f32 LargestPlain = 1000000.0f;
-constexpr f32 SmallestPlain = Rounded(0.0001);
-constexpr f32 DecimalsScale = 1000.0f;
+CONSTEXPR f32 LargestPlain = 1000000.0f;
+CONSTEXPR f32 SmallestPlain = Rounded(0.0001);
+CONSTEXPR f32 DecimalsScale = 1000.0f;
 
 // What a string of that many characters and its terminator gets
 s32 CapacityFor(s32 length)

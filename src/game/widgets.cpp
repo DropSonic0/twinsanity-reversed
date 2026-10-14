@@ -34,21 +34,21 @@ namespace
 {
 // The overlay layer a widget starts in (its drop shadow's colour is black at UiShadowAlpha: the constructors hand in the progress
 // they just made 0 for the black)
-constexpr u32 DefaultLayer = 3;
+CONSTEXPR u32 DefaultLayer = 3;
 // A tiled picture's rows and columns
-constexpr u32 TileRows = 2;
-constexpr u32 TileColumns = 4;
+CONSTEXPR u32 TileRows = 2;
+CONSTEXPR u32 TileColumns = 4;
 // The credits: how fast they roll (screens a second), a line's height (a fraction of the screen) and the text's size; they start
 // at the screen's bottom and are drawn down to it
-constexpr f32 CreditsSpeed = Rounded(0.1);
-constexpr f32 CreditsLineHeight = Rounded(0.05);
-constexpr f32 CreditsTextSize = 0.75f;
-constexpr f32 ScreenBottom = 1.0f;
+CONSTEXPR f32 CreditsSpeed = Rounded(0.1);
+CONSTEXPR f32 CreditsLineHeight = Rounded(0.05);
+CONSTEXPR f32 CreditsTextSize = 0.75f;
+CONSTEXPR f32 ScreenBottom = 1.0f;
 
 // The effect's vtable functions: its step, the widget's matrix changed and its draw placed by the widget's turn and middle
-constexpr u32 EffectStepSlot = 2;
-constexpr u32 EffectChangeSlot = 3;
-constexpr u32 EffectDrawPlacedSlot = 4;
+CONSTEXPR u32 EffectStepSlot = 2;
+CONSTEXPR u32 EffectChangeSlot = 3;
+CONSTEXPR u32 EffectDrawPlacedSlot = 4;
 
 // The state a widget is in once what it was asked for takes effect
 u32 StateToBe(const Widget* widget)
@@ -71,7 +71,7 @@ void TurnBack(Widget* widget, s32 duration)
 }
 
 // A rectangle's width is its size over this (4:3 as the game has it)
-constexpr f32 RectangleAspect = 0x1.553F7Cp+0f;
+CONSTEXPR f32 RectangleAspect = 0x1.553F7Cp+0f;
 
 // The colour faded out
 u32 Transparent(u32 colour)
@@ -768,7 +768,7 @@ void SpriteWidget::Draw(Renderer* renderer)
 }
 
 // The input's poll
-constexpr u32 InputPollSlot = 2;
+CONSTEXPR u32 InputPollSlot = 2;
 
 MenuWidget* MenuWidget::Construct(MenuWidget* widget, f32 anchor, MenuInput* input, MenuDrawer* drawer, MenuSounds* sounds)
 {
@@ -1732,7 +1732,7 @@ void WidgetsStaticInit()
 
 void InitWidgetStatics(s32 initialise, s32 priority)
 {
-    constexpr u32 ResumePagePlayers = 1;
+    CONSTEXPR u32 ResumePagePlayers = 1;
     if (priority != DefaultInitPriority || initialise == 0)
     {
         return;
@@ -1750,14 +1750,14 @@ void InitWidgetStatics(s32 initialise, s32 priority)
 void PadInstanceMover::Frame(f32 seconds, GamePad* pad)
 {
     // The bindings' actions and axes it reads, and how far they move it a second
-    constexpr u32 ForwardAction = 0;
-    constexpr u32 BackAction = 1;
-    constexpr u32 PitchAxis = 6;
-    constexpr u32 YawAxis = 7;
-    constexpr u32 SideAxis = 9;
-    constexpr u32 UpAxis = 10;
-    constexpr f32 AxisSpeed = 20.0f;
-    constexpr f32 PressureSpeed = 40.0f;
+    CONSTEXPR u32 ForwardAction = 0;
+    CONSTEXPR u32 BackAction = 1;
+    CONSTEXPR u32 PitchAxis = 6;
+    CONSTEXPR u32 YawAxis = 7;
+    CONSTEXPR u32 SideAxis = 9;
+    CONSTEXPR u32 UpAxis = 10;
+    CONSTEXPR f32 AxisSpeed = 20.0f;
+    CONSTEXPR f32 PressureSpeed = 40.0f;
 
     ObjectPlace* place = instance->place;
     RotateAndTranslate(place);

@@ -17,9 +17,9 @@ EABI_EXPORT(FUN_00287cc8, CastDown);
 namespace
 {
 // An edge cross product shorter (squared) is no axis
-constexpr f32 ShortAxis = 0x1.5798ecp-27f;
+CONSTEXPR f32 ShortAxis = 0x1.5798ecp-27f;
 // Each separating axis keeps a space's two planes (one on either side)
-constexpr s32 PlanesPerAxis = 2;
+CONSTEXPR s32 PlanesPerAxis = 2;
 
 enum AxisTag : u32
 {
@@ -67,8 +67,8 @@ void AddGatheredTriangles(ContactSet* set, s32 count, const CollisionHull* hull)
 // retail does)
 u32 PlanesCopySize(s32 count)
 {
-    constexpr s32 FirstWidened = 22;
-    constexpr s32 Widened = 24;
+    CONSTEXPR s32 FirstWidened = 22;
+    CONSTEXPR s32 Widened = 24;
     u32 size = static_cast<u32>(count) * sizeof(Vector4);
     if (static_cast<u32>(count - FirstWidened) < Widened - FirstWidened)
     {
@@ -261,7 +261,7 @@ void AddTriangleContact(ContactSet* set, const CollisionHit* triangle, const Col
 
 u32 MakeTriangleHullSpace(PlaneSet* space, const CollisionHit* triangle, const CollisionHull* hull)
 {
-    constexpr s32 MostAxes = 256;
+    CONSTEXPR s32 MostAxes = 256;
     Vector4 axes[MostAxes];
     LoadTriangleHullSupport(triangle, HullVertex(hull, 0));
     s32 count = TriangleHullAxes(triangle, hull, nullptr, axes);
@@ -398,7 +398,7 @@ s32 TriangleHullAxes(const CollisionHit* triangle, const CollisionHull* hull, co
 
 u32 GatherBoxTriangleContacts(ContactSet* set, ChunkData* chunk, const Box* box, const CollisionHull* hull)
 {
-    constexpr s32 MostTriangles = ContactList::MostContacts;
+    CONSTEXPR s32 MostTriangles = ContactList::MostContacts;
     s32 count = ChunkBoxTriangles(chunk, box, SurfaceFlags::SolidToPlayerProbes, g_GatheredTriangles, MostTriangles);
     set->box = *box;
     u32 full = 0;
@@ -414,11 +414,11 @@ u32 GatherBoxTriangleContacts(ContactSet* set, ChunkData* chunk, const Box* box,
 
 u32 GatherTriangleContacts(ContactSet* set, ChunkData* chunk, const Vector4* position, Vector4* motion, const CollisionHull* hull)
 {
-    constexpr s32 MostTriangles = ContactList::MostContacts;
+    CONSTEXPR s32 MostTriangles = ContactList::MostContacts;
     // The motion cut down a fifth at a time, the box grown by it and a margin
-    constexpr s32 Tries = 5;
-    constexpr f32 Fifth = Rounded(0.2);
-    constexpr f32 Margin = Rounded(0.3);
+    CONSTEXPR s32 Tries = 5;
+    CONSTEXPR f32 Fifth = Rounded(0.2);
+    CONSTEXPR f32 Margin = Rounded(0.3);
     Vector4 step = *motion;
     step.x = step.x * Fifth;
     step.y = step.y * Fifth;
@@ -458,8 +458,8 @@ u32 GatherTriangleContacts(ContactSet* set, ChunkData* chunk, const Vector4* pos
 void GatherInstanceContacts(ContactSet* set, ChunkData* chunk, const Vector4* position, const Vector4* motion, const u32* mask,
                             InstanceContext** skipped, s32 skippedCount, const CollisionHull* hull)
 {
-    constexpr s32 MostInstances = 0x40;
-    constexpr f32 Margin = Rounded(0.1);
+    CONSTEXPR s32 MostInstances = 0x40;
+    CONSTEXPR f32 Margin = Rounded(0.1);
     Box box;
     HullBox(hull, &box);
     GrowBoxByVector(&box, motion);
@@ -574,9 +574,9 @@ void AddInstanceHullContacts(ContactSet* set, const Box* box, InstanceContext* i
 u32 MakeHullHullSpace(PlaneSet* space, const CollisionHull* hull, const Matrix4x4* matrix, const CollisionHull* other,
                       const Matrix4x4* otherMatrix)
 {
-    constexpr s32 MostMoved = 32;
-    constexpr s32 MostDifferences = 256;
-    constexpr s32 MostAxes = 256;
+    CONSTEXPR s32 MostMoved = 32;
+    CONSTEXPR s32 MostDifferences = 256;
+    CONSTEXPR s32 MostAxes = 256;
     // As retail's stack has them: the moved vertexes, the differences and the axes, each running into the next when there are
     // more than fit (the padding below writes one past the differences)
     Vector4 scratch[MostMoved + MostDifferences + MostAxes];
@@ -663,7 +663,7 @@ u32 PointInsideSolidContact(f32 margin, ContactSet* set, const Vector4* point, u
 
 u32 PushOutOfSpace(const PlaneSet* space, const Vector4* point, Vector4* push, void*)
 {
-    constexpr f32 InFront = -Epsilon;
+    CONSTEXPR f32 InFront = -Epsilon;
     f32 least = Infinite;
     const Vector4* nearest = nullptr;
     const Vector4* plane = space->planes;
@@ -882,11 +882,11 @@ void PushOutOfSpheres(f32 height, f32 halfWidth, ContactSet* set, const Vector4*
 
 u32 GroundAhead(ContactSet* set, const MovingPoint* point)
 {
-    constexpr u32 NotSpheres = ContactKind::SphereBit;
-    constexpr f32 Below = Rounded(0.8);
+    CONSTEXPR u32 NotSpheres = ContactKind::SphereBit;
+    CONSTEXPR f32 Below = Rounded(0.8);
     // Where half of its velocity takes it, then 1.6 times it
-    constexpr f32 Near = 0.5f;
-    constexpr f32 Far = Rounded(1.6);
+    CONSTEXPR f32 Near = 0.5f;
+    CONSTEXPR f32 Far = Rounded(1.6);
     Vector4 ahead = point->position;
     ahead.x = ahead.x + point->velocity.x * Near;
     ahead.y = (ahead.y + point->velocity.y * Near) - Below;
@@ -906,9 +906,9 @@ u32 GroundAhead(ContactSet* set, const MovingPoint* point)
 s32 CollectCrossedPlanes(ContactSet* set, const Vector4* from, const Vector4* motion, const Vector4** planes, s32* contacts,
                          s32 most, s32* lastContact)
 {
-    constexpr u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush | ContactKind::PushedOut;
-    constexpr f32 Near = Rounded(0.0001);
-    constexpr f32 Same = Rounded(0.001);
+    CONSTEXPR u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush | ContactKind::PushedOut;
+    CONSTEXPR f32 Near = Rounded(0.0001);
+    CONSTEXPR f32 Same = Rounded(0.001);
     s32 count = 0;
     for (s32 index = 0; index < set->solid.count; index++)
     {
@@ -977,10 +977,10 @@ s32 CollectCrossedPlanes(ContactSet* set, const Vector4* from, const Vector4* mo
 
 void TouchContact(ContactSet* set, s32 index, const Vector4* motion, const Vector4* from, const Vector4* to)
 {
-    constexpr f32 Share = 20.0f;
-    constexpr f32 Margin = -Rounded(0.01);
+    CONSTEXPR f32 Share = 20.0f;
+    CONSTEXPR f32 Margin = -Rounded(0.01);
     // Stood on when the end a bit above it is inside it
-    constexpr f32 Above = Rounded(0.05);
+    CONSTEXPR f32 Above = Rounded(0.05);
     Contact* contact = &set->solid.contacts[index];
     Vector4 moved;
     moved.x = to->x - from->x;
@@ -1020,12 +1020,12 @@ void TouchContact(ContactSet* set, s32 index, const Vector4* motion, const Vecto
 
 u32 SlideStep(ContactSet* set, const Vector4* from, const Vector4* motion, Vector4* to, u32 limitClimb)
 {
-    constexpr s32 MostPlanes = 4;
-    constexpr f32 Nudge = Rounded(2e-5);
-    constexpr f32 NoSlide = Infinite;
-    constexpr f32 ShortSlide = 0x1.0c6f7cp-20f;
+    CONSTEXPR s32 MostPlanes = 4;
+    CONSTEXPR f32 Nudge = Rounded(2e-5);
+    CONSTEXPR f32 NoSlide = Infinite;
+    CONSTEXPR f32 ShortSlide = 0x1.0c6f7cp-20f;
     // The contacts a slide may end inside of: spheres, those not to be pushed out of or pushed out of, the hull it rides
-    constexpr u32 MayEndInside = ContactKind::SphereBit | ContactKind::NoPush | ContactKind::PushedOut | ContactKind::Ridden;
+    CONSTEXPR u32 MayEndInside = ContactKind::SphereBit | ContactKind::NoPush | ContactKind::PushedOut | ContactKind::Ridden;
     const Vector4* planes[MostPlanes];
     s32 contacts[MostPlanes];
     s32 best[2] = {g_NoContacts[0], g_NoContacts[1]};
@@ -1200,7 +1200,7 @@ s32 CountContactsContaining(f32 margin, ContactSet* set, const Vector4* point, u
 
 s32 FindGround(ContactSet* set, const Vector4* point, Vector4* normal)
 {
-    constexpr u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush;
+    CONSTEXPR u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush;
     for (s32 index = 0; index < set->solid.count; index++)
     {
         Contact* contact = &set->solid.contacts[index];
@@ -1242,11 +1242,11 @@ s32 FindGround(ContactSet* set, const Vector4* point, Vector4* normal)
 
 s32 ProbeAlong(ContactSet* set, const Vector4* from, const Vector4* motion, Vector4* lastOutside, Vector4* normal)
 {
-    constexpr u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush;
-    constexpr f32 Smallest = Rounded(0.0001);
-    constexpr f32 Upward = Rounded(0.707);
+    CONSTEXPR u32 Skipped = ContactKind::SphereBit | ContactKind::NoPush;
+    CONSTEXPR f32 Smallest = Rounded(0.0001);
+    CONSTEXPR f32 Upward = Rounded(0.707);
     // Below every plane's y
-    constexpr f32 Lowest = -1e10f;
+    CONSTEXPR f32 Lowest = -1e10f;
     Vector4 step = *motion;
     Vector4 outside = *from;
     Vector4 inside = *from;
@@ -1349,15 +1349,15 @@ s32 ProbeAlong(ContactSet* set, const Vector4* from, const Vector4* motion, Vect
 s32 Move(f32 frameTime, ContactSet* set, const Vector4* from, const Vector4* motion, Vector4* end, Vector4* groundNormal,
          u32 limitClimb)
 {
-    constexpr s32 MostSteps = 6;
-    constexpr f32 Moving = Rounded(2.5e-5);
-    constexpr f32 Stuck = Rounded(0.001);
-    constexpr f32 Rising = Rounded(0.001);
-    constexpr f32 Short = Rounded(0.05);
+    CONSTEXPR s32 MostSteps = 6;
+    CONSTEXPR f32 Moving = Rounded(2.5e-5);
+    CONSTEXPR f32 Stuck = Rounded(0.001);
+    CONSTEXPR f32 Rising = Rounded(0.001);
+    CONSTEXPR f32 Short = Rounded(0.05);
     // The longest step at a frame's time, and the least the ground is probed for
-    constexpr f32 StepLength = Rounded(0.05);
-    constexpr f32 LeastReach = Rounded(0.1);
-    constexpr s32 Directions = 9;
+    CONSTEXPR f32 StepLength = Rounded(0.05);
+    CONSTEXPR f32 LeastReach = Rounded(0.1);
+    CONSTEXPR s32 Directions = 9;
     f32 maxStep = StepLength / frameTime;
     Vector4 position = *from;
     Vector4 step = *motion;
@@ -1507,7 +1507,7 @@ s32 MoveCharacter(f32 frameTime, ContactSet* set, const Vector4* from, const Vec
                   u32 limitClimb)
 {
     // A small fall tried when it's stuck
-    constexpr f32 Fall = -0.125f;
+    CONSTEXPR f32 Fall = -0.125f;
     s32 result = Move(frameTime, set, from, motion, end, groundNormal, limitClimb);
     if (result != StuckFalling)
     {
@@ -1556,8 +1556,8 @@ s32 MoveCharacter(f32 frameTime, ContactSet* set, const Vector4* from, const Vec
 
 s32 ClipSegmentToSpace(const PlaneSet* space, const Vector4* start, const Vector4* end, Vector4* entry, Vector4* plane)
 {
-    constexpr f32 OnPlane = Epsilon;
-    constexpr f32 Outside = Rounded(1e-5);
+    CONSTEXPR f32 OnPlane = Epsilon;
+    CONSTEXPR f32 Outside = Rounded(1e-5);
     Vector4 from = *start;
     Vector4 to = *end;
     const Vector4* planes = space->planes;
@@ -1703,14 +1703,14 @@ f32 CastDown(f32 above, f32 below, ContactSet* set, const Vector4* point, Vector
 
 u32 StepUp(ContactSet* set, const Vector4* position, const Vector4* velocity, Vector4* outVelocity, u32 allowed)
 {
-    constexpr f32 Small = Rounded(0.0001);
-    constexpr f32 Moving = Rounded(0.01);
-    constexpr f32 MostLift = Rounded(0.2);
-    constexpr f32 Turned = Rounded(0.866);
-    constexpr f32 Rising = Rounded(0.001);
+    CONSTEXPR f32 Small = Rounded(0.0001);
+    CONSTEXPR f32 Moving = Rounded(0.01);
+    CONSTEXPR f32 MostLift = Rounded(0.2);
+    CONSTEXPR f32 Turned = Rounded(0.866);
+    CONSTEXPR f32 Rising = Rounded(0.001);
     // Lifted by its flat speed times this, and lowered a fifth of its speed at a time
-    constexpr f32 LiftPerSpeed = 3.0f;
-    constexpr f32 LowerShare = Rounded(0.2);
+    CONSTEXPR f32 LiftPerSpeed = 3.0f;
+    CONSTEXPR f32 LowerShare = Rounded(0.2);
     Vector4 flat = *velocity;
     flat.y = 0.0f;
     f32 speed = __builtin_sqrtf(velocity->x * velocity->x + velocity->y * velocity->y + velocity->z * velocity->z);
@@ -1856,11 +1856,11 @@ namespace
 // than fit
 struct ContactScratch
 {
-    static constexpr s32 MostMoved = 32;
-    static constexpr s32 MostDifferences = 256;
-    static constexpr s32 MostAxes = 256;
+    static CONSTEXPR s32 MostMoved = 32;
+    static CONSTEXPR s32 MostDifferences = 256;
+    static CONSTEXPR s32 MostAxes = 256;
     // The axes' padding to a multiple of four
-    static constexpr s32 AxisPadding = 4;
+    static CONSTEXPR s32 AxisPadding = 4;
     Vector4 all[MostMoved + MostDifferences + MostAxes + AxisPadding];
 
     Vector4* Moved()
@@ -1978,7 +1978,7 @@ u32 AxisTagOf(const Vector4* axis)
 u32 HullsContact(const CollisionHull* hull, const Matrix4x4* matrix, const CollisionHull* other, const Matrix4x4* otherMatrix,
                  Vector4* push, Vector4* point)
 {
-    constexpr s32 SixteenGroups = 64;
+    CONSTEXPR s32 SixteenGroups = 64;
     ContactScratch scratch;
     Vector4* differences = scratch.Differences();
     Vector4* axes = scratch.Axes();
@@ -2047,7 +2047,7 @@ u32 HullsContact(const CollisionHull* hull, const Matrix4x4* matrix, const Colli
 u32 TriangleHullContact(const CollisionHit* triangle, const CollisionHull* hull, const Matrix4x4* matrix, Vector4* push,
                         Vector4* point)
 {
-    constexpr u32 Corners = 3;
+    CONSTEXPR u32 Corners = 3;
     const Vector4* corners = triangle->vertices;
     Vector4 plane;
     PlaneThroughTriangle(&plane, &corners[0], &corners[1], &corners[2]);
@@ -2172,7 +2172,7 @@ u32 TriangleHullContact(const CollisionHit* triangle, const CollisionHull* hull,
 
 void NearestPointOfSegment(const Vector4* lineStart, const Vector4* lineEnd, const Vector4* start, const Vector4* end, Vector4* out)
 {
-    constexpr f32 Parallel = Rounded(1e-4);
+    CONSTEXPR f32 Parallel = Rounded(1e-4);
     Vector4 line = {lineEnd->x - lineStart->x, lineEnd->y - lineStart->y, lineEnd->z - lineStart->z, 1.0f};
     Vector4 segment = {end->x - start->x, end->y - start->y, end->z - start->z, 1.0f};
     Vector4 apart = {lineStart->x - start->x, lineStart->y - start->y, lineStart->z - start->z, 1.0f};

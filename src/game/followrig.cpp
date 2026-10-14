@@ -17,59 +17,59 @@ EABI_EXPORT(FUN_0015e330, &FollowCameraRig::RollerbrawlFrame);
 
 namespace
 {
-constexpr u32 AxisCount = 5;
-constexpr u32 PressureCount = 3;
+CONSTEXPR u32 AxisCount = 5;
+CONSTEXPR u32 PressureCount = 3;
 // What the followers' points move at (the share of the way a second)
-constexpr f32 FollowRate = 6.0f;
+CONSTEXPR f32 FollowRate = 6.0f;
 // The camera's distance: made at, back to (between its ends), its speed (units a second) and Mecha-Bandicoot's
-constexpr f32 StartDistance = 8.5f;
-constexpr f32 DefaultDistance = 7.5f;
-constexpr f32 NearestDistance = 2.0f;
-constexpr f32 FarthestDistance = 13.0f;
-constexpr f32 DistanceSpeed = 10.0f;
-constexpr f32 MechaDistance = 12.0f;
+CONSTEXPR f32 StartDistance = 8.5f;
+CONSTEXPR f32 DefaultDistance = 7.5f;
+CONSTEXPR f32 NearestDistance = 2.0f;
+CONSTEXPR f32 FarthestDistance = 13.0f;
+CONSTEXPR f32 DistanceSpeed = 10.0f;
+CONSTEXPR f32 MechaDistance = 12.0f;
 // The probes' ends (first two up and down, the others across): around the target and around the camera, at the low pitch and
 // at the high one
-constexpr f32 LowTargetSides[4] = {0.5f, -0.5f, Rounded(0.8), Rounded(-0.8)};
-constexpr f32 LowCameraSides[4] = {Rounded(0.42), Rounded(-0.42), Rounded(0.42), Rounded(-0.42)};
-constexpr f32 HighTargetSides[4] = {1.0f, Rounded(-0.8), Rounded(0.8), Rounded(-0.8)};
-constexpr f32 HighCameraSides[4] = {0.5f, -0.5f, 0.5f, -0.5f};
-constexpr Vector4 TargetProbeOffset = {0.0f, 0.0f, -0.5f, 1.0f};
-constexpr Vector4 CameraProbeOffset = {0.0f, 0.0f, 0.0f, 1.0f};
-constexpr f32 PositionerUnused1C8 = 10.0f;
+CONSTEXPR f32 LowTargetSides[4] = {0.5f, -0.5f, Rounded(0.8), Rounded(-0.8)};
+CONSTEXPR f32 LowCameraSides[4] = {Rounded(0.42), Rounded(-0.42), Rounded(0.42), Rounded(-0.42)};
+CONSTEXPR f32 HighTargetSides[4] = {1.0f, Rounded(-0.8), Rounded(0.8), Rounded(-0.8)};
+CONSTEXPR f32 HighCameraSides[4] = {0.5f, -0.5f, 0.5f, -0.5f};
+CONSTEXPR Vector4 TargetProbeOffset = {0.0f, 0.0f, -0.5f, 1.0f};
+CONSTEXPR Vector4 CameraProbeOffset = {0.0f, 0.0f, 0.0f, 1.0f};
+CONSTEXPR f32 PositionerUnused1C8 = 10.0f;
 // The Rollerbrawl: the ball's speed its yaw speed grows with (0.02 of the range for each unit a second), the snowball's scale the
 // camera backs off and rises past, its distance then and the target box's height
-constexpr f32 RollerbrawlTopSpeed = 50.0f;
-constexpr f32 RollerbrawlSpeedShare = Rounded(0.02);
-constexpr f32 SnowScaleBackingOff = Rounded(0.8);
-constexpr f32 RollerbrawlDistance = 8.0f;
-constexpr f32 RollerbrawlBoxHeight = 2.0f;
+CONSTEXPR f32 RollerbrawlTopSpeed = 50.0f;
+CONSTEXPR f32 RollerbrawlSpeedShare = Rounded(0.02);
+CONSTEXPR f32 SnowScaleBackingOff = Rounded(0.8);
+CONSTEXPR f32 RollerbrawlDistance = 8.0f;
+CONSTEXPR f32 RollerbrawlBoxHeight = 2.0f;
 // The Humiliskate: the target box's height, the distance, the field of view and the pitch (degrees), the positioner's turn share
 // and own rate
-constexpr Vector4 HumiliskateBox = {0.0f, 1.0f, 0.0f, 1.0f};
-constexpr f32 HumiliskateDistance = Rounded(2.3);
-constexpr f32 HumiliskateFieldOfView = 80.0f;
-constexpr f32 HumiliskatePitch = 20.0f;
-constexpr f32 HumiliskateTurnShare = Rounded(0.3);
-constexpr f32 HumiliskateOwnRate = 25.0f;
+CONSTEXPR Vector4 HumiliskateBox = {0.0f, 1.0f, 0.0f, 1.0f};
+CONSTEXPR f32 HumiliskateDistance = Rounded(2.3);
+CONSTEXPR f32 HumiliskateFieldOfView = 80.0f;
+CONSTEXPR f32 HumiliskatePitch = 20.0f;
+CONSTEXPR f32 HumiliskateTurnShare = Rounded(0.3);
+CONSTEXPR f32 HumiliskateOwnRate = 25.0f;
 // What the character moves at (its flat speed squared) for the camera to count it as moving
-constexpr f32 MovingSpeedSquared = 0.5f;
+CONSTEXPR f32 MovingSpeedSquared = 0.5f;
 // The walk's yaw speed by the left stick's angle from straight ahead (65536ths of a turn): it grows from 1 to 90 degrees, grows
 // on to 135 by half the tilting yaw speed more and falls from 1.3 times it to none at 179 (those spans in radians); and how much
 // of the way to that goal it eases each frame
-constexpr s32 OneDegree = 0xB6;
-constexpr s32 ThreeEighthsTurn = 0x6000;
-constexpr s32 AlmostHalfTurn = 0x7F49;
-constexpr f32 EightyNineDegrees = 0x1.8da7e4p+0f;
-constexpr f32 FortyFourDegrees = 0x1.893012p-1f;
-constexpr f32 GrowingOnShare = 0.5f;
-constexpr f32 FallingShare = Rounded(1.3);
-constexpr f32 WalkYawEasing = Rounded(0.1);
+CONSTEXPR s32 OneDegree = 0xB6;
+CONSTEXPR s32 ThreeEighthsTurn = 0x6000;
+CONSTEXPR s32 AlmostHalfTurn = 0x7F49;
+CONSTEXPR f32 EightyNineDegrees = 0x1.8da7e4p+0f;
+CONSTEXPR f32 FortyFourDegrees = 0x1.893012p-1f;
+CONSTEXPR f32 GrowingOnShare = 0.5f;
+CONSTEXPR f32 FallingShare = Rounded(1.3);
+CONSTEXPR f32 WalkYawEasing = Rounded(0.1);
 // The walk's yaw speed's share in the air
-constexpr f32 AirborneYawShare = 0.5f;
+CONSTEXPR f32 AirborneYawShare = 0.5f;
 // How long the blenders hold (seconds)
-constexpr f32 ShortHold = Rounded(0.1);
-constexpr f32 TiltingHold = Rounded(0.2);
+CONSTEXPR f32 ShortHold = Rounded(0.1);
+CONSTEXPR f32 TiltingHold = Rounded(0.2);
 
 // The rig's own parts and the pad rig's bindings destroyed (the pad rig's destructor inline, as retail has it)
 void DestroyRigParts(FollowCameraRig* rig)
@@ -889,7 +889,7 @@ void StepFollowCamera(FollowCamera* follow, TimeClock* clock, CharacterAgent* ch
     // Nothing sets switchBack, so this switch back never runs
     if (allowsSwitchBack != 0 && follow->bits.switchBack != 0)
     {
-        constexpr f32 SwitchBackSeconds = 0.5f;
+        CONSTEXPR f32 SwitchBackSeconds = 0.5f;
         CameraLensNode* lens = LensOf(camera);
         follow->bits.rigAway ^= 1;
         follow->lensRig = lens->BlendTo(&follow->rig, static_cast<s32>(g_ClockUnitsPerSecond * SwitchBackSeconds), CurveEven);

@@ -20,12 +20,12 @@ extern "C"
 namespace
 {
 // An emitter of a surface's particles starts with a value
-constexpr u32 EmitterValue = 1;
+CONSTEXPR u32 EmitterValue = 1;
 // A footprint's decal: its variant, type, flags and key
-constexpr s32 FootprintVariant = 1;
-constexpr s32 FootprintType = 0;
-constexpr s32 FootprintFlags = 1;
-constexpr s32 FootprintKey = 1;
+CONSTEXPR s32 FootprintVariant = 1;
+CONSTEXPR s32 FootprintType = 0;
+CONSTEXPR s32 FootprintFlags = 1;
+CONSTEXPR s32 FootprintKey = 1;
 }
 
 extern "C"
@@ -35,11 +35,11 @@ extern "C"
     // below it
     void SpawnSurfaceImpactParticles(InstanceContext* instance, const CollisionSurface* surface, const Vector4* point)
     {
-        constexpr u32 Marks = 6;
-        constexpr f32 Spread = Rounded(0.4);
-        constexpr f32 Around = 0.9f;
-        constexpr f32 Below = Rounded(0.2);
-        constexpr f32 TurnDegrees = 60.0f;
+        CONSTEXPR u32 Marks = 6;
+        CONSTEXPR f32 Spread = Rounded(0.4);
+        CONSTEXPR f32 Around = 0.9f;
+        CONSTEXPR f32 Below = Rounded(0.2);
+        CONSTEXPR f32 TurnDegrees = 60.0f;
         u32 system = GetSurfaceParticle(surface, ContactImpact);
         Vector4 offset = {Around, 0.0f, 0.0f, 1.0f};
         for (u32 mark = 0; mark < Marks; mark++)
@@ -75,7 +75,7 @@ extern "C"
     // two are about 45 degrees apart or more), in the instance's chunk
     void AddInstanceDecal(u32, InstanceContext* instance, ExitPointAnimation* at, const Vector4* offset)
     {
-        constexpr f32 SameWay = 0.7f;
+        CONSTEXPR f32 SameWay = 0.7f;
         ObjectPlace* place = instance->place;
         RotateAndTranslate(place);
         const f32 (*m)[4] = place->matrix.m;

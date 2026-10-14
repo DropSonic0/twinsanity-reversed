@@ -166,17 +166,17 @@ extern "C"
 namespace
 {
 // A table's vtable function that lets every resource go, and its destructor
-constexpr u32 TableClearSlot = 2;
-constexpr u32 TableDestroySlot = 1;
+CONSTEXPR u32 TableClearSlot = 2;
+CONSTEXPR u32 TableDestroySlot = 1;
 // How many languages have voices (none for Japanese), and how many resources of each kind the game's tables have room for
-constexpr u32 VoiceLanguages = 5;
-constexpr u32 ObjectCapacity = 1500;
-constexpr u32 AnimationCapacity = 2500;
-constexpr u32 ScriptCapacity = 8000;
-constexpr u32 CodeModelCapacity = 200;
-constexpr u32 ModelCapacity = 1500;
-constexpr u32 SoundCapacity = 2000;
-constexpr u32 VoiceCapacity = 2000;
+CONSTEXPR u32 VoiceLanguages = 5;
+CONSTEXPR u32 ObjectCapacity = 1500;
+CONSTEXPR u32 AnimationCapacity = 2500;
+CONSTEXPR u32 ScriptCapacity = 8000;
+CONSTEXPR u32 CodeModelCapacity = 200;
+CONSTEXPR u32 ModelCapacity = 1500;
+CONSTEXPR u32 SoundCapacity = 2000;
+CONSTEXPR u32 VoiceCapacity = 2000;
 
 // A table made with its base's vtable and a capacity, every resource none
 void ConstructTable(ResourceTable* table, const GccVTableEntry* base, u32 capacity, bool setsUnused15)
@@ -349,8 +349,8 @@ enum CodeSubsection : u32
 };
 
 // The tables' vtable functions the readers pass on to: the count of resources to come, the count read
-constexpr u32 TableSetCountSlot = 3;
-constexpr u32 TableFinishSlot = 4;
+CONSTEXPR u32 TableSetCountSlot = 3;
+CONSTEXPR u32 TableFinishSlot = 4;
 
 void DestroyReader(CodeKindReader* reader, u32 destroyFlags)
 {
@@ -1506,8 +1506,8 @@ void GameResources::Destroy(u32 destroyFlags)
 void GameResources::SetUpCodeModels(u32 clear)
 {
     // The kinds of code models with slots (their byte 8)
-    constexpr u8 PickupModel = 0x11;
-    constexpr u8 ProjectileModel = 0x12;
+    CONSTEXPR u8 PickupModel = 0x11;
+    CONSTEXPR u8 ProjectileModel = 0x12;
     if (clear != 0)
     {
         ClearCustomPickups();

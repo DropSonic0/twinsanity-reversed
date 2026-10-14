@@ -21,7 +21,7 @@ u32 GlyphIndex(const Font* font, u32 character)
 }
 
 // A glyph's page is in the low bits of its first byte (x's lowest bits)
-constexpr u8 GlyphPageMask = 3;
+CONSTEXPR u8 GlyphPageMask = 3;
 
 u8 GlyphPage(const Vector4& glyph)
 {
@@ -29,14 +29,14 @@ u8 GlyphPage(const Vector4& glyph)
 }
 
 // A glyph's width and height are the GS's sixteenths of a pixel
-constexpr f32 PixelsPerGlyphUnit = 0.0625f;
+CONSTEXPR f32 PixelsPerGlyphUnit = 0.0625f;
 // Where a text starts a new line
-constexpr char NewLine = '~';
+CONSTEXPR char NewLine = '~';
 
 // The glyphs as new[] makes an array of a class: their count in the 16 bytes before them
-constexpr u32 ArrayCookie = 0x10;
+CONSTEXPR u32 ArrayCookie = 0x10;
 // The VIF code after the glyphs: MSCAL 0
-constexpr u32 GlyphsEnd = 0x14000000;
+CONSTEXPR u32 GlyphsEnd = 0x14000000;
 
 Vector4* NewGlyphs(u32 count)
 {

@@ -8,13 +8,13 @@
 namespace
 {
 // A queued text's alignment until it's queued
-constexpr u32 DefaultAlignment = TextAlignment::TopLeft;
-constexpr u32 FontTextsGrowth = 10;
+CONSTEXPR u32 DefaultAlignment = TextAlignment::TopLeft;
+CONSTEXPR u32 FontTextsGrowth = 10;
 
 // The font's vtable functions: the frame's texts begun, a text drawn and the texts finished
-constexpr u32 FontBeginSlot = 2;
-constexpr u32 FontDrawSlot = 3;
-constexpr u32 FontEndSlot = 4;
+CONSTEXPR u32 FontBeginSlot = 2;
+CONSTEXPR u32 FontDrawSlot = 3;
+CONSTEXPR u32 FontEndSlot = 4;
 
 // The colour table's white: texts start in it, and a renderer's colour leaves shapes in their own colours with it
 bool IsDefaultColour(u32 colour)

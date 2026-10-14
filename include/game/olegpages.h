@@ -47,7 +47,7 @@ CHECK_SIZE(LoadGamePage, 0x54);
 // An item doing one of the game controller's actions when it's activated (D_002F4188), then leading where a link leads (nowhere)
 struct ActionItem : LinkItem
 {
-    enum Action : u32
+    enum Action
     {
         // Back to the pause menu
         ActionPauseMenu = 0,
@@ -416,7 +416,7 @@ CHECK_SIZE(SaveChoicesPage, 0x54);
 // save slot; 1: back; 2: continue), its text one of the save code's messages
 struct SaveCodeItem : LinkItem
 {
-    enum Answer : u32
+    enum Answer
     {
         AnswerChoose = 0,
         AnswerBack = 1,
@@ -454,7 +454,7 @@ CHECK_SIZE(SaveSlotsPage, 0x60);
 class LevelsPage : public OlegPage
 {
 public:
-    static constexpr u32 Slots = 5;
+    enum { Slots = 5 };
 
     LevelWidget* levels[Slots];
     RingWidget* rings[Slots];

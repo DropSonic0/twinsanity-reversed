@@ -17,93 +17,93 @@ namespace
 {
 // The board's body: a mass of 5 in its ellipsoid's box (twice as wide armed), how soft it is (armed 40), no friction but a
 // little against spinning and rolling; it bounces 0.6 (armed 0.3)
-constexpr f32 BoardMass = 5.0f;
-constexpr f32 Softness = 0.5f;
-constexpr f32 ArmedSoftness = 40.0f;
-constexpr f32 SpinFriction = Rounded(0.002);
-constexpr f32 Restitution = Rounded(0.6);
-constexpr f32 ArmedRestitution = Rounded(0.3);
+CONSTEXPR f32 BoardMass = 5.0f;
+CONSTEXPR f32 Softness = 0.5f;
+CONSTEXPR f32 ArmedSoftness = 40.0f;
+CONSTEXPR f32 SpinFriction = Rounded(0.002);
+CONSTEXPR f32 Restitution = Rounded(0.6);
+CONSTEXPR f32 ArmedRestitution = Rounded(0.3);
 // The handling: the ellipsoid's radii, armed (1, 0.7, 1.6) or not (1.4, 0.5, 1.4)
-constexpr f32 ArmedRadiusX = 1.0f;
-constexpr f32 ArmedRadiusY = 0.7f;
-constexpr f32 ArmedRadiusZ = Rounded(1.6);
-constexpr f32 RadiusXZ = 1.4f;
-constexpr f32 RadiusY = 0.5f;
+CONSTEXPR f32 ArmedRadiusX = 1.0f;
+CONSTEXPR f32 ArmedRadiusY = 0.7f;
+CONSTEXPR f32 ArmedRadiusZ = Rounded(1.6);
+CONSTEXPR f32 RadiusXZ = 1.4f;
+CONSTEXPR f32 RadiusY = 0.5f;
 // The follow camera's own rate: 5 at first, almost none while knocked, eased back
-constexpr f32 StartCameraRate = 5.0f;
-constexpr f32 KnockedCameraRate = 0.0001f;
-constexpr f32 CameraRateKeep = Rounded(0.999);
-constexpr f32 CameraRateGain = 0x1.47ae16p-7f;
+CONSTEXPR f32 StartCameraRate = 5.0f;
+CONSTEXPR f32 KnockedCameraRate = 0.0001f;
+CONSTEXPR f32 CameraRateKeep = Rounded(0.999);
+CONSTEXPR f32 CameraRateGain = 0x1.47ae16p-7f;
 
 // Knocks: fading 0.1 a second; a frame's impulses over 150 knock it (unarmed boards spin 5 times faster about y, half as fast
 // about the others), armed boards are knocked 0.4 at the most; slot 5's pushes over 0.1 (their strength over the distance
 // squared and 4 more, times 4)
-constexpr f32 KnockFade = Rounded(0.1);
-constexpr f32 HardHit = 150.0f;
-constexpr f32 KnockSpin = 5.0f;
-constexpr f32 KnockSpinOthers = 0.5f;
-constexpr f32 ArmedMostKnocked = Rounded(0.4);
-constexpr f32 KnockThreshold = Rounded(0.1);
-constexpr f32 KnockScale = 4.0f;
+CONSTEXPR f32 KnockFade = Rounded(0.1);
+CONSTEXPR f32 HardHit = 150.0f;
+CONSTEXPR f32 KnockSpin = 5.0f;
+CONSTEXPR f32 KnockSpinOthers = 0.5f;
+CONSTEXPR f32 ArmedMostKnocked = Rounded(0.4);
+CONSTEXPR f32 KnockThreshold = Rounded(0.1);
+CONSTEXPR f32 KnockScale = 4.0f;
 
 // The drive: the stick rooted times 0.7, pulled toward the board's heading when it keeps it; a thrust of 32, armed boards' less
 // the higher above the rest height they hover (by half at the rise height, over the 20.5 between them)
-constexpr f32 StickScale = 0.7f;
-constexpr f32 Thrust = 32.0f;
-constexpr f32 InverseRiseRange = 0x1.8f9c18p-5f;
-constexpr f32 RiseThrustLoss = 0.5f;
+CONSTEXPR f32 StickScale = 0.7f;
+CONSTEXPR f32 Thrust = 32.0f;
+CONSTEXPR f32 InverseRiseRange = 0x1.8f9c18p-5f;
+CONSTEXPR f32 RiseThrustLoss = 0.5f;
 // The hover: probes 26 down from the board's four corners (half a unit from its middle) through the surfaces solid to objects
 // and the solid objects (dynamic scenery, crates, creatures, generic objects and pay gates), a spring toward the hover height
 // (3.5; 24 while it can rise and the shoulder or the stick pulled back is held)
 // 20 times the error (armed 8.5, a tenth of it pulling down), at a point 0.3 of the way to the corner; a corner over nothing is
 // pulled down 200
-constexpr s32 MostProbed = 0x20;
-constexpr s32 BoardCorners = 4;
-constexpr f32 ProbeDepth = 26.0f;
-constexpr f32 CornerOffset = 0.5f;
-constexpr f32 RestHeight = 3.5f;
-constexpr f32 RiseHeight = 24.0f;
-constexpr f32 RiseShoulder = Rounded(0.1);
-constexpr f32 RiseStick = Rounded(-0.8);
-constexpr f32 Spring = 20.0f;
-constexpr f32 ArmedSpring = 8.5f;
-constexpr f32 ArmedDownShare = Rounded(0.1);
-constexpr f32 LeverShare = Rounded(0.3);
-constexpr f32 HoverForceShare = 0.25f;
-constexpr f32 MissedError = -10.0f;
-constexpr f32 MissedPush = -200.0f;
+CONSTEXPR s32 MostProbed = 0x20;
+CONSTEXPR s32 BoardCorners = 4;
+CONSTEXPR f32 ProbeDepth = 26.0f;
+CONSTEXPR f32 CornerOffset = 0.5f;
+CONSTEXPR f32 RestHeight = 3.5f;
+CONSTEXPR f32 RiseHeight = 24.0f;
+CONSTEXPR f32 RiseShoulder = Rounded(0.1);
+CONSTEXPR f32 RiseStick = Rounded(-0.8);
+CONSTEXPR f32 Spring = 20.0f;
+CONSTEXPR f32 ArmedSpring = 8.5f;
+CONSTEXPR f32 ArmedDownShare = Rounded(0.1);
+CONSTEXPR f32 LeverShare = Rounded(0.3);
+CONSTEXPR f32 HoverForceShare = 0.25f;
+CONSTEXPR f32 MissedError = -10.0f;
+CONSTEXPR f32 MissedPush = -200.0f;
 // The tilt: its y axis turned toward up leaned 0.2 along the drive and pitched by the height error (within 3, 0.07 a unit), 40
 // times the turn (armed 45), twice as hard past a right angle; the turn toward the drive 14 times (armed 20) once it's driven;
 // both times its mass
-constexpr f32 TiltLean = Rounded(0.2);
-constexpr f32 MostTiltError = 3.0f;
-constexpr f32 TiltPitch = Rounded(-0.07);
-constexpr f32 TiltStrength = -40.0f;
-constexpr f32 ArmedTiltStrength = -45.0f;
-constexpr f32 TurnEpsilon = Rounded(0.001);
-constexpr f32 TurnStrength = 14.0f;
-constexpr f32 ArmedTurnStrength = 20.0f;
+CONSTEXPR f32 TiltLean = Rounded(0.2);
+CONSTEXPR f32 MostTiltError = 3.0f;
+CONSTEXPR f32 TiltPitch = Rounded(-0.07);
+CONSTEXPR f32 TiltStrength = -40.0f;
+CONSTEXPR f32 ArmedTiltStrength = -45.0f;
+CONSTEXPR f32 TurnEpsilon = Rounded(0.001);
+CONSTEXPR f32 TurnStrength = 14.0f;
+CONSTEXPR f32 ArmedTurnStrength = 20.0f;
 // The drags in the board's space: by the speed squared (across 1.4, up 1.5, along 0.015), spins about y 4.2 (the others 2.6);
 // times its mass
-constexpr f32 DragX = Rounded(-1.4);
-constexpr f32 DragY = -1.5f;
-constexpr f32 DragZ = -0.015f;
-constexpr f32 SpinDragY = -4.2f;
-constexpr f32 SpinDragOthers = -2.6f;
+CONSTEXPR f32 DragX = Rounded(-1.4);
+CONSTEXPR f32 DragY = -1.5f;
+CONSTEXPR f32 DragZ = -0.015f;
+CONSTEXPR f32 SpinDragY = -4.2f;
+CONSTEXPR f32 SpinDragOthers = -2.6f;
 // The character stands 0.76 down and 0.15 back along the board
-constexpr f32 StandDown = 0.76f;
-constexpr f32 StandBack = Rounded(0.15);
+CONSTEXPR f32 StandDown = 0.76f;
+CONSTEXPR f32 StandBack = Rounded(0.15);
 // The tow: circle pressed; the nearest body (an instance with a rigid body node) from 0 to 12 below it within a box 3 across
 // (and 15 down); springs 2.6 long, 50 stiff and damped 5 between the two
-constexpr f32 TowPress = Rounded(0.1);
-constexpr s32 MostTowed = 0x20;
-constexpr u32 TowedKinds = 1u << NodeRigidBody;
-constexpr f32 TowReachAcross = 3.0f;
-constexpr f32 TowReachDown = 15.0f;
-constexpr f32 TowDepth = 12.0f;
-constexpr f32 TowLength = 2.6f;
-constexpr f32 TowStiffness = 50.0f;
-constexpr f32 TowDamping = 5.0f;
+CONSTEXPR f32 TowPress = Rounded(0.1);
+CONSTEXPR s32 MostTowed = 0x20;
+CONSTEXPR u32 TowedKinds = 1u << NodeRigidBody;
+CONSTEXPR f32 TowReachAcross = 3.0f;
+CONSTEXPR f32 TowReachDown = 15.0f;
+CONSTEXPR f32 TowDepth = 12.0f;
+CONSTEXPR f32 TowLength = 2.6f;
+CONSTEXPR f32 TowStiffness = 50.0f;
+CONSTEXPR f32 TowDamping = 5.0f;
 
 DynamicBody* BodyOf(InstanceContext* instance)
 {

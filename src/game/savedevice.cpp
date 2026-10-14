@@ -14,8 +14,8 @@ extern "C"
 namespace
 {
 // The game's region and product codes, which name its saves
-constexpr char Region[] = "BE";
-constexpr char Product[] = "SLES-52568";
+CONSTEXPR char Region[] = "BE";
+CONSTEXPR char Product[] = "SLES-52568";
 
 using StorageOperation = Platform::Saves::Operation;
 

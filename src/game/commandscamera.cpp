@@ -20,7 +20,7 @@
 #include "game/widgets.h"
 
 #include <bit>
-#include <cstdint>
+#include <stdint.h>
 
 // The commands that work the cameras: the played character's follow camera, the game's camera rig the cutscenes' commands
 // place, the camera shown, and the screen's fade
@@ -88,13 +88,13 @@ ObjectNode* NodeOf(BehaviourRunner* runner)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 // An object's place (no object: the word at 8, retail's)
 ObjectPlace* PlaceOf(const ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -199,9 +199,9 @@ void CameraStopFocusObjectCommand::Execute(TimeClock*, BehaviourRunner*, Behavio
 void SwingAroundCameraCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     // 60 degrees, -90 degrees and 3 degrees (radians)
-    constexpr f32 SwingAngle = 0x1.0c1524p+0f;
-    constexpr f32 MinusHalfPi = -HalfPi;
-    constexpr f32 PhaseStep = 0x1.aceea2p-5f;
+    CONSTEXPR f32 SwingAngle = 0x1.0c1524p+0f;
+    CONSTEXPR f32 MinusHalfPi = -HalfPi;
+    CONSTEXPR f32 PhaseStep = 0x1.aceea2p-5f;
     InstanceContext* played = PlayedInstance();
     auto* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
     ReferencedObject* cameraInstance = ObjectOf(follow->cameraInstance);
@@ -341,7 +341,7 @@ void PlayerFaceTowardsCameraCommand::Execute(TimeClock*, BehaviourRunner* runner
 // view, at the field of view's distance), looking from the yaw and the pitch (degrees) the command gives
 void CutsceneCameraMoveCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
-    constexpr f32 Aspect = Rounded(4.0 / 3.0);
+    CONSTEXPR f32 Aspect = Rounded(4.0 / 3.0);
     GameController* controller = G_GameController;
     GameCameraRig* rig = &controller->camera;
     ScriptedCameraTarget* target = &rig->ownTarget;
@@ -522,7 +522,7 @@ f32 DistanceFromAim(const CutsceneCameraMoveCommand* command, GameCameraRig* rig
 void StartScriptedMoves(const CutsceneCameraMoveCommand* command, ScriptedCameraTarget* target,
                         ScriptedCameraPositioner* positioner, f32 targetSeconds, f32 cameraSeconds)
 {
-    constexpr f32 EaseSeconds = 0.5f;
+    CONSTEXPR f32 EaseSeconds = 0.5f;
     positioner->Stop();
     target->Stop();
     f32 units = g_ClockUnitsPerSecond;
@@ -556,8 +556,8 @@ void StartScriptedMoves(const CutsceneCameraMoveCommand* command, ScriptedCamera
 void FramingAngles(const CutsceneCameraMoveCommand* command, GameCameraRig* rig, const s32* fov, s32* side, s32* half,
                    f32* ratio)
 {
-    constexpr u32 FramedAngles = 3;
-    static constexpr f32 Divisors[FramedAngles][2] = {{6.0f, 2.0f}, {3.0f, 2.0f}, {2.0f, 1.5f}};
+    CONSTEXPR u32 FramedAngles = 3;
+    static CONSTEXPR f32 Divisors[FramedAngles][2] = {{6.0f, 2.0f}, {3.0f, 2.0f}, {2.0f, 1.5f}};
     u32 angles = command->framing.angles;
     if (angles == 0)
     {
@@ -585,8 +585,8 @@ s32* FramingYaw(s32* yaw, const CutsceneCameraMoveCommand* command, GameCameraRi
                 f32 aimDistance)
 {
     // The shot's fixed yaws (degrees)
-    constexpr u32 FixedYawCount = 4;
-    static constexpr f32 FixedYaws[FixedYawCount] = {-145.0f, -15.0f, -180.0f, -90.0f};
+    CONSTEXPR u32 FixedYawCount = 4;
+    static CONSTEXPR f32 FixedYaws[FixedYawCount] = {-145.0f, -15.0f, -180.0f, -90.0f};
     CutsceneCameraMoveCommand::Framing framing = command->framing;
     s32 value;
     if (framing.distanceFrom != CutsceneCameraMoveCommand::AimFixedYaw)
@@ -610,7 +610,7 @@ s32* FramingYaw(s32* yaw, const CutsceneCameraMoveCommand* command, GameCameraRi
 // The shot: the share of the framed object's height looked at and the view's share it fills
 void ShotShares(const CutsceneCameraMoveCommand* command, f32* height, f32* view)
 {
-    static constexpr f32 Shares[8][2] = {
+    static CONSTEXPR f32 Shares[8][2] = {
         {1.0f, Rounded(1.4)},
         {1.0f, Rounded(0.9)},
         {Rounded(0.9), 0.75f},
@@ -750,7 +750,7 @@ void ToggleCutsceneCameraCommand::Execute(TimeClock*, BehaviourRunner*, Behaviou
 // position (the place's bit set); the framing mirrored, the frame asked for
 void CutsceneCameraTargetsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u8 NoPath = 0xFF;
+    CONSTEXPR u8 NoPath = 0xFF;
     GameCameraRig* rig = &G_GameController->camera;
     rig->ResetScript();
     ObjectNode* node = NodeOf(runner);

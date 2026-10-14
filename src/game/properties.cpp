@@ -9,8 +9,8 @@ namespace
 {
 // The classes the holders' vtable function 12 gives (the factory hands it to PropertyList's unused parameter, nothing else reads
 // it): the playable characters', crates' and creatures' holders', and the others'
-constexpr u32 CharacterCrateCreatureClass = 0x13;
-constexpr u32 OtherHolderClass = 0x12;
+CONSTEXPR u32 CharacterCrateCreatureClass = 0x13;
+CONSTEXPR u32 OtherHolderClass = 0x12;
 
 // The extras' values (beyond the 0x20 bytes allocated when there are more of them, in retail)
 u32* ValuesOf(PropertyExtras* extras)

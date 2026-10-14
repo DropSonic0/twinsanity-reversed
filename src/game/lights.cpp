@@ -146,7 +146,7 @@ void AmbientLight::LightAt(const Vector4*, Vector4*, f32*, const Vector4*, const
 
 void AmbientLight::ComputeBounds()
 {
-    constexpr f32 Scale = 100000.0f;
+    CONSTEXPR f32 Scale = 100000.0f;
     BoxAround(this, Scale);
 }
 
@@ -177,7 +177,7 @@ void DirectionalLight::LightAt(const Vector4*, Vector4* out, f32* strength, cons
 
 void DirectionalLight::ComputeBounds()
 {
-    constexpr f32 Scale = Rounded(99999.99);
+    CONSTEXPR f32 Scale = Rounded(99999.99);
     BoxAround(this, Scale);
 }
 
@@ -217,7 +217,7 @@ void PointLight::LightAt(const Vector4* at, Vector4* direction, f32* strength, c
 
 void PointLight::ComputeBounds()
 {
-    constexpr f32 Scale = 100.0f;
+    CONSTEXPR f32 Scale = 100.0f;
     BoxAround(this, Scale);
 }
 
@@ -253,7 +253,7 @@ namespace
 void SpotLightFrom(const SpotLight* light, const Vector4* at, Vector4* out, f32* strength, const Vector4* position,
                    const Vector4* axis)
 {
-    constexpr u32 HighestBit = 0x80;
+    CONSTEXPR u32 HighestBit = 0x80;
     f32 falloff = FallOff(light, at, out, position);
     f32 lit = Attenuated(light->intensity, light->attenuationPower, falloff);
     // How far into the cone: the (attenuated, not unit long) way to the light against its direction
@@ -842,7 +842,7 @@ void ClearLightingUnused()
 
 void ComputeSpotLightBounds(SpotLight* light)
 {
-    constexpr f32 Reach = 100.0f;
+    CONSTEXPR f32 Reach = 100.0f;
     f32 reach = light->intensity * Reach;
     s32 angle[4];
     AngleFrom(angle, static_cast<f32>(light->coneAngle) * AngleToRadians, AngleRadians);

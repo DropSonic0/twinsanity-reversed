@@ -23,9 +23,9 @@ EABI_EXPORT(FUN_00236728, StepCycleZ);
 namespace
 {
 // An angle's 65536ths of a turn kept within a turn
-constexpr u32 AngleMask = 0xFFFF;
+CONSTEXPR u32 AngleMask = 0xFFFF;
 // What sticking to a block attaches with
-constexpr u32 StuckFlags = 9;
+CONSTEXPR u32 StuckFlags = 9;
 
 // The instance's matrix, its place's made up to date first
 Matrix4x4 PlaceMatrix(InstanceContext* instance)
@@ -282,8 +282,8 @@ void StickToMotionBlock(MotionBlock* block, InstanceContext* instance)
 void ResetMotionBlock(MotionBlock* block)
 {
     // Every flag but the trajectory's cycles about the axes and those from 15 on goes, and the motion bits but bit 31
-    constexpr u32 KeptFlags = 0xFFFF8038;
-    constexpr u32 KeptMotion = 0x80000000;
+    CONSTEXPR u32 KeptFlags = 0xFFFF8038;
+    CONSTEXPR u32 KeptMotion = 0x80000000;
     block->flags.value &= KeptFlags;
     block->motion.value &= KeptMotion;
     block->stickyObject = 0;
@@ -296,7 +296,7 @@ void ResetMotionBlock(MotionBlock* block)
 void MakeCyclingMotionBlock(MotionBlock* block)
 {
     // A body's bits 0-19 none but one substep
-    constexpr u32 KeptBodyBits = 0xFFF00000;
+    CONSTEXPR u32 KeptBodyBits = 0xFFF00000;
     ResetMotionBlock(block);
     block->flags.keepsStepping = 1;
     block->constraint[3] = 1.0f;

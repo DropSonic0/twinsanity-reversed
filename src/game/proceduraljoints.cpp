@@ -13,7 +13,7 @@
 #include "game/properties.h"
 #include "game/reference.h"
 
-#include <cstddef>
+#include <stddef.h>
 
 EABI_EXPORT(FUN_0015f7a8, &ProceduralJoint::MakeSlopeTilt);
 EABI_EXPORT(FUN_0014bdc0, &ProceduralJoint::Step);
@@ -58,50 +58,50 @@ FUN_0015f610:
 namespace
 {
 // The angles and the lag's components (0 x, 1 y, 2 z)
-constexpr s32 AxisX = 0;
-constexpr s32 AxisY = 1;
-constexpr s32 AxisZ = 2;
+CONSTEXPR s32 AxisX = 0;
+CONSTEXPR s32 AxisY = 1;
+CONSTEXPR s32 AxisZ = 2;
 // An anchor at no exit point (the instance's position) and no joint
-constexpr s32 NoAnchorExitPoint = -1;
-constexpr s32 NoAnchorJoint = -1;
+CONSTEXPR s32 NoAnchorExitPoint = -1;
+CONSTEXPR s32 NoAnchorJoint = -1;
 // The legs' joints: the thigh, the shin and the foot of the leg on the instance's -x side (A) and of the +x side's (B)
-constexpr s32 ThighA = 6;
-constexpr s32 ShinA = 7;
-constexpr s32 FootA = 8;
-constexpr s32 ThighB = 9;
-constexpr s32 ShinB = 10;
-constexpr s32 FootB = 11;
-constexpr s32 LegJoints[] = {ThighA, ThighB, ShinA, ShinB, FootA, FootB};
-constexpr s32 LegJointCount = 6;
+CONSTEXPR s32 ThighA = 6;
+CONSTEXPR s32 ShinA = 7;
+CONSTEXPR s32 FootA = 8;
+CONSTEXPR s32 ThighB = 9;
+CONSTEXPR s32 ShinB = 10;
+CONSTEXPR s32 FootB = 11;
+CONSTEXPR s32 LegJoints[] = {ThighA, ThighB, ShinA, ShinB, FootA, FootB};
+CONSTEXPR s32 LegJointCount = 6;
 // Crash's joints tilted to the slope and squashed on landing
-constexpr s32 SlopeTiltJoint = 5;
-constexpr s32 SquashJoint = 28;
+CONSTEXPR s32 SlopeTiltJoint = 5;
+CONSTEXPR s32 SquashJoint = 28;
 // The dangling joints' smoothing half-lives (seconds)
-constexpr f32 DanglingHalfLife = Rounded(0.05);
-constexpr f32 DanglingSlowHalfLife = Rounded(0.1);
-constexpr f32 SlopeTiltSpeed = 1.3f;
+CONSTEXPR f32 DanglingHalfLife = Rounded(0.05);
+CONSTEXPR f32 DanglingSlowHalfLife = Rounded(0.1);
+CONSTEXPR f32 SlopeTiltSpeed = 1.3f;
 // The landing squash: 20 times the drop is its speed, a spring back to 1 and its limits
-constexpr f32 SquashDropSpeed = 20.0f;
-constexpr f32 SquashStiffness = 300.0f;
-constexpr f32 SquashDamping = 9.0f;
-constexpr f32 SquashMost = 1.3f;
-constexpr f32 SquashLeast = 0.5f;
+CONSTEXPR f32 SquashDropSpeed = 20.0f;
+CONSTEXPR f32 SquashStiffness = 300.0f;
+CONSTEXPR f32 SquashDamping = 9.0f;
+CONSTEXPR f32 SquashMost = 1.3f;
+CONSTEXPR f32 SquashLeast = 0.5f;
 // Foot placement: rays from half a unit above to half a unit below each foot (0.23 to either side, its toe 0.15 ahead) against
 // the ground and the instances of dynamic scenery, crates, creatures, generic objects and pay gates; a leg's stretch from its
 // foot's height (within 0.3 either way), a foot's tilt from its heel's height above its toe's, eased at 5 and 14 a second
-constexpr u16 MostFound = 32;
-constexpr f32 RayReach = 0.5f;
-constexpr f32 FootSide = Rounded(0.23);
-constexpr f32 ToeAhead = Rounded(0.15);
-constexpr f32 MostFootHeight = Rounded(0.3);
-constexpr f32 StretchPerHeight = 0x1.aaaaaap-1f;
-constexpr f32 StretchRate = 5.0f;
-constexpr f32 TiltPerHeight = Rounded(6.4);
-constexpr f32 MostTilt = 0.25f;
-constexpr f32 TiltRate = 14.0f;
+CONSTEXPR u16 MostFound = 32;
+CONSTEXPR f32 RayReach = 0.5f;
+CONSTEXPR f32 FootSide = Rounded(0.23);
+CONSTEXPR f32 ToeAhead = Rounded(0.15);
+CONSTEXPR f32 MostFootHeight = Rounded(0.3);
+CONSTEXPR f32 StretchPerHeight = 0x1.aaaaaap-1f;
+CONSTEXPR f32 StretchRate = 5.0f;
+CONSTEXPR f32 TiltPerHeight = Rounded(6.4);
+CONSTEXPR f32 MostTilt = 0.25f;
+CONSTEXPR f32 TiltRate = 14.0f;
 // The slope tilt turns only when the normal is this far from up
-constexpr f32 LeastTilt = Rounded(0.001);
-constexpr Vector4 Up = {0.0f, 1.0f, 0.0f, 1.0f};
+CONSTEXPR f32 LeastTilt = Rounded(0.001);
+CONSTEXPR Vector4 Up = {0.0f, 1.0f, 0.0f, 1.0f};
 
 static_assert(offsetof(CharacterAgent, link) == 0xB0);
 static_assert(offsetof(CharacterAgent, cache) == 0x2B0);

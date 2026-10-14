@@ -15,12 +15,12 @@
 namespace
 {
 // A rotation's length that's still one
-constexpr f32 ShortRotation = 0x1.5798ecp-27f;
+CONSTEXPR f32 ShortRotation = 0x1.5798ecp-27f;
 // A body's mass and the sides of its box when it's made, a sphere's sides and radius
-constexpr f32 DefaultMass = 1.0f;
-constexpr f32 DefaultSize = 1.5f;
-constexpr f32 SphereSize = Rounded(1.3);
-constexpr f32 SphereRadius = 0.5f;
+CONSTEXPR f32 DefaultMass = 1.0f;
+CONSTEXPR f32 DefaultSize = 1.5f;
+CONSTEXPR f32 SphereSize = Rounded(1.3);
+CONSTEXPR f32 SphereRadius = 0.5f;
 
 Vector4* PositionOf(Matrix4x4* matrix)
 {
@@ -513,8 +513,8 @@ void RigidBody::ApplyConstraint()
 
 void RigidBody::SetMassAndSize(f32 newMass, f32 x, f32 y, f32 z)
 {
-    constexpr f32 Third = 0x1.555556p-2f;
-    constexpr f32 Twelfth = 0x1.555556p-4f;
+    CONSTEXPR f32 Third = 0x1.555556p-2f;
+    CONSTEXPR f32 Twelfth = 0x1.555556p-4f;
     f32 thirdY = y * Third;
     f32 thirdZ = z * Third;
     f32 thirdX = x * Third;
@@ -655,7 +655,7 @@ void RigidBody::Damp(f32 amount, f32 share)
 
 void RigidBody::Step(f32 seconds)
 {
-    constexpr f32 MostMove = 0.5f;
+    CONSTEXPR f32 MostMove = 0.5f;
     UpdateState();
     Vector4 move;
     move.x = velocity.x * seconds;
@@ -705,8 +705,8 @@ void RigidBody::Step(f32 seconds)
 
 void RigidBody::ApplyImpulse(const Vector4* impulse, const Vector4* point)
 {
-    constexpr f32 OldShare = 0x1.666666p-1f;
-    constexpr f32 NewShare = 0x1.333334p-2f;
+    CONSTEXPR f32 OldShare = 0x1.666666p-1f;
+    CONSTEXPR f32 NewShare = 0x1.333334p-2f;
     UpdateState();
     momentum.x = momentum.x + impulse->x;
     momentum.y = momentum.y + impulse->y;
@@ -1218,7 +1218,7 @@ void HullBody::SetCenterOfMass(const Vector4* center)
 
 PhysicsWorld* ConstructPhysicsWorld(PhysicsWorld* world)
 {
-    constexpr s32 Slots = PhysicsWorld::Slots;
+    CONSTEXPR s32 Slots = PhysicsWorld::Slots;
     world->capacity = Slots;
     world->bodies = static_cast<DynamicBody**>(MemoryAllocate2(Slots * sizeof(DynamicBody*)));
     world->freeCapacity = Slots;
@@ -1236,7 +1236,7 @@ PhysicsWorld* ConstructPhysicsWorld(PhysicsWorld* world)
 DynamicBody* AddPhysicsBody(PhysicsWorld* world, InstanceContext* instance, u32 sphere)
 {
     // Taken by a body (a free slot's index is no slot's)
-    constexpr s16 TakenSlot = -1;
+    CONSTEXPR s16 TakenSlot = -1;
     s16 slot = world->freeSlots[world->used];
     DynamicBody* body;
     if (sphere != 0)
@@ -1295,9 +1295,9 @@ void RemovePhysicsBody(PhysicsWorld* world, DynamicBody* body)
 
 u32 DynamicBody::SurfaceContact(const Vector4* localPoint, const Vector4* normal, CollisionSurface* surface, Vector4* impulseOut)
 {
-    constexpr f32 HardLanding = Rounded(1.8);
-    constexpr f32 Sliding = Rounded(0.01);
-    constexpr f32 ScrapeShare = Rounded(0.3);
+    CONSTEXPR f32 HardLanding = Rounded(1.8);
+    CONSTEXPR f32 Sliding = Rounded(0.01);
+    CONSTEXPR f32 ScrapeShare = Rounded(0.3);
     f32 most = __builtin_fminf(surface->friction, friction);
     f32 spin = spinFriction * surface->spinFriction;
     f32 roll = rollFriction * surface->rollFriction;
@@ -1779,8 +1779,8 @@ void DynamicBody::MoveTo(InstanceContext* to, u32 withMotion)
 void DynamicBody::PlaceInstance()
 {
     // The frames without a hard landing or a scrape its sound goes on for (a sphere's)
-    constexpr u32 QuietFrames = 5;
-    constexpr u32 SphereQuietFrames = 2;
+    CONSTEXPR u32 QuietFrames = 5;
+    CONSTEXPR u32 SphereQuietFrames = 2;
     if (bits.placesInstance != 0)
     {
         PlaceInstanceAtCenter(this);
@@ -1803,10 +1803,10 @@ void DynamicBody::PlaceInstance()
 
 void DynamicBody::StepDamping(f32 seconds)
 {
-    constexpr f32 Pushed = Rounded(0.01);
+    CONSTEXPR f32 Pushed = Rounded(0.01);
     // The drag's scale while a step force pushes a floating body (a sphere's)
-    constexpr f32 PushedDragScale = 70.0f;
-    constexpr f32 SphereDragScale = 4.0f;
+    CONSTEXPR f32 PushedDragScale = 70.0f;
+    CONSTEXPR f32 SphereDragScale = 4.0f;
     Damp(lengthDrag, seconds);
     f32 kept;
     if (buoyancy < 0.0f)
@@ -1863,7 +1863,7 @@ void DynamicBody::PushOut(const Vector4* push, u32 limited)
 
 void DynamicBody::LimitedPush(const Vector4* push)
 {
-    constexpr f32 MostPushed = Rounded(0.2);
+    CONSTEXPR f32 MostPushed = Rounded(0.2);
     f32 length = __builtin_sqrtf(push->x * push->x + push->y * push->y + push->z * push->z);
     limitedPushes.x = limitedPushes.x + push->x;
     limitedPushes.y = limitedPushes.y + push->y;
@@ -1899,7 +1899,7 @@ void DynamicBody::LimitedPush(const Vector4* push)
 
 u32 DynamicBody::CanChangeChunk(ChunkData*, ChunkLinkData* link)
 {
-    constexpr f32 Slowed = Rounded(0.8);
+    CONSTEXPR f32 Slowed = Rounded(0.8);
     if (link->flags.linkedRm2Loaded == 0)
     {
         *PositionOf(&matrix) = instance->box;
@@ -1945,8 +1945,8 @@ u32 DynamicBody::CanChangeChunk(ChunkData*, ChunkLinkData* link)
 
 u32 SphereBody::CollideWithWorld()
 {
-    constexpr f32 BoxMargin = Rounded(0.01);
-    constexpr f32 RisingDamping = Rounded(0.3);
+    CONSTEXPR f32 BoxMargin = Rounded(0.01);
+    CONSTEXPR f32 RisingDamping = Rounded(0.3);
     if (bits.noCollisions != 0)
     {
         return 0;
@@ -2083,7 +2083,7 @@ u32 SphereBody::CollideWithWorld()
 namespace
 {
 // A sphere's pushes out of another body are shared all but a hair (0.50005 of the other's share), each pair told
-constexpr f32 OtherShare = Rounded(0.50005);
+CONSTEXPR f32 OtherShare = Rounded(0.50005);
 
 // Both bodies told they touched each other (and their callbacks, each given the other's hull it touched)
 void TellTouched(DynamicBody* body, DynamicBody* other, u32 hull, u32 otherHull)
@@ -2239,7 +2239,7 @@ u32 CollideSphereWithHulls(SphereBody* sphere, DynamicBody* other)
 
 void SphereBody::CollideWithInstances()
 {
-    constexpr u16 MostInstances = 20;
+    CONSTEXPR u16 MostInstances = 20;
     Box box;
     box.min = *PositionOf(&matrix);
     box.max = *PositionOf(&matrix);
@@ -2540,9 +2540,9 @@ u32 HullBody::CollideWithWorld()
 
 void HullBody::Float(f32 level)
 {
-    constexpr s32 Corners = 8;
-    constexpr f32 Submerged = Rounded(0.1);
-    constexpr f32 RisingDamping = Rounded(0.3);
+    CONSTEXPR s32 Corners = 8;
+    CONSTEXPR f32 Submerged = Rounded(0.1);
+    CONSTEXPR f32 RisingDamping = Rounded(0.3);
     const Box* box = &owner->collision.ownBox;
     Vector4 corners[Corners];
     ObjectPlace* place = owner->place;
@@ -2569,7 +2569,7 @@ void HullBody::Float(f32 level)
 
 void HullBody::CollideWithInstances()
 {
-    constexpr u16 MostInstances = 20;
+    CONSTEXPR u16 MostInstances = 20;
     if (hulls == nullptr)
     {
         CopyHulls(&instance->collision);
@@ -2763,7 +2763,7 @@ u32 CollideHullBodies(HullBody* body, DynamicBody* other)
 
 void StepPhysicsWorld(PhysicsWorld* world)
 {
-    constexpr s32 Slots = PhysicsWorld::Slots;
+    CONSTEXPR s32 Slots = PhysicsWorld::Slots;
     DynamicBody* bodies[Slots];
     f32 seconds[Slots];
     s32 count = 0;
@@ -3031,7 +3031,7 @@ void RigidBody::AddLocalForce(const Vector4* push, const Vector4* localPoint)
 
 CollisionCache* DynamicBody::Cache()
 {
-    constexpr u32 CacheMask = 0x50;
+    CONSTEXPR u32 CacheMask = 0x50;
     if (cache == nullptr)
     {
         cache = ConstructCollisionCache(static_cast<CollisionCache*>(MemoryAllocate(sizeof(CollisionCache))), instance, CacheMask);
@@ -3214,9 +3214,9 @@ u32 EllipsoidsMeet(EllipsoidPair* pair, Vector4* separation, Vector4* other, con
 u32 EllipsoidsApart(EllipsoidPair* pair, Vector4* separation, Vector4* other, const Matrix4x4* matrix,
                     const Matrix4x4* otherMatrix, u32 noDirection)
 {
-    constexpr s32 Steps = 12;
-    constexpr f32 FirstStep = 0x1.3b13b2p-4f;
-    constexpr f32 Tolerance = Epsilon;
+    CONSTEXPR s32 Steps = 12;
+    CONSTEXPR f32 FirstStep = 0x1.3b13b2p-4f;
+    CONSTEXPR f32 Tolerance = Epsilon;
     f32 largest = -1.0f;
     f32 step = FirstStep;
     f32 along = 0.0f + step;

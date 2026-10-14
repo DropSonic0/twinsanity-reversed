@@ -20,7 +20,7 @@ class StringLabel;
 // game controller asks every quarter of a second while it autosaves), a save to a slot the player chooses, which its screens offer
 // to skip (a new game's) or not (the pause menu's), with the card formatted and the save made first when the player asks, a load,
 // and a save to the slot of the results (the checkpoints' autosave; every file when the save was just made: the results' fresh)
-enum SaveCodeOperation : u32
+enum SaveCodeOperation
 {
     SaveOperationNone = 0,
     SaveOperationCheckRoom = 1,
@@ -35,7 +35,7 @@ enum SaveCodeOperation : u32
 // running), no card at the start, no room at the start, the save made?, no card, unformatted, format?, a card with a save wanted,
 // a card with room wanted, overwrite?, cancel the save?, the slots to save to and to load from, and the failures of formatting,
 // saving and loading
-enum SaveCodeScreen : u32
+enum SaveCodeScreen
 {
     SaveScreenMessage = 0,
     SaveScreenNoCard = 1,
@@ -58,7 +58,7 @@ enum SaveCodeScreen : u32
 
 // The save code's messages the screens' choices name (g_SaveMessages' English, g_SaveMessageTexts' game texts): a slot without
 // a save, "Cancel", "Format", "Continue", "Continue wihout saving", "Create save", "Retry", "Yes" and "No"
-enum SaveMessageId : s32
+enum SaveMessageId
 {
     SaveMessageEmpty = 0x1D,
     SaveMessageCancel = 0x1E,
@@ -74,7 +74,7 @@ enum SaveMessageId : s32
 
 // The save manager's mode of a screen of choices (SaveChoicesPage::ShowItems, -1 none): the screens of choices in their order,
 // the save slots' left out, and one with only "Cancel" no screen has
-enum SaveChoicesMode : s32
+enum SaveChoicesMode
 {
     ChoicesHidden = -1,
     ChoicesNoCard = 0,
@@ -94,7 +94,7 @@ enum SaveChoicesMode : s32
 };
 
 // The save manager's mode of the save slots' screens (SaveCodePage::ShowSlotItems, -1 none): loading, saving
-enum SaveSlotsMode : s32
+enum SaveSlotsMode
 {
     SlotsPageHidden = -1,
     SlotsPageLoad = 0,

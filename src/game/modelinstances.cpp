@@ -27,7 +27,7 @@ extern "C"
 namespace
 {
 // How far a camera instance's box goes either way
-constexpr f32 CameraBoxReach = 0x1.99999Ap-4f;
+CONSTEXPR f32 CameraBoxReach = 0x1.99999Ap-4f;
 
 // The OGI of a model's ID (none for 0xFFFF)
 GameOGI* ModelOgi(u16 model)

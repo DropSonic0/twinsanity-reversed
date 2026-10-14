@@ -37,13 +37,13 @@ extern "C"
 
 namespace
 {
-constexpr u32 Banks = 4;
-constexpr u32 BankSize = 0xF400;
+CONSTEXPR u32 Banks = 4;
+CONSTEXPR u32 BankSize = 0xF400;
 // The icon files' room, and the folder's file's size
-constexpr u32 IconFilesRoom = 3;
-constexpr u32 FolderFileSize = 0x800;
+CONSTEXPR u32 IconFilesRoom = 3;
+CONSTEXPR u32 FolderFileSize = 0x800;
 // The tag the folder's and the banks' files end with (with their checksums)
-constexpr u32 SaveTag = 1;
+CONSTEXPR u32 SaveTag = 1;
 
 // The manager's OLEG screens (its screens' indexes): every widget hidden (before another is shown), the message's, the choices'
 // and the save slots'

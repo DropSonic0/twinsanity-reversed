@@ -22,8 +22,8 @@
 #include "game/scripttokens.h"
 #include "game/sound.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The object node's parts and what works on them: the motion blocks it follows and its trajectory controller's kinds, the head
 // tracking, the perception, the particle trails, its prototype's construction and a few of its own functions
@@ -58,8 +58,8 @@ EABI_EXPORT(FUN_00240b68, HoldWithAttachments);
 namespace
 {
 // The margins of the largest cycle's range its fade rate is worked out of: a moving cycle's and a turning one's
-constexpr f32 MoveMargin = 0.01f;
-constexpr f32 TurnMargin = 0x1.c98714p-10f;
+CONSTEXPR f32 MoveMargin = 0.01f;
+CONSTEXPR f32 TurnMargin = 0x1.c98714p-10f;
 
 // A cycle about an axis at an angle, as the block's cycle and sign for the axis say
 f32 MotionBlockCycle(MotionBlock* block, u32 axis, const s32* angle, f32 range)
@@ -134,12 +134,12 @@ void SetSenseOn(void* perception, u32 kind, u8 on)
 }
 
 // A trail's kind that measures the turn a packet facing the way it moves makes
-constexpr u64 MeasuresTurnKind = 5;
+CONSTEXPR u64 MeasuresTurnKind = 5;
 
 // The flags of a physics body as the retail code reads them, also when there's none (the word at address 0x18 then)
 RigidBodyFlags BodyFlagsOf(const DynamicBody* body)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(body) + offsetof(RigidBody, bodyFlags);
+    uintptr_t address = reinterpret_cast<uintptr_t>(body) + offsetof(RigidBody, bodyFlags);
     return *reinterpret_cast<const RigidBodyFlags*>(address);
 }
 
@@ -313,7 +313,7 @@ void SetStoredPosition(ObjectNode* node, const Vector4* position)
 void ObjectNode::HitWhileMoving(void* other, const Vector4* point, const Vector4* impulse)
 {
     // A squared impulse the rigid body is pushed by past this
-    constexpr f32 LeastPush = 0x1.0c6f7cp-20f;
+    CONSTEXPR f32 LeastPush = 0x1.0c6f7cp-20f;
     MotionBlock* block = motionBlock;
     if (block == nullptr)
     {
@@ -364,11 +364,11 @@ void FollowOwnMotionBlock(ObjectNode* node)
 void KnockNode(f32 strength, ObjectNode* node)
 {
     // Knocks past these strengths raise the countdown by 4, 3, 2 and 1, which keeps it at most 255
-    constexpr f32 HardestKnock = 6.4e-11f;
-    constexpr f32 HardKnock = 1.6e-11f;
-    constexpr f32 Knock = 4e-12f;
-    constexpr f32 SoftKnock = 1e-12f;
-    constexpr u32 MostCountdown = 0xFF;
+    CONSTEXPR f32 HardestKnock = 6.4e-11f;
+    CONSTEXPR f32 HardKnock = 1.6e-11f;
+    CONSTEXPR f32 Knock = 4e-12f;
+    CONSTEXPR f32 SoftKnock = 1e-12f;
+    CONSTEXPR u32 MostCountdown = 0xFF;
     ObjectNodeReactions& reactions = node->reactions;
     if (HardestKnock < strength)
     {
@@ -518,7 +518,7 @@ ObjectNode* PacketNodeOf(InstanceContext* instance)
 __attribute__((optimize("no-tree-loop-distribute-patterns"))) void* ConstructHeadTrackingSettings(void* memory)
 {
     // A range of 10, a stiffness of a half, the joints and the exit point none, no steering (bits 28-31 as the memory had them)
-    constexpr f32 Range = 10.0f;
+    CONSTEXPR f32 Range = 10.0f;
     auto* settings = static_cast<HeadTrackingSettings*>(memory);
     settings->unused00 = 0;
     settings->range = Range;
@@ -958,7 +958,7 @@ void LetGoOfHeadTracking(HeadTracking* tracking, ObjectNode* node)
 
 void StopHeadTracking(HeadTracking* tracking)
 {
-    constexpr u32 StopsAtRest = 1;
+    CONSTEXPR u32 StopsAtRest = 1;
     tracking->flags.hasTarget = 1;
     tracking->flags.ignoredByLook = 1;
     LetGoOfHeadTarget(tracking, StopsAtRest);
@@ -966,7 +966,7 @@ void StopHeadTracking(HeadTracking* tracking)
 
 u32 AddSense(void* perception, const void* sense)
 {
-    constexpr u32 NoSense = 0xFF;
+    CONSTEXPR u32 NoSense = 0xFF;
     Perception* senses = PerceptionOf(perception);
     auto* added = static_cast<PerceptionSense*>(const_cast<void*>(sense));
     if (senses->bits.count == Perception::MostSenses || HasSense(perception, added->bits.kind) != 0)
@@ -1102,7 +1102,7 @@ void ParticleTrails::Destroy(u32 destroyFlags)
 
 u32 ParticleTrails::Add(const void* arguments)
 {
-    constexpr u32 Full = 0xFF;
+    CONSTEXPR u32 Full = 0xFF;
     ParticleTrailsBits added = bits;
     u32 count = added.count;
     if (count == MostTrails)
@@ -1228,7 +1228,7 @@ void StartCoverSearch(Trajectory* trajectory, ObjectNode* node)
 
 void StartGrabber(Trajectory* trajectory, ObjectNode* node)
 {
-    constexpr u32 HullsKind = 10;
+    CONSTEXPR u32 HullsKind = 10;
     ObjectRigidBody* body = MakeTrajectoryBody(node, HullsKind);
     if (trajectory->followed->body.noCollisions)
     {
@@ -1250,7 +1250,7 @@ void StartGrabber(Trajectory* trajectory, ObjectNode* node)
 
 void StartBall(Trajectory* trajectory, ObjectNode* node)
 {
-    constexpr u32 SphereKind = 9;
+    CONSTEXPR u32 SphereKind = 9;
     ObjectRigidBody* body = MakeTrajectoryBody(node, SphereKind);
     ListRigidBodySecond(body, SphereKind);
     f32 mass = NodeProperties(node)->GetFloat(RigidBodyMassProperty);

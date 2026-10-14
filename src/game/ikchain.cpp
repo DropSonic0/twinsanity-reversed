@@ -14,9 +14,9 @@ EABI_EXPORT(FUN_0018be70, RunIkSolver);
 namespace
 {
 // How far off its limits a turned link's angle may be (sines)
-constexpr f32 LimitTolerance = Epsilon;
+CONSTEXPR f32 LimitTolerance = Epsilon;
 // The terms the scaling of a turn takes
-constexpr s32 TurnScaleTerms = 2;
+CONSTEXPR s32 TurnScaleTerms = 2;
 
 // A point of the chain's plane in 3D: along the chain's direction from its start, and up
 void PlanePointInWorld(const IkChain* chain, f32 x, f32 y, Vector4* out)

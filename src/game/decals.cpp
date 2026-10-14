@@ -12,35 +12,35 @@
 
 namespace
 {
-constexpr s32 BlockCount = DecalData::BlockCount;
-constexpr s32 BlockDecals = DecalBlock::MostDecals;
-constexpr s32 TypeCount = DecalData::MostTypes;
-constexpr s16 NoBlock = -1;
-constexpr s16 FreeKey = -1;
+CONSTEXPR s32 BlockCount = DecalData::BlockCount;
+CONSTEXPR s32 BlockDecals = DecalBlock::MostDecals;
+CONSTEXPR s32 TypeCount = DecalData::MostTypes;
+CONSTEXPR s16 NoBlock = -1;
+CONSTEXPR s16 FreeKey = -1;
 // A decal slot without a decal: its place's w and its first sizes' fourth half word
-constexpr f32 NoDecal = -1.0f;
-constexpr s16 NoSizes = 0xBA;
+CONSTEXPR f32 NoDecal = -1.0f;
+CONSTEXPR s16 NoSizes = 0xBA;
 // The packet's VIF codes: UNPACKs of the places (V4-32), sizes (V4-16) and colours (V4-8) to their VU1 addresses, and the MSCNT
-constexpr u32 PlacesUnpack = 0x6C208000;
-constexpr u32 SizesUnpack = 0x6D408020;
-constexpr u32 ColoursUnpack = 0x6E208060;
-constexpr u32 StartProgram = 0x17000000;
+CONSTEXPR u32 PlacesUnpack = 0x6C208000;
+CONSTEXPR u32 SizesUnpack = 0x6D408020;
+CONSTEXPR u32 ColoursUnpack = 0x6E208060;
+CONSTEXPR u32 StartProgram = 0x17000000;
 // The UV packet's GIF tag: 8 loops of a triangle strip (PRE with PRIM 4, PACKED), each the 12 registers ST, RGBAQ and XYZ2 of four
 // corners (the register descriptors 2, 1 and 5 a nibble each, from the lowest)
-constexpr u64 UvGifTag = 0xC002400000008008;
-constexpr u32 UvRegisters = 0x12512512;
-constexpr u32 UvMoreRegisters = 0x5125;
+CONSTEXPR u64 UvGifTag = 0xC002400000008008;
+CONSTEXPR u32 UvRegisters = 0x12512512;
+CONSTEXPR u32 UvMoreRegisters = 0x5125;
 // What the UV packet's read takes: the packet, the type count and the three words after it
-constexpr u32 UvPacketReadSize = sizeof(DecalUvPacket) + 4 * sizeof(u32);
+CONSTEXPR u32 UvPacketReadSize = sizeof(DecalUvPacket) + 4 * sizeof(u32);
 // The two types the default data has without its section: the page's top and bottom halves (their UV rectangles)
-constexpr u32 DefaultTypes = 2;
-constexpr Vector4 DefaultTypeRectangles[DefaultTypes] = {{0.25f, 0.25f, 0.75f, 0.25f}, {0.25f, 0.75f, 0.75f, 0.75f}};
+CONSTEXPR u32 DefaultTypes = 2;
+CONSTEXPR Vector4 DefaultTypeRectangles[DefaultTypes] = {{0.25f, 0.25f, 0.75f, 0.25f}, {0.25f, 0.75f, 0.75f, 0.75f}};
 // The frames' directions' unit
-constexpr f32 FrameUnit = 32768.0f;
-constexpr f32 ApartEnough = 0x1.0624DEp-10f;
-constexpr f32 TooClose = 0x1.FAE148p-1f;
+CONSTEXPR f32 FrameUnit = 32768.0f;
+CONSTEXPR f32 ApartEnough = 0x1.0624DEp-10f;
+CONSTEXPR f32 TooClose = 0x1.FAE148p-1f;
 // A frame shorter than this takes nothing off the decals' lives
-constexpr f32 NoTime = 0x1.A36E2Ep-14f;
+CONSTEXPR f32 NoTime = 0x1.A36E2Ep-14f;
 
 // Its decals all none: no place, no sizes
 void EmptyDecals(DecalBlock* block)

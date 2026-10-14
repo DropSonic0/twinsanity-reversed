@@ -22,8 +22,8 @@
 #include "game/place.h"
 #include "game/reference.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace
 {
@@ -307,9 +307,9 @@ void ObjectNodeBase::DestroyPrototype(u32 destroyFlags)
 void ObjectNodeBase::HandleEvent(Reference** handle)
 {
     // The events below 0x100 aren't for it, 0x100 and 0x101 apply themselves (their vtable's slot 2), 0x103 is a trigger message
-    constexpr u16 FirstNodeEvent = 0x100;
-    constexpr u16 LastAppliedEvent = 0x101;
-    constexpr u16 TriggerMessage = 0x103;
+    CONSTEXPR u16 FirstNodeEvent = 0x100;
+    CONSTEXPR u16 LastAppliedEvent = 0x101;
+    CONSTEXPR u16 TriggerMessage = 0x103;
     flags.handledEvent = 1;
     auto* event = *handle != nullptr ? reinterpret_cast<GameEvent*>((*handle)->object) : nullptr;
     u16 kind = event->id;
@@ -408,7 +408,7 @@ void ObjectNodeBase::RunnerFinished()
 
 u32 ObjectNodeBase::AddParticleTrail()
 {
-    constexpr u32 NoTrail = 0xFF;
+    CONSTEXPR u32 NoTrail = 0xFF;
     return NoTrail;
 }
 
@@ -723,7 +723,7 @@ void ObjectNode::DoNothing()
 
 u32 ObjectNode::CustomSlot()
 {
-    constexpr u32 NoCustomSlot = 0xFF;
+    CONSTEXPR u32 NoCustomSlot = 0xFF;
     return NoCustomSlot;
 }
 
@@ -941,7 +941,7 @@ void ObjectNode::ReleaseMotionBlock()
 
 void ObjectNode::RunnerFinished()
 {
-    constexpr u32 RunnerTrails = 1;
+    CONSTEXPR u32 RunnerTrails = 1;
     if (!flags.keepsParticles)
     {
         CallVirtual<void>(this, vtable, DestroyParticleTrailsSlot);
@@ -1089,8 +1089,8 @@ void ObjectNode::Restart(TimeClock* clock, u32 word)
 
 void ObjectNode::Collided(void* other, const Vector4* point, const Vector4* impulse)
 {
-    constexpr f32 HardKnock = 10.0f;
-    constexpr f32 ImpactRadius = 12.0f;
+    CONSTEXPR f32 HardKnock = 10.0f;
+    CONSTEXPR f32 ImpactRadius = 12.0f;
     if (other != nullptr)
     {
         HitWhileMoving(other, point, impulse);
@@ -1116,7 +1116,7 @@ EABI_EXPORT(FUN_0022f440, LaunchNode);
 void LaunchNode(f32 gravity, ObjectNode* node, const Vector4* velocity)
 {
     // In both lists: its node's motion moves it and its collision cache's triangles stop it
-    constexpr u32 PlainKind = 1;
+    CONSTEXPR u32 PlainKind = 1;
     if (node->rigidBody == nullptr)
     {
         ObjectRigidBody* body = ConstructRigidBody(MemoryAllocate(sizeof(ObjectRigidBody)), node);
@@ -1196,8 +1196,8 @@ f32 SquaredSpeed(const Vector4* velocity)
 
 u32 ObjectNode::Landed(CollisionSurface* surface, const Vector4* point, const Vector4* velocity)
 {
-    constexpr f32 Threshold = 10.0f;
-    constexpr f32 ImpactRadius = 12.0f;
+    CONSTEXPR f32 Threshold = 10.0f;
+    CONSTEXPR f32 ImpactRadius = 12.0f;
     u32 played = 0;
     if (surface == nullptr)
     {
@@ -1227,7 +1227,7 @@ u32 ObjectNode::Landed(CollisionSurface* surface, const Vector4* point, const Ve
 
 u32 ObjectNode::LandedHard(CollisionSurface* surface, const Vector4* point, const Vector4* velocity)
 {
-    constexpr f32 Threshold = 15.0f;
+    CONSTEXPR f32 Threshold = 15.0f;
     if (surface == nullptr)
     {
         return 0;
@@ -1245,7 +1245,7 @@ u32 ObjectNode::LandedHard(CollisionSurface* surface, const Vector4* point, cons
 
 u32 ObjectNode::Scraped(CollisionSurface* surface, const Vector4* point, const Vector4* velocity)
 {
-    constexpr f32 Threshold = Rounded(0.2);
+    CONSTEXPR f32 Threshold = Rounded(0.2);
     if (surface == nullptr)
     {
         return 0;
@@ -1286,7 +1286,7 @@ namespace
 // An instance's place as the retail code reads it, also when there's no instance (the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -1337,7 +1337,7 @@ InstanceContext* ObjectNode::GetDesignator(u32 designator)
     {
         // An instance without an ID reads the word at address 4
         s32 id = owner->id;
-        std::uintptr_t entry = id != -1 ? reinterpret_cast<std::uintptr_t>(&g_InstanceIds->entries[id]) : 0;
+        uintptr_t entry = id != -1 ? reinterpret_cast<uintptr_t>(&g_InstanceIds->entries[id]) : 0;
         return *reinterpret_cast<InstanceContext* const*>(entry + offsetof(InstanceIds::Entry, spawner));
     }
     case DesignatesItself:
@@ -1510,7 +1510,7 @@ u32 ObjectNode::SetDesignatorPosition(u32 designator, const Vector4* position)
 
 u32 ExitPointPlace(InstanceContext* instance, u32 slot, Vector4* position, Vector4* direction)
 {
-    constexpr u32 ExitPointSlots = 0x3F;
+    CONSTEXPR u32 ExitPointSlots = 0x3F;
     slot &= 0xFF;
     if (slot >= ExitPointSlots)
     {

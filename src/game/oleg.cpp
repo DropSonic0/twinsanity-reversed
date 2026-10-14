@@ -31,48 +31,48 @@ template <typename T> T* Allocate()
 }
 
 // Anchors: near the left and near the right, a fifth of the way across
-constexpr f32 AnchorLeft = Rounded(0.05);
-constexpr f32 AnchorRight = Rounded(0.95);
-constexpr f32 AnchorFifth = Rounded(0.2);
+CONSTEXPR f32 AnchorLeft = Rounded(0.05);
+CONSTEXPR f32 AnchorRight = Rounded(0.95);
+CONSTEXPR f32 AnchorFifth = Rounded(0.2);
 // The overlay's layers (drawn in their order, widgets in 3 by default): the dimmer, the fader and the black screen behind
 // everything, the cutscene's bars, the bottom text's backdrop and the menu rings over them, the screen picture, the logos on top
-constexpr u32 ShadeLayer = 1;
-constexpr u32 BackgroundLayer = 2;
-constexpr u32 PictureLayer = 4;
-constexpr u32 LogoLayer = 5;
+CONSTEXPR u32 ShadeLayer = 1;
+CONSTEXPR u32 BackgroundLayer = 2;
+CONSTEXPR u32 PictureLayer = 4;
+CONSTEXPR u32 LogoLayer = 5;
 // The pulse's curve
-constexpr u32 PulsePoints = 4;
+CONSTEXPR u32 PulsePoints = 4;
 // The lists' item spacing (a twentieth), and how many items they show at a time
-constexpr f32 ListSpacing = Rounded(0.05);
-constexpr u32 ListWindow = 7;
+CONSTEXPR f32 ListSpacing = Rounded(0.05);
+CONSTEXPR u32 ListWindow = 7;
 // A swaying sprite's sway: π/20 either way about a quarter turn
-constexpr f32 SwayAngle = 0x1.41B2F8p-3f;
+CONSTEXPR f32 SwayAngle = 0x1.41B2F8p-3f;
 
 // The game's texts its labels show: the hints (select, back, the pages either way, cancel, next), the controller to insert, the
 // disc error and the disc to replace, the autosave notices' (enabled, disabled, how to enable it again, the warning about the
 // autosave's icon, failed), the screen position's hint, the autosaving's and the loading screen's
 // texts; a level's name (by the level), an unknown level's, the save slots' levels' names (by the level) and an empty slot's
-constexpr u32 SelectHintText = 0x1C;
-constexpr u32 BackHintText = 0x1D;
-constexpr u32 PagesLeftHintText = 0x1E;
-constexpr u32 PagesRightHintText = 0x1F;
-constexpr u32 CancelHintText = 0xBB;
-constexpr u32 NextHintText = 0xB2;
-constexpr u32 InsertControllerText = 0x20;
-constexpr u32 DiscErrorTitleText = 0x21;
-constexpr u32 ReplaceDiscText = 0x22;
-constexpr u32 AutosaveEnabledText = 0x23;
-constexpr u32 AutosaveDisabledText = 0x24;
-constexpr u32 EnableAutosaveText = 0x25;
-constexpr u32 AutosaveWarningText = 0x42;
-constexpr u32 AutosaveFailedText = 0xB3;
-constexpr u32 ScreenPositionHintText = 0x26;
-constexpr u32 AutosavingText = 0x43;
-constexpr u32 LoadingText = 0x57;
-constexpr u32 LevelNameTexts = 0x47;
-constexpr u32 UnknownLevelText = 0x58;
-constexpr u32 SlotLevelNameTexts = 0xBC;
-constexpr u32 EmptySlotText = 0x3C;
+CONSTEXPR u32 SelectHintText = 0x1C;
+CONSTEXPR u32 BackHintText = 0x1D;
+CONSTEXPR u32 PagesLeftHintText = 0x1E;
+CONSTEXPR u32 PagesRightHintText = 0x1F;
+CONSTEXPR u32 CancelHintText = 0xBB;
+CONSTEXPR u32 NextHintText = 0xB2;
+CONSTEXPR u32 InsertControllerText = 0x20;
+CONSTEXPR u32 DiscErrorTitleText = 0x21;
+CONSTEXPR u32 ReplaceDiscText = 0x22;
+CONSTEXPR u32 AutosaveEnabledText = 0x23;
+CONSTEXPR u32 AutosaveDisabledText = 0x24;
+CONSTEXPR u32 EnableAutosaveText = 0x25;
+CONSTEXPR u32 AutosaveWarningText = 0x42;
+CONSTEXPR u32 AutosaveFailedText = 0xB3;
+CONSTEXPR u32 ScreenPositionHintText = 0x26;
+CONSTEXPR u32 AutosavingText = 0x43;
+CONSTEXPR u32 LoadingText = 0x57;
+CONSTEXPR u32 LevelNameTexts = 0x47;
+CONSTEXPR u32 UnknownLevelText = 0x58;
+CONSTEXPR u32 SlotLevelNameTexts = 0xBC;
+CONSTEXPR u32 EmptySlotText = 0x3C;
 
 // The widgets' slots (the controller's), in the order of OLEG's members: a slot shows the widgets chained after its widget too
 enum Slot : u32
@@ -124,20 +124,20 @@ enum Slot : u32
     SlotLoadingLogo = 47,
 };
 
-constexpr u64 SlotBit(u32 slot)
+CONSTEXPR u64 SlotBit(u32 slot)
 {
     return u64{1} << slot;
 }
 
 // What the menus' screens show with them: the dimmer and the menu rings, the menu panel, the hints of back and select and of the
 // pages either way
-constexpr u64 MenuBackground = SlotBit(SlotDimmer) | SlotBit(SlotMenuRings);
-constexpr u64 MenuWithPanel = MenuBackground | SlotBit(SlotMenuPanel);
-constexpr u64 BackAndSelect = SlotBit(SlotBackHint) | SlotBit(SlotSelectHint);
-constexpr u64 PagesHints = SlotBit(SlotPagesLeftHint) | SlotBit(SlotPagesRightHint);
+CONSTEXPR u64 MenuBackground = SlotBit(SlotDimmer) | SlotBit(SlotMenuRings);
+CONSTEXPR u64 MenuWithPanel = MenuBackground | SlotBit(SlotMenuPanel);
+CONSTEXPR u64 BackAndSelect = SlotBit(SlotBackHint) | SlotBit(SlotSelectHint);
+CONSTEXPR u64 PagesHints = SlotBit(SlotPagesLeftHint) | SlotBit(SlotPagesRightHint);
 
 // The widget slots each screen shows
-constexpr u64 ScreenWidgets[OLEG::Screens] = {
+CONSTEXPR u64 ScreenWidgets[OLEG::Screens] = {
     SlotBit(SlotLetterbox) | SlotBit(SlotBottomText),
     SlotBit(SlotFader),
     SlotBit(SlotBottomTextBackdrop) | SlotBit(SlotBottomText),
@@ -223,74 +223,74 @@ enum Drawer : u32
 
 // The ring widgets (but the panels'): the menu rings' eight, the completion's disc and border and the gem arc's four, the menu
 // rings' steps round and the arc's
-constexpr u32 MenuRings = 8;
-constexpr u32 CompletionRings = 2;
-constexpr u32 GemArcRings = 4;
-constexpr u32 MenuRingSteps = 64;
-constexpr u32 GemArcSteps = 24;
+CONSTEXPR u32 MenuRings = 8;
+CONSTEXPR u32 CompletionRings = 2;
+CONSTEXPR u32 GemArcRings = 4;
+CONSTEXPR u32 MenuRingSteps = 64;
+CONSTEXPR u32 GemArcSteps = 24;
 // The menus' sound slots the front end's move goes in (an item picked, the selection moved down and up, a value stepped up and
 // down), and the front end's sounds: an item picked that leads on, the move, going back
-constexpr u32 MoveSounds[] = {MenuSounds::SoundSelected, MenuSounds::SoundDown, MenuSounds::SoundUp, MenuSounds::SoundValueUp,
+CONSTEXPR u32 MoveSounds[] = {MenuSounds::SoundSelected, MenuSounds::SoundDown, MenuSounds::SoundUp, MenuSounds::SoundValueUp,
                               MenuSounds::SoundValueDown};
-constexpr u32 FrontEndPicked = 0;
-constexpr u32 FrontEndMove = 1;
-constexpr u32 FrontEndBack = 2;
+CONSTEXPR u32 FrontEndPicked = 0;
+CONSTEXPR u32 FrontEndMove = 1;
+CONSTEXPR u32 FrontEndBack = 2;
 
 // The HUD: the emitters (the crystal's sparkle, the level widgets' first gem's too; the six gems'; Crash's lives'), the health
 // bar's body
-constexpr u32 CrystalEmitter = 0;
-constexpr u32 FirstGemEmitter = 1;
-constexpr u32 CrashLivesEmitter = 7;
-constexpr u32 BarBody = OLEG::SpriteHudIcons + OLEG::HudIconBoss;
+CONSTEXPR u32 CrystalEmitter = 0;
+CONSTEXPR u32 FirstGemEmitter = 1;
+CONSTEXPR u32 CrashLivesEmitter = 7;
+CONSTEXPR u32 BarBody = OLEG::SpriteHudIcons + OLEG::HudIconBoss;
 // The areas the four hubs are first entered in, whose titles are square (the areas going back to them, 5, 12, 19 and 24, show
 // the same titles as wide as the levels')
-constexpr u32 HubAreas[] = {0, 6, 13, 20};
+CONSTEXPR u32 HubAreas[] = {0, 6, 13, 20};
 // The pictures read from files: what each is without a picture, and the tiles' pictures named by the picture name
-constexpr u32 NoPicture[OLEG::Pictures] = {OLEG::NoCrashTitle, OLEG::NoLevelTitle, OLEG::TilesNone};
-constexpr u32 FirstNamedPicture = OLEG::TilesNamed;
-constexpr u32 EndNamedPictures = OLEG::TilesCredits;
+CONSTEXPR u32 NoPicture[OLEG::Pictures] = {OLEG::NoCrashTitle, OLEG::NoLevelTitle, OLEG::TilesNone};
+CONSTEXPR u32 FirstNamedPicture = OLEG::TilesNamed;
+CONSTEXPR u32 EndNamedPictures = OLEG::TilesCredits;
 
 // The wumpa fruit: one added every 0.15 seconds (sooner the more there are), the count's pulse as long, the count shown in a
 // tenth of a second for a second and a half (hidden as fast while paused), a hundred making a life. The lives (at most 100):
 // their rock (0.45 seconds, 7 times), shown for a second and a half; the extra life's head appearing in half a second for a
 // second, sliding and spinning for 0.75 seconds, its sound's volume (and the sound's pitch as it is)
-constexpr f32 WumpaDelaySeconds = Rounded(0.15);
-constexpr f32 CountShowSeconds = Rounded(0.1);
-constexpr f32 CountHoldSeconds = 1.5f;
-constexpr u32 WumpaPerLife = 100;
-constexpr u32 MostLives = 100;
-constexpr f32 RockSeconds = Rounded(0.45);
-constexpr u32 RockRepeats = 7;
-constexpr f32 HeadAppearSeconds = 0.5f;
-constexpr f32 HeadMoveSeconds = 0.75f;
-constexpr u32 ExtraLifeSound = 0x10A;
-constexpr f32 ExtraLifeVolume = Rounded(0.2);
+CONSTEXPR f32 WumpaDelaySeconds = Rounded(0.15);
+CONSTEXPR f32 CountShowSeconds = Rounded(0.1);
+CONSTEXPR f32 CountHoldSeconds = 1.5f;
+CONSTEXPR u32 WumpaPerLife = 100;
+CONSTEXPR u32 MostLives = 100;
+CONSTEXPR f32 RockSeconds = Rounded(0.45);
+CONSTEXPR u32 RockRepeats = 7;
+CONSTEXPR f32 HeadAppearSeconds = 0.5f;
+CONSTEXPR f32 HeadMoveSeconds = 0.75f;
+CONSTEXPR u32 ExtraLifeSound = 0x10A;
+CONSTEXPR f32 ExtraLifeVolume = Rounded(0.2);
 // The breathing scale: 30 values of 1 + 0.1 sin of a 60th of a turn more each, a cycle each half second
-constexpr u16 BreathingValues = 30;
-constexpr f32 BreathingStep = 0x1.ACEEA2p-4f;
-constexpr f32 BreathingAmount = Rounded(0.1);
-constexpr f32 BreathingSeconds = 0.5f;
+CONSTEXPR u16 BreathingValues = 30;
+CONSTEXPR f32 BreathingStep = 0x1.ACEEA2p-4f;
+CONSTEXPR f32 BreathingAmount = Rounded(0.1);
+CONSTEXPR f32 BreathingSeconds = 0.5f;
 // The particles' turns: a sixth of a turn
-constexpr f32 SixthTurn = 0x1.0c1524p+0f;
+CONSTEXPR f32 SixthTurn = 0x1.0c1524p+0f;
 
 // The health bar: its body's length (of the progress's bar length) and height, its pieces' width and height (fractions of its
 // size); the slider's track's height
-constexpr f32 BarLengthScale = Rounded(0.15);
-constexpr f32 BarHeight = Rounded(0.2);
-constexpr f32 BarPieceWidth = Rounded(0.03);
-constexpr f32 BarPieceHeight = Rounded(0.04);
-constexpr f32 SliderTrackHeight = Rounded(0.1);
+CONSTEXPR f32 BarLengthScale = Rounded(0.15);
+CONSTEXPR f32 BarHeight = Rounded(0.2);
+CONSTEXPR f32 BarPieceWidth = Rounded(0.03);
+CONSTEXPR f32 BarPieceHeight = Rounded(0.04);
+CONSTEXPR f32 SliderTrackHeight = Rounded(0.1);
 // The level widgets: their bob (its phase's step a frame, wrapping at half a turn, and how far), the gems' spacing (a ninth of
 // the widget), the emitters' step (a frame), the title's size and how far left of the middle it is (fractions of the widget)
-constexpr f32 BobStep = 0x1.20E2C4p-4f;
-constexpr f32 BobAmount = Rounded(0.005);
-constexpr f32 GemSpacing = Rounded(1.0 / 9);
-constexpr f32 FrameSeconds = Rounded(1.0 / 60);
-constexpr f32 TitleWidth = Rounded(0.2);
-constexpr f32 TitleHeight = Rounded(1.6);
-constexpr f32 TitleOffset = Rounded(0.35);
+CONSTEXPR f32 BobStep = 0x1.20E2C4p-4f;
+CONSTEXPR f32 BobAmount = Rounded(0.005);
+CONSTEXPR f32 GemSpacing = Rounded(1.0 / 9);
+CONSTEXPR f32 FrameSeconds = Rounded(1.0 / 60);
+CONSTEXPR f32 TitleWidth = Rounded(0.2);
+CONSTEXPR f32 TitleHeight = Rounded(1.6);
+CONSTEXPR f32 TitleOffset = Rounded(0.35);
 // The save slots: a minute's share of a second
-constexpr f32 MinutesPerSecond = Rounded(1.0 / 60);
+CONSTEXPR f32 MinutesPerSecond = Rounded(1.0 / 60);
 
 // A widget effect made: the base's members, then its own vtable
 void ConstructEffect(WidgetEffect* effect, const GccVTableEntry* vtable)

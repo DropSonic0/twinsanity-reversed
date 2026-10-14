@@ -8,7 +8,7 @@ namespace
 // The bytes set one at a time (the colour class's setters)
 void SetBytes(u32* colour, f32 red, f32 green, f32 blue, f32 alpha)
 {
-    auto* rgba = reinterpret_cast<Rgba*>(colour);
+    Rgba* rgba = reinterpret_cast<Rgba*>(colour);
     rgba->red = Colour::ColourByte(red);
     rgba->green = Colour::ColourByte(green);
     rgba->blue = Colour::ColourByte(blue);
@@ -45,8 +45,10 @@ extern "C"
 
     void ColourLerp(f32 t, u32* colour, u32 from, u32 to)
     {
-        Rgba start = {from};
-        Rgba end = {to};
+        Rgba start;
+        start.value = from;
+        Rgba end;
+        end.value = to;
         f32 fromRed = Colour::ColourFraction(start.red);
         f32 fromGreen = Colour::ColourFraction(start.green);
         f32 fromBlue = Colour::ColourFraction(start.blue);
@@ -64,7 +66,7 @@ extern "C"
 
     u32 ColourScale(u32* colour, f32 scale)
     {
-        auto* rgba = reinterpret_cast<Rgba*>(colour);
+        Rgba* rgba = reinterpret_cast<Rgba*>(colour);
         f32 red = scale * Colour::ColourFraction(rgba->red);
         f32 green = scale * Colour::ColourFraction(rgba->green);
         f32 blue = scale * Colour::ColourFraction(rgba->blue);
@@ -76,8 +78,9 @@ extern "C"
 
     u32 ColourTint(u32* colour, u32 tint)
     {
-        Rgba tinting = {tint};
-        const auto* own = reinterpret_cast<const Rgba*>(colour);
+        Rgba tinting;
+        tinting.value = tint;
+        const Rgba* own = reinterpret_cast<const Rgba*>(colour);
         f32 red = Colour::ColourFraction(tinting.red) * Colour::ColourFraction(own->red);
         f32 green = Colour::ColourFraction(tinting.green) * Colour::ColourFraction(own->green);
         f32 blue = Colour::ColourFraction(tinting.blue) * Colour::ColourFraction(own->blue);

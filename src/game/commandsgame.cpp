@@ -230,12 +230,12 @@ extern "C"
 
 namespace
 {
-constexpr s32 NoModelSlot = -1;
+CONSTEXPR s32 NoModelSlot = -1;
 
 // The bottom text line: a text, a place, a colour, the scale 0.75 and how long it stays (seconds)
 void ShowTextLine(const char* text, f32 x, f32 y, f32 red, f32 green, f32 blue, f32 seconds)
 {
-    constexpr f32 Scale = 0.75f;
+    CONSTEXPR f32 Scale = 0.75f;
     TextLine* line = &G_GameController->oleg.textLine;
     u32 colour;
     MakeColour(&colour, red, green, blue);
@@ -291,7 +291,7 @@ void SetGaugeIconCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
 // The story raised to an area (AreaFromValue: the tagged area's), never lowered
 void RaiseStoryAreaCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr s32 AreaFromValue = -1;
+    CONSTEXPR s32 AreaFromValue = -1;
     GameProgress* progress = &G_GameController->progress;
     s32 raised = area;
     if (raised == AreaFromValue)
@@ -313,9 +313,9 @@ void DisplayBottomTextCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLe
 // The text of the instance's first integer property (to 10 the texts from 30, past it the texts from 52)
 void DisplayBottomTextInstanceCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 LastLowNumber = 10;
-    constexpr u32 LowTextOffset = 30;
-    constexpr u32 HighTextOffset = 41;
+    CONSTEXPR u32 LastLowNumber = 10;
+    CONSTEXPR u32 LowTextOffset = 30;
+    CONSTEXPR u32 HighTextOffset = 41;
     u32 number = static_cast<u32>(static_cast<ObjectNode*>(runner->agentNode)->properties->GetInt(0));
     u32 index = number > LastLowNumber ? number + HighTextOffset : number + LowTextOffset;
     ShowTextLine(g_BottomTexts[index], x, y, red, green, blue, seconds);
@@ -347,8 +347,8 @@ void StartWhackawormCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 namespace
 {
 // The HUD's gem and crystal widget: how long it appears and holds
-constexpr f32 GemShowSeconds = Rounded(0.3);
-constexpr f32 GemHoldSeconds = 1.5f;
+CONSTEXPR f32 GemShowSeconds = Rounded(0.3);
+CONSTEXPR f32 GemHoldSeconds = 1.5f;
 
 // The progress of the level play is in (its word)
 u32* CurrentLevel(GameProgress* progress)
@@ -388,9 +388,9 @@ void AddCrystalCommand::ExecuteOn(GameNode*)
 // The played character's part gets a hit point, at most 3: a fourth makes it invincible
 void PickUpHealthCommand::ExecuteOn(GameNode*)
 {
-    constexpr u32 MostHitPoints = 3;
+    CONSTEXPR u32 MostHitPoints = 3;
     // CharacterAgent::StartInvincibility's kind of 8 seconds
-    constexpr u32 LongInvincibility = 1;
+    CONSTEXPR u32 LongInvincibility = 1;
     GameProgress* progress = &G_GameController->progress;
     InstanceContext* played = progress->Instance(progress->play.character);
     if (played == nullptr)

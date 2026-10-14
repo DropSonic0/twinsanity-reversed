@@ -39,112 +39,112 @@ template <typename T> T* Allocate()
 }
 
 // The main menu's title and its items' texts
-constexpr const char* MainMenuTitle = "crash twinsanity";
-constexpr u32 NewGameText = 9;
-constexpr u32 LoadGameText = 0xA;
-constexpr u32 OptionsText = 0xB;
+CONSTEXPR const char* MainMenuTitle = "crash twinsanity";
+CONSTEXPR u32 NewGameText = 9;
+CONSTEXPR u32 LoadGameText = 0xA;
+CONSTEXPR u32 OptionsText = 0xB;
 // Its items' IDs
-constexpr u32 NewGameItem = 0;
-constexpr u32 LoadGameItem = 2;
-constexpr u32 OptionsItem = 0x1E;
+CONSTEXPR u32 NewGameItem = 0;
+CONSTEXPR u32 LoadGameItem = 2;
+CONSTEXPR u32 OptionsItem = 0x1E;
 // A screen of OLEG's is shown over half a second, the others hidden; an item's gallery or movie starts half a second after it's
 // picked
-constexpr f32 ScreenChangeSeconds = 0.5f;
-constexpr f32 ItemDelaySeconds = 0.5f;
+CONSTEXPR f32 ScreenChangeSeconds = 0.5f;
+CONSTEXPR f32 ItemDelaySeconds = 0.5f;
 // "continue", the ID of the items going back to a page's parent, and how far a frame moves the screen
-constexpr u32 ContinueText = 5;
-constexpr u32 ParentBackItem = 0x1D;
-constexpr f32 ScreenStepX = Rounded(0.015);
-constexpr f32 ScreenStepY = Rounded(0.03);
+CONSTEXPR u32 ContinueText = 5;
+CONSTEXPR u32 ParentBackItem = 0x1D;
+CONSTEXPR f32 ScreenStepX = Rounded(0.015);
+CONSTEXPR f32 ScreenStepY = Rounded(0.03);
 
 // The game over page: its title, "continue" (restarting from the save) and "quit game"
-constexpr u32 GameOverTitle = 0x44;
-constexpr u32 RestartItemId = 9;
-constexpr u32 QuitGameText = 0x1A;
-constexpr u32 QuitGameItem = 0xB;
+CONSTEXPR u32 GameOverTitle = 0x44;
+CONSTEXPR u32 RestartItemId = 9;
+CONSTEXPR u32 QuitGameText = 0x1A;
+CONSTEXPR u32 QuitGameItem = 0xB;
 // The confirmations: "yes" and "no" (its ID 0x1C), the quit's yes (its ID 0xB) and the disable autosave's (0xA)
-constexpr u32 YesText = 3;
-constexpr u32 NoText = 2;
-constexpr u32 NoItem = 0x1C;
-constexpr u32 QuitYesItem = 0xB;
-constexpr u32 DisableAutosaveYesItem = 0xA;
+CONSTEXPR u32 YesText = 3;
+CONSTEXPR u32 NoText = 2;
+CONSTEXPR u32 NoItem = 0x1C;
+CONSTEXPR u32 QuitYesItem = 0xB;
+CONSTEXPR u32 DisableAutosaveYesItem = 0xA;
 // The notices' "continue" (its ID 0xC)
-constexpr u32 NoticeContinueItem = 0xC;
+CONSTEXPR u32 NoticeContinueItem = 0xC;
 // The options: the pages' titles, their links (IDs 6, 7, 8) and back (0x1C on the sub-pages)
-constexpr u32 GraphicOptionsText = 0xD;
-constexpr u32 SoundOptionsText = 0xE;
-constexpr u32 GameOptionsText = 0xF;
-constexpr u32 GraphicOptionsItem = 6;
-constexpr u32 SoundOptionsItem = 7;
-constexpr u32 GameOptionsItem = 8;
-constexpr u32 BackText = 4;
-constexpr u32 SubPageBackItem = 0x1C;
+CONSTEXPR u32 GraphicOptionsText = 0xD;
+CONSTEXPR u32 SoundOptionsText = 0xE;
+CONSTEXPR u32 GameOptionsText = 0xF;
+CONSTEXPR u32 GraphicOptionsItem = 6;
+CONSTEXPR u32 SoundOptionsItem = 7;
+CONSTEXPR u32 GameOptionsItem = 8;
+CONSTEXPR u32 BackText = 4;
+CONSTEXPR u32 SubPageBackItem = 0x1C;
 // Their items: vibration (no and yes), centring the screen, widescreen (off and on), the volumes (0 to 10), the output type and
 // its choices (mono, stereo, Dolby Pro Logic II)
-constexpr u32 VibrationText = 0x15;
-constexpr u32 VibrationItem = 0x1A;
-constexpr u32 CentreScreenText = 0x11;
-constexpr u32 CentreScreenItem = 0x15;
-constexpr u32 WidescreenText = 0x10;
-constexpr u32 WidescreenItem = 0x16;
-constexpr u32 OffText = 0;
-constexpr u32 OnText = 1;
-constexpr u32 EffectsVolumeText = 0x12;
-constexpr u32 EffectsVolumeItem = 0x17;
-constexpr u32 MusicVolumeText = 0x13;
-constexpr u32 MusicVolumeItem = 0x18;
-constexpr s32 MaxVolume = 10;
-constexpr f32 VolumeStep = Rounded(0.1);
-constexpr u32 OutputTypeText = 0x14;
-constexpr u32 OutputTypeItem = 0x19;
-constexpr u32 OutputTypes = 3;
-constexpr u32 MonoText = 6;
+CONSTEXPR u32 VibrationText = 0x15;
+CONSTEXPR u32 VibrationItem = 0x1A;
+CONSTEXPR u32 CentreScreenText = 0x11;
+CONSTEXPR u32 CentreScreenItem = 0x15;
+CONSTEXPR u32 WidescreenText = 0x10;
+CONSTEXPR u32 WidescreenItem = 0x16;
+CONSTEXPR u32 OffText = 0;
+CONSTEXPR u32 OnText = 1;
+CONSTEXPR u32 EffectsVolumeText = 0x12;
+CONSTEXPR u32 EffectsVolumeItem = 0x17;
+CONSTEXPR u32 MusicVolumeText = 0x13;
+CONSTEXPR u32 MusicVolumeItem = 0x18;
+CONSTEXPR s32 MaxVolume = 10;
+CONSTEXPR f32 VolumeStep = Rounded(0.1);
+CONSTEXPR u32 OutputTypeText = 0x14;
+CONSTEXPR u32 OutputTypeItem = 0x19;
+CONSTEXPR u32 OutputTypes = 3;
+CONSTEXPR u32 MonoText = 6;
 // The pause menu: its title, its pages' (save game, load game), its items' texts and IDs
-constexpr u32 PauseTitle = 0x18;
-constexpr u32 SaveGameText = 0x19;
-constexpr u32 SaveGameItem = 1;
-constexpr u32 DisableAutosaveText = 0x16;
-constexpr u32 DisableAutosaveItem = 0xA;
-constexpr u32 ResumeText = 0x1B;
-constexpr u32 ResumeItem = 0xC;
+CONSTEXPR u32 PauseTitle = 0x18;
+CONSTEXPR u32 SaveGameText = 0x19;
+CONSTEXPR u32 SaveGameItem = 1;
+CONSTEXPR u32 DisableAutosaveText = 0x16;
+CONSTEXPR u32 DisableAutosaveItem = 0xA;
+CONSTEXPR u32 ResumeText = 0x1B;
+CONSTEXPR u32 ResumeItem = 0xC;
 // The extras: their title, the gem extras' titles (the gem's after the first), links (IDs 0xE on) and items (16 each, their IDs
 // their indexes), the complete game's movie item and its texts before and once the game's done, and resume's ID
-constexpr u32 ExtrasTitle = 0x17;
-constexpr u32 GemExtrasTitle = 0x59;
-constexpr u32 GemExtrasLink = 0xE;
-constexpr u32 GemExtrasItems = 16;
-constexpr u32 CompleteItem = 0x14;
-constexpr u32 CompleteText = 0x61;
-constexpr u32 NotCompleteText = 0x58;
-constexpr u32 ExtrasResumeItem = 0x1C;
+CONSTEXPR u32 ExtrasTitle = 0x17;
+CONSTEXPR u32 GemExtrasTitle = 0x59;
+CONSTEXPR u32 GemExtrasLink = 0xE;
+CONSTEXPR u32 GemExtrasItems = 16;
+CONSTEXPR u32 CompleteItem = 0x14;
+CONSTEXPR u32 CompleteText = 0x61;
+CONSTEXPR u32 NotCompleteText = 0x58;
+CONSTEXPR u32 ExtrasResumeItem = 0x1C;
 // The galleries' first texts and their pictures' names
-constexpr u32 BossesText = 0x62;
-constexpr u32 ConceptText = 0x72;
-constexpr u32 EnemiesText = 0x82;
-constexpr u32 MoviesText = 0x92;
-constexpr u32 UnseenText = 0xA2;
-constexpr u32 StoryboardsText = 0x47;
-constexpr const char* BossesName = "Extras\\Bosses\\Boss";
-constexpr const char* ConceptName = "Extras\\Concept\\Concept";
-constexpr const char* EnemiesName = "Extras\\Enemies\\Enemy";
-constexpr const char* UnseenName = "Extras\\Unseen\\Unseen";
+CONSTEXPR u32 BossesText = 0x62;
+CONSTEXPR u32 ConceptText = 0x72;
+CONSTEXPR u32 EnemiesText = 0x82;
+CONSTEXPR u32 MoviesText = 0x92;
+CONSTEXPR u32 UnseenText = 0xA2;
+CONSTEXPR u32 StoryboardsText = 0x47;
+CONSTEXPR const char* BossesName = "Extras\\Bosses\\Boss";
+CONSTEXPR const char* ConceptName = "Extras\\Concept\\Concept";
+CONSTEXPR const char* EnemiesName = "Extras\\Enemies\\Enemy";
+CONSTEXPR const char* UnseenName = "Extras\\Unseen\\Unseen";
 // The movies' movies: the bonus movies and the story's
-constexpr u32 ExtrasMovies[GemExtrasItems] = {
+CONSTEXPR u32 ExtrasMovies[GemExtrasItems] = {
     GameMovie::FirstBonus, GameMovie::FirstBonus + 1, GameMovie::FirstBonus + 2, GameMovie::FirstBonus + 3,
     GameMovie::Intro,      GameMovie::Intro + 1,      GameMovie::Intro + 2,      GameMovie::Intro + 3,
     GameMovie::Intro + 4,  GameMovie::Intro + 5,      GameMovie::Intro + 6,      GameMovie::Intro + 7,
     GameMovie::Intro + 8,  GameMovie::Intro + 9,      GameMovie::Intro + 10,     GameMovie::Intro + 11,
 };
 // The movies needing the story done: from the 14th, once the story's area is 24
-constexpr u32 FirstStoryEndMovie = 13;
-constexpr u32 StoryDoneArea = 24;
+CONSTEXPR u32 FirstStoryEndMovie = 13;
+CONSTEXPR u32 StoryDoneArea = 24;
 // The levels' storyboards: their pictures' names and how many each has
 struct Storyboard
 {
     const char* name;
     u32 pictures;
 };
-constexpr Storyboard Storyboards[GemExtrasItems] = {
+CONSTEXPR Storyboard Storyboards[GemExtrasItems] = {
     {"Extras\\Storyboards\\02-Jungle\\Jungle", 8},           {"Extras\\Storyboards\\01-NSanity\\NSanity", 11},
     {"Extras\\Storyboards\\03-Cavern\\Cavern", 14},          {"Extras\\Storyboards\\04-Totem\\Totem", 15},
     {"Extras\\Storyboards\\06-IceClimb\\IceClimb", 17},      {"Extras\\Storyboards\\05-IceHub\\IceHub", 15},
@@ -156,7 +156,7 @@ constexpr Storyboard Storyboards[GemExtrasItems] = {
 };
 // The levels pages: each world's layout (the columns' places, the first row's height and the rows' spacing) and its four levels'
 // areas (the items' IDs)
-constexpr u32 LevelsPerWorld = 4;
+CONSTEXPR u32 LevelsPerWorld = 4;
 struct LevelsLayout
 {
     f32 evenX;
@@ -165,27 +165,27 @@ struct LevelsLayout
     f32 spacing;
     u32 levels[LevelsPerWorld];
 };
-constexpr u32 Worlds = 4;
-constexpr LevelsLayout LevelsLayouts[Worlds] = {
+CONSTEXPR u32 Worlds = 4;
+CONSTEXPR LevelsLayout LevelsLayouts[Worlds] = {
     {Rounded(0.6), Rounded(0.4), Rounded(0.15), Rounded(0.15), {0, 1, 3, 4}},
     {Rounded(0.4), Rounded(0.6), Rounded(0.15), Rounded(0.15), {6, 7, 9, 10}},
     {Rounded(0.6), Rounded(0.4), Rounded(0.15), Rounded(0.15), {13, 15, 17, 18}},
     {Rounded(0.4), Rounded(0.6), Rounded(0.15), Rounded(0.15), {20, 21, 22, 23}},
 };
 // Past the last world (never asked for): the retail code's layout, with no levels (the retail code's are what its stack held)
-constexpr LevelsLayout NoWorld = {Rounded(0.4), Rounded(0.6), Rounded(0.2), 0.125f, {}};
+CONSTEXPR LevelsLayout NoWorld = {Rounded(0.4), Rounded(0.6), Rounded(0.2), 0.125f, {}};
 // The levels' and the save slots' rings (panels: AddPanelRings' discs) in the middle of their widgets, the level widgets' size
 // and the levels' discs' radii
-constexpr Vector2 LevelWidgetScale = {Rounded(0.6), Rounded(0.1)};
-constexpr Vector2 LevelPanelRadii = {Rounded(0.3), Rounded(0.05)};
+CONSTEXPR Vector2 LevelWidgetScale = {Rounded(0.6), Rounded(0.1)};
+CONSTEXPR Vector2 LevelPanelRadii = {Rounded(0.3), Rounded(0.05)};
 // The save slots page: a save code item per slot (IDs from 0x100), and a ring panel (0.2 by 0.075) behind each slot's widget, in
 // two staggered columns (the even slots' sliding in from the left)
-constexpr u32 SlotItemIds = 0x100;
-constexpr f32 SlotEvenX = Rounded(0.3);
-constexpr f32 SlotOddX = Rounded(0.7);
-constexpr f32 SlotsTop = Rounded(0.26);
-constexpr f32 SlotSpacing = Rounded(0.09);
-constexpr Vector2 SlotPanelRadii = {Rounded(0.2), Rounded(0.075)};
+CONSTEXPR u32 SlotItemIds = 0x100;
+CONSTEXPR f32 SlotEvenX = Rounded(0.3);
+CONSTEXPR f32 SlotOddX = Rounded(0.7);
+CONSTEXPR f32 SlotsTop = Rounded(0.26);
+CONSTEXPR f32 SlotSpacing = Rounded(0.09);
+CONSTEXPR Vector2 SlotPanelRadii = {Rounded(0.2), Rounded(0.075)};
 
 // Every other screen hidden and the screen shown, over half a second
 void ShowScreen(OLEG& oleg, u32 screen)

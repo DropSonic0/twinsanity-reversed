@@ -24,7 +24,7 @@ struct ChoiceItem
 
 // The choices page's items, by their ids: "Format", "Continue", "Continue wihout saving", "Create save", "Retry", "Cancel", "Yes",
 // "No"
-constexpr ChoiceItem ChoiceItems[] = {
+CONSTEXPR ChoiceItem ChoiceItems[] = {
     {SaveMessageFormat, SaveCodeItem::AnswerChoose},
     {SaveMessageContinue, SaveCodeItem::AnswerContinue},
     {SaveMessageLeave, SaveCodeItem::AnswerContinue},
@@ -34,7 +34,7 @@ constexpr ChoiceItem ChoiceItems[] = {
     {SaveMessageYes, SaveCodeItem::AnswerChoose},
     {SaveMessageNo, SaveCodeItem::AnswerBack},
 };
-constexpr u32 ChoiceItemCount = 8;
+CONSTEXPR u32 ChoiceItemCount = 8;
 
 enum ChoiceItemId : u32
 {
@@ -49,9 +49,9 @@ enum ChoiceItemId : u32
 };
 
 // The save code page's items: "Continue wihout saving" (id 0) and "Cancel" (id 1), after the save slots' items
-constexpr u32 PageItemCount = 2;
-constexpr u32 LeavePageItem = 0;
-constexpr u32 CancelPageItem = 1;
+CONSTEXPR u32 PageItemCount = 2;
+CONSTEXPR u32 LeavePageItem = 0;
+CONSTEXPR u32 CancelPageItem = 1;
 
 // The page's item at an index (none out of range)
 MenuItem* ItemAt(const MenuPage* page, s32 index)

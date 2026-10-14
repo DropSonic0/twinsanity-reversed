@@ -35,32 +35,32 @@
 namespace
 {
 // The game's languages (English, French, German, Spanish, Italian)
-constexpr u32 Languages = 5;
-constexpr s32 GameEnglish = 0;
-constexpr s32 GameFrench = 1;
-constexpr s32 GameGerman = 2;
-constexpr s32 GameSpanish = 3;
-constexpr s32 GameItalian = 4;
+CONSTEXPR u32 Languages = 5;
+CONSTEXPR s32 GameEnglish = 0;
+CONSTEXPR s32 GameFrench = 1;
+CONSTEXPR s32 GameGerman = 2;
+CONSTEXPR s32 GameSpanish = 3;
+CONSTEXPR s32 GameItalian = 4;
 // The save code's messages' texts from the second message on (the first keeps the save code's own string)
-constexpr s32 SaveMessageTexts[] = {0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0xB7, 0x32,
+CONSTEXPR s32 SaveMessageTexts[] = {0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0xB7, 0x32,
                                     0x5F, 0x33, 0x34, 0x35, 0x36, 0x37, 0xB8, 0xB4, 0xB5, 0xB6, 0x38, 0x39, 0x3A,
                                     0xB9, 0x3B, 0x3C, 0x3D, 0x3E, 0x05, 0x3F, 0xCC, 0x41, 0x03, 0x02};
 // The video controller's texts, the same in every language
-constexpr const char* SkipHint = "Press (JUMP) to skip movie";
-constexpr const char* DiscErrorTitle = "DISC ERROR";
+CONSTEXPR const char* SkipHint = "Press (JUMP) to skip movie";
+CONSTEXPR const char* DiscErrorTitle = "DISC ERROR";
 // The room the preloaded chunks' list starts with and grows by, and the update rates' cutoffs' square roots and steps (the object
 // nodes' and the model nodes')
-constexpr u32 PreloadRoom = 10;
-constexpr u32 UpdateCutoffRoot = 100;
-constexpr u32 ObjectUpdateSteps = 2;
-constexpr u32 ModelUpdateSteps = 3;
+CONSTEXPR u32 PreloadRoom = 10;
+CONSTEXPR u32 UpdateCutoffRoot = 100;
+CONSTEXPR u32 ObjectUpdateSteps = 2;
+CONSTEXPR u32 ModelUpdateSteps = 3;
 // The game's chunk manager's bytes (game/gamechunkmanager.cpp's)
-constexpr u32 GameChunkManagerSize = 0x3200;
+CONSTEXPR u32 GameChunkManagerSize = 0x3200;
 // The node kinds the start-up gives the instance queries: the lines of sight's cover (with kind 0x15, which no node is) and the
 // solid instances, the instances impacts reach and whose bodies keep their gravity, and the ones the physics bodies collide with
-constexpr u32 CoverKinds = 1u << NodeCrate | 1u << NodeGenericObject | 1u << NodePayGate | 1u << NodeUnusedObjectType;
-constexpr u32 ImpactKinds = 1u << NodeCharacter | 1u << NodeCreature;
-constexpr u32 PhysicsBodyKinds = 1u << NodeCrate | 1u << NodeGenericObject | 1u << NodePayGate;
+CONSTEXPR u32 CoverKinds = 1u << NodeCrate | 1u << NodeGenericObject | 1u << NodePayGate | 1u << NodeUnusedObjectType;
+CONSTEXPR u32 ImpactKinds = 1u << NodeCharacter | 1u << NodeCreature;
+CONSTEXPR u32 PhysicsBodyKinds = 1u << NodeCrate | 1u << NodeGenericObject | 1u << NodePayGate;
 
 // The game's languages, by the console's: English is the rest
 s32 GameLanguageOf(Platform::System::ConsoleLanguage consoleLanguage)

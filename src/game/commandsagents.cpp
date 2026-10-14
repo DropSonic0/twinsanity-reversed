@@ -27,7 +27,7 @@
 #include "game/scenery.h"
 #include "game/vehicles.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 // The commands that work on the agents' parts, the characters, the instances' linked objects and the follow camera
 
@@ -42,8 +42,8 @@ extern "C"
 namespace
 {
 // The event the linked objects are sent, and the one the nitro crates are
-constexpr u32 TriggerEvent = 1;
-constexpr u32 NitroEvent = 0xD;
+CONSTEXPR u32 TriggerEvent = 1;
+CONSTEXPR u32 NitroEvent = 0xD;
 
 ObjectNode* NodeOf(BehaviourRunner* runner)
 {
@@ -63,7 +63,7 @@ bool Asleep(const InstanceContext* instance)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 InstanceContext* PlayerInstance()
@@ -148,7 +148,7 @@ void SetVehicleHeld(u32 character, bool set)
 {
     NodeList* nodes = NodesOf(G_GameController->progress.Instance(character));
     void* controls = GetGameNode(nodes, NodeControls);
-    auto* node = static_cast<AgentNode*>(GetGameNode(nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(nodes, NodeCharacter));
     if (controls == nullptr || node == nullptr)
     {
         return;
@@ -169,7 +169,7 @@ void TriggerLinkedGenericObjects(InstanceContext* instance)
 
     for (u32 index = 0; index < attachments->LinkedCount(); index++)
     {
-        auto* generic = static_cast<AgentNode*>(GetGameNode(NodesOf(LinkedInstances(attachments)[index]), NodeGenericObject));
+        AgentNode* generic = static_cast<AgentNode*>(GetGameNode(NodesOf(LinkedInstances(attachments)[index]), NodeGenericObject));
         if (generic != nullptr)
         {
             RunAgentEvent(generic->agent, TriggerEvent, reinterpret_cast<u32>(instance), 0, 0);
@@ -215,8 +215,8 @@ void SetNoiseMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 // No player: its nodes read at 0xD4
 void SetPlayerScriptFlagCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(NodesOf(PlayerInstance()), NodeCharacter));
-    auto* part = static_cast<CharacterPart*>(node->agent->part);
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(NodesOf(PlayerInstance()), NodeCharacter));
+    CharacterPart* part = static_cast<CharacterPart*>(node->agent->part);
     part->moveBits.scriptFlag = clears.on ^ 1;
 }
 
@@ -285,7 +285,7 @@ void NowStrafeLeftCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
 void ClearAnimationCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     ObjectNode* node = NodeOf(runner);
-    auto* model = static_cast<ModelNode*>(GetGameNode(&node->owner->nodes, NodeModel));
+    ModelNode* model = static_cast<ModelNode*>(GetGameNode(&node->owner->nodes, NodeModel));
     OgiAnimator* animator = model->animator;
     if (animator == nullptr)
     {
@@ -300,7 +300,7 @@ void ClearAnimationCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
 // more (any other)
 void ForceAnimationUpdateCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* model = static_cast<ModelNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeModel));
+    ModelNode* model = static_cast<ModelNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeModel));
     if (model == nullptr)
     {
         return;
@@ -324,15 +324,15 @@ void ForceAnimationUpdateCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 // The first awake instance of the chunk with a camera trigger whose box overlaps the instance's (of 32 at most) put to sleep
 void TriggerInstanceAtOwnBoxCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x20;
-    constexpr u32 CameraTriggers = 1 << NodeCameraTrigger;
+    CONSTEXPR u16 Most = 0x20;
+    CONSTEXPR u32 CameraTriggers = 1 << NodeCameraTrigger;
     InstanceContext* instance = NodeOf(runner)->owner;
     void* results[Most];
     InstanceQuery query;
     MakeQuery(&query, results, Most);
     if (QueryChunkInstances(instance->chunk, &instance->collision.box, CameraTriggers, &query) != 0)
     {
-        auto* found = static_cast<ReferencedObject*>(results[0]);
+        ReferencedObject* found = static_cast<ReferencedObject*>(results[0]);
         CallVirtual<u32>(found, found->vtable, ReferencedObject::SleepSlot);
     }
 }
@@ -372,7 +372,7 @@ void ReleaseVehicleCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel
 void SetFocusToCameraTargetCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     FollowNode* follow = PlayedFollowNode();
-    auto* followed = follow->cameraInstance != nullptr ? static_cast<InstanceContext*>(follow->cameraInstance->object) : nullptr;
+    InstanceContext* followed = follow->cameraInstance != nullptr ? static_cast<InstanceContext*>(follow->cameraInstance->object) : nullptr;
     ObjectNode* node = NodeOf(runner);
     node->focusInstance = followed;
     if (followed != nullptr)
@@ -388,7 +388,7 @@ void SetFollowCameraTargetCommand::Execute(TimeClock*, BehaviourRunner* runner, 
 {
     InstanceContext* played = PlayedInstance();
     InstanceContext* instance = NodeOf(runner)->owner;
-    auto* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
+    FollowNode* follow = static_cast<FollowNode*>(GetGameNode(NodesOf(played), NodeFollow));
     if (follow == nullptr || follow->camera.bits.keepsTarget != 0)
     {
         return;
@@ -493,8 +493,8 @@ void SetChiChiGrassCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
         return;
     }
 
-    auto* grabbable = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeGrabbable));
-    auto* part = static_cast<GrabbablePart*>(grabbable->agent->part);
+    AgentNode* grabbable = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeGrabbable));
+    CharacterPart* part = static_cast<GrabbablePart*>(grabbable->agent->part);
     part->grabbable.unused0 = setting.on;
 }
 
@@ -502,10 +502,10 @@ void SetChiChiGrassCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
 void SetHitPointsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     NodeList* nodes = &NodeOf(runner)->owner->nodes;
-    auto* character = static_cast<AgentNode*>(GetGameNode(nodes, NodeCharacter));
+    AgentNode* character = static_cast<AgentNode*>(GetGameNode(nodes, NodeCharacter));
     if (character != nullptr)
     {
-        auto* agent = static_cast<CharacterAgent*>(character->agent);
+        CharacterAgent* agent = static_cast<CharacterAgent*>(character->agent);
         SetPartHitPoints(static_cast<CreaturePart*>(agent->part), hitPoints);
         if (static_cast<s32>(hitPoints) > 0)
         {
@@ -515,7 +515,7 @@ void SetHitPointsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
         return;
     }
 
-    auto* creature = static_cast<AgentNode*>(GetGameNode(nodes, NodeCreature));
+    AgentNode* creature = static_cast<AgentNode*>(GetGameNode(nodes, NodeCreature));
     if (creature != nullptr)
     {
         SetPartHitPoints(static_cast<CreaturePart*>(creature->agent->part), hitPoints);
@@ -570,7 +570,7 @@ void DamageOriginatorCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     PropertyHolder* properties = node->PacketProperties();
-    auto* originator = static_cast<InstanceContext*>(runner->originator);
+    InstanceContext* originator = static_cast<InstanceContext*>(runner->originator);
     if (originator == nullptr)
     {
         return;
@@ -633,7 +633,7 @@ void CacheLinkedInstanceCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
     }
 
     InstanceContext* linked = node->agentRef2;
-    auto* objectNode = static_cast<GameNode*>(GetGameNode(NodesOf(linked), NodeObject));
+    GameNode* objectNode = static_cast<GameNode*>(GetGameNode(NodesOf(linked), NodeObject));
     CallVirtual<void>(objectNode, objectNode->vtable, ObjectNode::ReleasePartsUnlessUnloadingSlot);
     CallVirtual<u32>(linked, linked->vtable, InstanceContext::SleepSlot);
 }
@@ -646,7 +646,7 @@ void RunScriptSlotCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
     u16 id;
     GetObjectBehaviourId(&id, ObjectOf(node), request.slot);
     ResourceTable* scripts = G_GameResourcesObjectPointer->scripts;
-    auto* starter = id != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[id & ResourceIndexMask]) : nullptr;
+    ScriptStarter* starter = id != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[id & ResourceIndexMask]) : nullptr;
     if (starter != nullptr)
     {
         CallVirtual<u32>(node, node->vtable, ObjectNode::StartBehaviourSlot, starter, node->owner, 1u,
@@ -668,7 +668,7 @@ void TriggerLinkedObjectsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
     void* sender = fromOriginator.on != 0 ? runner->originator : node->owner;
     for (u32 index = 0; index < count; index++)
     {
-        auto* linked = static_cast<ObjectNode*>(GetGameNode(NodesOf(LinkedInstances(attachments)[index]), NodeObject));
+        ObjectNode* linked = static_cast<ObjectNode*>(GetGameNode(NodesOf(LinkedInstances(attachments)[index]), NodeObject));
         if (linked != nullptr)
         {
             RunAgentEvent(linked->agent, TriggerEvent, reinterpret_cast<u32>(sender), 0, 0);
@@ -709,9 +709,9 @@ void RequestAttachmentFocusCommand::Execute(TimeClock*, BehaviourRunner* runner,
 // node: nothing)
 void NowGoBackCollidableCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 PushBackKind = 0x6F;
+    CONSTEXPR u32 PushBackKind = 0x6F;
     ObjectNode* node = NodeOf(runner);
-    auto* character = static_cast<AgentNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
+    AgentNode* character = static_cast<AgentNode*>(GetGameNode(&node->owner->nodes, NodeCharacter));
     if (character == nullptr)
     {
         return;
@@ -731,7 +731,7 @@ void NowGoBackCollidableCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
 // The character's vehicle (kind 6) the focus instance's creature (an asleep focus forgotten)
 void SetVehicleWrestleCreatureCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 WrestledCreature = 6;
+    CONSTEXPR u32 WrestledCreature = 6;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     InstanceContext* focus = node->AwakeFocus();
@@ -740,13 +740,13 @@ void SetVehicleWrestleCreatureCommand::Execute(TimeClock*, BehaviourRunner* runn
         return;
     }
 
-    auto* character = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* character = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (character == nullptr)
     {
         return;
     }
 
-    auto* creature = static_cast<AgentNode*>(GetGameNode(&focus->nodes, NodeCreature));
+    AgentNode* creature = static_cast<AgentNode*>(GetGameNode(&focus->nodes, NodeCreature));
     if (creature == nullptr)
     {
         return;
@@ -767,7 +767,7 @@ void CharacterSoundProxyCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
         return;
     }
 
-    auto* characterNode = static_cast<ObjectNodeBase*>(GetGameNode(&instance->nodes, NodeObject));
+    ObjectNodeBase* characterNode = static_cast<ObjectNodeBase*>(GetGameNode(&instance->nodes, NodeObject));
     SetSoundObject(characterNode, ObjectOf(NodeOf(runner)));
 }
 
@@ -810,7 +810,7 @@ void StopTargetBehaviourCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
     u8 designator = request.designator;
     if (designator != DesignatesNone)
     {
-        auto* target = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{designator});
+        InstanceContext* target = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{designator});
         if (target != nullptr)
         {
             static_cast<ObjectNodeBase*>(GetGameNode(&target->nodes, NodeObject))->sourceNode = nullptr;
@@ -843,7 +843,7 @@ void StopTargetBehaviourCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
 // The played character's Humiliskate pushed along z by the instance (whether there's a character node or a vehicle isn't checked)
 void PushPlayerVehicleCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* character = static_cast<AgentNode*>(GetGameNode(NodesOf(PlayedInstance()), NodeCharacter));
+    AgentNode* character = static_cast<AgentNode*>(GetGameNode(NodesOf(PlayedInstance()), NodeCharacter));
     PlayerCharacter* player = CharacterOf(character);
     if (player->vehicle->Kind() != Vehicle::KindHumiliskate)
     {
@@ -859,7 +859,7 @@ void PushPlayerVehicleCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
 // in the list: kept)
 void NextLinkedObjectInListCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u8 NotFound = 0xFF;
+    CONSTEXPR u8 NotFound = 0xFF;
     AttachmentsNode* attachments = AttachmentsNodeOf(NodeOf(runner)->owner);
     if (attachments == nullptr)
     {
@@ -900,8 +900,8 @@ void NextLinkedObjectInListCommand::Execute(TimeClock*, BehaviourRunner* runner,
 // The chunk's crates (128 at most) sent the nitro event
 void TriggerAllNitroCratesCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x80;
-    constexpr u32 Crates = 1 << NodeCrate;
+    CONSTEXPR u16 Most = 0x80;
+    CONSTEXPR u32 Crates = 1 << NodeCrate;
     InstanceContext* instance = NodeOf(runner)->owner;
     void* results[Most];
     InstanceQuery query;
@@ -909,7 +909,7 @@ void TriggerAllNitroCratesCommand::Execute(TimeClock*, BehaviourRunner* runner, 
     s32 count = QueryChunkInstancesOfKinds(instance->chunk, Crates, &query);
     for (u16 index = 0; index < static_cast<u32>(count); index++)
     {
-        auto* crate = static_cast<AgentNode*>(GetGameNode(&static_cast<InstanceContext*>(results[index])->nodes, NodeCrate));
+        AgentNode* crate = static_cast<AgentNode*>(GetGameNode(&static_cast<InstanceContext*>(results[index])->nodes, NodeCrate));
         RunAgentEvent(crate->agent, NitroEvent, 0, 0, 0);
     }
 }
@@ -924,8 +924,8 @@ void ExitVehicleModeCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLeve
         return;
     }
 
-    auto* controls = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
-    auto* character = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    ControlsNode* controls = static_cast<ControlsNode*>(GetGameNode(&instance->nodes, NodeControls));
+    AgentNode* character = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (controls == nullptr || character == nullptr)
     {
         return;
@@ -955,7 +955,7 @@ void ApplyVelocityToHeldBodyCommand::Execute(TimeClock*, BehaviourRunner* runner
     }
 
     Reference* held = character->standingOn;
-    auto* heldInstance = held != nullptr ? static_cast<InstanceContext*>(held->object) : nullptr;
+    InstanceContext* heldInstance = held != nullptr ? static_cast<InstanceContext*>(held->object) : nullptr;
     if (heldInstance == nullptr)
     {
         return;

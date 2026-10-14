@@ -10,16 +10,16 @@ using FreeList = IntrusiveList<DiskNode, &DiskNode::previousFree, &DiskNode::nex
 using PoolList = IntrusiveList<DiskNode, &DiskNode::previous, &DiskNode::next>;
 using ReleaseList = IntrusiveList<DiskPendingRelease, &DiskPendingRelease::previous, &DiskPendingRelease::next>;
 
-constexpr u32 BlockAlignment = 0x40;
+CONSTEXPR u32 BlockAlignment = 0x40;
 // How much a step of a move copies
-constexpr u32 StepCopy = 0x8000;
-constexpr u32 ReleasesPerRound = 16;
-constexpr s32 FreeIndex = -2;
-constexpr s32 FirstNodeIndex = -1;
+CONSTEXPR u32 StepCopy = 0x8000;
+CONSTEXPR u32 ReleasesPerRound = 16;
+CONSTEXPR s32 FreeIndex = -2;
+CONSTEXPR s32 FirstNodeIndex = -1;
 // DiskQueueRelease's count that keeps the node's
-constexpr u32 KeepWaitCount = 0xFFFFFFFF;
+CONSTEXPR u32 KeepWaitCount = 0xFFFFFFFF;
 // The states from DiskNodeMovedAway on that wait for rounds of releases
-constexpr u32 ReleaseStateCount = DiskNodeReleasedExpired - DiskNodeMovedAway + 1;
+CONSTEXPR u32 ReleaseStateCount = DiskNodeReleasedExpired - DiskNodeMovedAway + 1;
 
 // A new node's bits: free and ready, what the allocator left in the unused ones kept
 DiskNodeBits NewNodeBits(DiskNodeBits leftover)

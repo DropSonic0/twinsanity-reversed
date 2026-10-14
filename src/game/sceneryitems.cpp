@@ -28,12 +28,12 @@ extern "C"
 
 namespace
 {
-constexpr u32 LoadWallClassId = 0x160F;
-constexpr u32 ChunkDataClassId = 0x1611;
-constexpr u32 HullClassId = 0x1616;
-constexpr s32 PlaneCount = 6;
+CONSTEXPR u32 LoadWallClassId = 0x160F;
+CONSTEXPR u32 ChunkDataClassId = 0x1611;
+CONSTEXPR u32 HullClassId = 0x1616;
+CONSTEXPR s32 PlaneCount = 6;
 // A segment this short has no direction to move its ends along
-constexpr f32 NoLength = Epsilon;
+CONSTEXPR f32 NoLength = Epsilon;
 }
 
 void* MakeSceneryItem(void*, u32 classId)

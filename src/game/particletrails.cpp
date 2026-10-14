@@ -19,8 +19,8 @@
 #include "game/reference.h"
 #include "game/sound.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The particle trails an object node leaves: each step a trail may emit (by its kind), its particle system (its surface's when it
 // asks for its contact's) played from its frame, decals and a sand puff on sand and snow, a sound, a camera shake and a message
@@ -34,18 +34,18 @@ extern "C"
 
 namespace
 {
-constexpr u32 NoContactKind = 0xFF;
+CONSTEXPR u32 NoContactKind = 0xFF;
 // Kind 1's speed below which it doesn't emit
-constexpr f32 SlowestSpeed = Rounded(0.0001);
+CONSTEXPR f32 SlowestSpeed = Rounded(0.0001);
 // The surfaces that keep tracks (sand and snow), and the system sand puffs up with
-constexpr u16 SandSurface = 10;
-constexpr u16 SnowSurface = 15;
-constexpr s32 SandPuffSystem = 0xF5;
+CONSTEXPR u16 SandSurface = 10;
+CONSTEXPR u16 SnowSurface = 15;
+CONSTEXPR s32 SandPuffSystem = 0xF5;
 // The strength past the threshold makes the sound this much louder, up to 3
-constexpr f32 LoudnessPerStrength = Rounded(0.1);
-constexpr f32 LoudestSound = 3.0f;
+CONSTEXPR f32 LoudnessPerStrength = Rounded(0.1);
+CONSTEXPR f32 LoudestSound = 3.0f;
 // A camera shake only along x and y once one of them is above this
-constexpr f32 SmallestShake = Rounded(0.01);
+CONSTEXPR f32 SmallestShake = Rounded(0.01);
 
 // The offset of its frame when it's given one
 const Vector4* OffsetOf(const TrailArguments* trail)
@@ -168,9 +168,9 @@ bool TrailEmits(const TrailArguments* trail, TimeClock* clock, ObjectNode* node,
 // by its offset), or the origin
 Matrix4x4 EmitterFrame(const TrailArguments* trail, ObjectNode* node, InstanceContext* instance)
 {
-    constexpr u32 ExitPointSpace = 0;
-    constexpr u32 StartSpace = 1;
-    constexpr u32 PlaceSpace = 2;
+    CONSTEXPR u32 ExitPointSpace = 0;
+    CONSTEXPR u32 StartSpace = 1;
+    CONSTEXPR u32 PlaceSpace = 2;
     u32 space = trail->bits.space;
     if (space == ExitPointSpace)
     {
@@ -206,7 +206,7 @@ Matrix4x4 EmitterFrame(const TrailArguments* trail, ObjectNode* node, InstanceCo
 // The surface ID (no surface reads the halfword at address 0x60, as retail does)
 u16 SurfaceIdOf(const CollisionSurface* surface)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(surface) + offsetof(CollisionSurface, surfaceId);
+    uintptr_t address = reinterpret_cast<uintptr_t>(surface) + offsetof(CollisionSurface, surfaceId);
     return *reinterpret_cast<const u16*>(address);
 }
 

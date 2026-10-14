@@ -54,7 +54,7 @@ CHECK_SIZE(DecalPlace, 0x10);
 // sizes (the first set's fourth 0xBA for none), and their colours, and an MSCNT
 struct DecalBlock
 {
-    static constexpr u32 MostDecals = 32;
+    enum { MostDecals = 32 };
 
     s16 count;
     s16 key;
@@ -92,7 +92,7 @@ CHECK_SIZE(DecalVariant, 0x80);
 // how many it has and their names
 struct DecalType
 {
-    static constexpr u32 MostVariants = 15;
+    enum { MostVariants = 15 };
 
     u32 tag[4];
     DecalVariant variants[MostVariants];
@@ -113,7 +113,7 @@ struct alignas(16) DecalUvPacket
 CHECK_SIZE(DecalUvPacket, 0x410);
 
 // How far footfalls and footprints stand above the ground they're placed on
-constexpr f32 FootprintLift = Rounded(0.09);
+CONSTEXPR f32 FootprintLift = Rounded(0.09);
 
 // The decals of the default particle data (0xE320 bytes): the 32 blocks, the texture page they draw with (its blend modes' materials
 // are the four keys'), the packet of the types' UV rectangles VU1 gets with the count of types (and three words read with them,
@@ -122,10 +122,10 @@ constexpr f32 FootprintLift = Rounded(0.09);
 // aged) and how many decals there are
 struct DecalData
 {
-    static constexpr u32 BlockCount = 32;
-    static constexpr u32 MostTypes = 16;
+    enum { BlockCount = 32 };
+    enum { MostTypes = 16 };
     // The keys: the page's blend modes
-    static constexpr u32 KeyCount = 4;
+    enum { KeyCount = 4 };
 
     DecalBlock blocks[BlockCount];
     ParticlePage page;

@@ -14,7 +14,7 @@ struct InstanceContext;
 // How a particle frame's rows are put back (its x, y and z rows after): as they are (any other mode too), y negated, y and z
 // swapped with the new z negated, x negated with y and z swapped and the new y negated, x and y swapped and both negated, x and y
 // swapped
-enum ParticleFrameAxes : u32
+enum ParticleFrameAxes
 {
     AxesAsAre,
     AxesYNegated,
@@ -25,8 +25,8 @@ enum ParticleFrameAxes : u32
 };
 
 // The exit point particles take for none (6 bits): they leave from the instance's place; and an emitter of none
-constexpr u32 NoParticleExitPoint = 0x3F;
-constexpr s32 NoEmitter = -1;
+CONSTEXPR u32 NoParticleExitPoint = 0x3F;
+CONSTEXPR s32 NoEmitter = -1;
 
 extern "C"
 {

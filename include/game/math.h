@@ -113,7 +113,7 @@ CONSTEXPR u32 PositionRow = 3;
 #if defined(__SNC__) || defined(__CELLOS_LV2__)
 static const s32 NextAxis[3] = {1, 2, 0};
 #else
-inline constexpr s32 NextAxis[3] = {1, 2, 0};
+inline CONSTEXPR s32 NextAxis[3] = {1, 2, 0};
 #endif
 
 inline const Vector4* RowOf(const Matrix4x4* matrix, u32 row)

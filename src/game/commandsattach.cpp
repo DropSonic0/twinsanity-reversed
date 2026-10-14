@@ -520,7 +520,7 @@ void AttachSpringCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
 // objects), pushed off first when it has a physics body, then launched or made to fall as the mode says and sent the message
 void DropAttachedObjectCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 PushStrength = Rounded(0.1);
+    CONSTEXPR f32 PushStrength = Rounded(0.1);
     InstanceContext* instance = NodeOf(runner)->owner;
     if (!instance->flags.hasAttachment)
     {
@@ -719,8 +719,8 @@ void LaunchAgentRef2Command::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 // 1e30 made to fall (and marked as in a drawn cell)
 void UnsupportAboveCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x20;
-    constexpr f32 Height = 4.0f;
+    CONSTEXPR u16 Most = 0x20;
+    CONSTEXPR f32 Height = 4.0f;
     InstanceContext* instance = NodeOf(runner)->owner;
     ChunkData* chunk = instance->chunk;
     void* results[Most];
@@ -832,7 +832,7 @@ void RotateWithLinkedCommand::Execute(TimeClock* clock, BehaviourRunner* runner,
 // instance's (32 at most), turned on or off
 void ForceVolumeControllerCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x20;
+    CONSTEXPR u16 Most = 0x20;
     ObjectNode* node = NodeOf(runner);
     PropertyHolder* properties = node->PacketProperties();
     f32 x = forceX.FloatWith(properties);
@@ -871,7 +871,7 @@ void ForceVolumeControllerCommand::Execute(TimeClock*, BehaviourRunner* runner, 
 // index's only when it did, the designator's when it's linked)
 void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 FieldLimit = 0x20;
+    CONSTEXPR u32 FieldLimit = 0x20;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     u16 message = target.message;
@@ -1043,7 +1043,7 @@ void SendUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavi
 // designator's position, or the space's with an offset), only those of an object when one is given
 void BroadcastUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x80;
+    CONSTEXPR u16 Most = 0x80;
     InstanceContext* instance = NodeOf(runner)->owner;
     ChunkData* chunk = instance->chunk;
     Vector4 sphere = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -1083,7 +1083,7 @@ void BroadcastUserMessageCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 // takes; none while the trigger rank is 0xFF
 void TriggerInstancesByRankCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x400;
+    CONSTEXPR u16 Most = 0x400;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* instance = node->owner;
     InstanceQuery query;

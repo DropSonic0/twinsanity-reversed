@@ -19,8 +19,8 @@ enum SlowedAxis : u32
 };
 
 // The designators of the tool's keywords no Designator names: two nothing answers
-constexpr u32 UnusedDesignatorF1 = 0xF1;
-constexpr u32 UnusedDesignatorF3 = 0xF3;
+CONSTEXPR u32 UnusedDesignatorF1 = 0xF1;
+CONSTEXPR u32 UnusedDesignatorF3 = 0xF3;
 
 bool IsKeyword(const ScriptToken* token)
 {

@@ -179,7 +179,7 @@ CHECK_SIZE(RestartPreviousCommand, 0xC);
 // GameNode::nearDistance: 0 leaves the node's own, AnyDistance never thins them)
 union SpawnedObject
 {
-    static constexpr u8 AnyDistance = 0xFF;
+    enum { AnyDistance = 0xFF };
 
     u32 value;
     struct
@@ -327,7 +327,7 @@ CHECK_SIZE(ParticleEmission, 4);
 // the waypoints (Waypoints::NoKey none)
 union ParticlePlacement
 {
-    static constexpr u8 NoSurfaceMode = 0xFF;
+    enum { NoSurfaceMode = 0xFF };
 
     u32 value;
     struct
@@ -371,7 +371,7 @@ CHECK_SIZE(DoParticleCommand, 0x30);
 // land, 4 hard impact, 5 scrape; 0xF its slots), the sound kept in the node's tracked sound slot
 union DoSoundFlags
 {
-    static constexpr u32 SlotsKind = 0xF;
+    enum { SlotsKind = 0xF };
 
     u32 value;
     struct
@@ -857,7 +857,7 @@ class SetFocusToAgentCommand : public ScriptCommand
 {
 public:
     // The designator only this command answers: the instance the agent's own hangs from
-    static constexpr u8 DesignatesParent = 0xDE;
+    enum { DesignatesParent = 0xDE };
 
     // The designator whose instance is given to a DesignatorSlot
     union Target
@@ -886,7 +886,7 @@ CHECK_SIZE(SetFocusToAgentCommand, 0x10);
 // development tools' parser's
 union AttachFocusFlags
 {
-    static constexpr u32 NoLinked = 0xF;
+    enum { NoLinked = 0xF };
 
     u32 value;
     struct
@@ -930,7 +930,7 @@ CHECK_SIZE(AttachFocusObjectCommand, 0x30);
 union DropRequest
 {
     // Just let go of, launched with the velocity it had, made to fall, made to fall when it's a crate (launched otherwise)
-    enum Mode : u32
+    enum Mode
     {
         LetGo = 0,
         Launched = 1,
@@ -1072,7 +1072,7 @@ CHECK_SIZE(UserMessageTarget, 4);
 
 // The object ID of none of the commands that pick linked objects by their object (SendUserMessage, RunSlotBehaviourOnLinked):
 // retail takes 0xFF (the IDs' none, NoObjectId, finds nothing)
-constexpr u16 NoLinkedObjectId = 0xFF;
+CONSTEXPR u16 NoLinkedObjectId = 0xFF;
 
 // Which linked objects SendUserMessage sends to: those of an object (NoLinkedObjectId none), the one of an index (the current
 // one, the last), every one, those a field of bits picks (a bit each, the field's index), only those on or off the attachments'
@@ -1563,7 +1563,7 @@ CHECK_SIZE(ColliderLaunchNowCommand, 0x50);
 // How ForceAnimationUpdate animates the model: once (at its next update), always, or not any more (any other mode)
 union AnimationUpdate
 {
-    enum Mode : u32
+    enum Mode
     {
         UpdateOnce = 1,
         UpdateAlways = 2,
@@ -1672,7 +1672,7 @@ CHECK_SIZE(RequestDetachCommand, 0xC);
 // its node and its model (a byte each, 0xFF none) and whether they're given
 union ObjectSwitches
 {
-    static constexpr u8 NoDistance = 0xFF;
+    enum { NoDistance = 0xFF };
 
     u32 value;
     struct
@@ -1845,7 +1845,7 @@ CHECK_SIZE(ClearContactResponseCommand, 0xC);
 // DestroyMe's mode (3 and up do nothing); the development tools' parser puts another one in bits 3-5, which nothing reads
 union DestroyMeSettings
 {
-    static constexpr u32 Modes = 3;
+    enum { Modes = 3 };
 
     u32 value;
     struct
@@ -1918,7 +1918,7 @@ CHECK_SIZE(AlterWobblePhaseCommand, 0x1C);
 // effects' volume group; 3 a music emitter where the instance is, heard to the range; none past it) and whether it loops
 union BeginMusicFlags
 {
-    static constexpr u32 EmitterSlot = 3;
+    enum { EmitterSlot = 3 };
 
     u32 value;
     struct
@@ -2087,7 +2087,7 @@ CHECK_SIZE(CacheLinkedInstanceCommand, 0xC);
 // The axes an argument picks: x, y and z
 union AxisSelection
 {
-    static constexpr u32 All = 0x7;
+    enum { All = 0x7 };
 
     u32 value;
     struct
@@ -2620,8 +2620,8 @@ CHECK_SIZE(SetCycleAmplitudesCommand, 0x1C);
 // instance moves along (the first of x, y and z)
 union TurnAlongAxes
 {
-    static constexpr u32 TurnsMask = 0x7;
-    static constexpr u32 AlongMask = 0x38;
+    enum { TurnsMask = 0x7 };
+    enum { AlongMask = 0x38 };
 
     u32 value;
     struct
@@ -2898,7 +2898,7 @@ CHECK_SIZE(LinkedCounter, 4);
 // first or the last (written into the index)
 union LinkedObjectChoice
 {
-    static constexpr u8 NoIndex = 0xFF;
+    enum { NoIndex = 0xFF };
 
     u32 value;
     struct
@@ -3043,7 +3043,7 @@ class SetFocusPositionAlongCommand : public ScriptCommand
 {
 public:
     // OwnPositionMode: the agent's own position stands in for a start without one
-    enum Mode : u32
+    enum Mode
     {
         OwnPositionMode = 2,
     };
@@ -3077,7 +3077,7 @@ class SetFocusCounterCommand : public ScriptCommand
 {
 public:
     // The source's value: the value rather than a counter of the agent's
-    static constexpr s32 FromValue = 0xFF;
+    enum { FromValue = 0xFF };
 
     CounterArgument counter;
     s32 source;
@@ -3875,7 +3875,7 @@ CHECK_SIZE(SetTriggerRankCommand, 0x10);
 // trigger rank (1), below it (2) or not above it (3), none past 3
 union RankMessage
 {
-    enum Mode : u32
+    enum Mode
     {
         SameRank = 0,
         TriggerRank = 1,
@@ -4059,7 +4059,7 @@ public:
     // The shape searched: a sphere of the reach (its instances on every one or not), a cylinder, else a damage hull (0xF none)
     union Shape
     {
-        static constexpr u32 NoHull = 0xF;
+        enum { NoHull = 0xF };
 
         u32 value;
         struct
@@ -4070,7 +4070,7 @@ public:
         };
     };
 
-    enum ShapeKind : u32
+    enum ShapeKind
     {
         ShapeSphereOnEvery = 1,
         ShapeSphere = 2,
@@ -4128,7 +4128,7 @@ public:
     // The settings' bits: its instance awake, the instance's flags (visible, its collision active, triggers' signals, the shadow),
     // its creature part's snapping to the ground, its part's bits (it may damage the character, it may be hurt, bullets bounce
     // back, it's targettable)
-    enum Setting : u32
+    enum Setting
     {
         SettingAwake = 0,
         SettingVisible = 1,
@@ -4228,7 +4228,7 @@ class SetPlayerInputCommand : public ScriptCommand
 public:
     // The settings' bits: the inputs the character may use (agents.h's CharacterLocks, locked when not), all of them, its part's
     // resting flag, its being vulnerable
-    enum Setting : u32
+    enum Setting
     {
         SettingTurn = 0,
         SettingMoveZ = 1,
@@ -4504,7 +4504,7 @@ class SetPlayAreaCommand : public ScriptCommand
 {
 public:
     // The area's own value: the tagged value's instead
-    static constexpr s32 FromValue = -1;
+    enum { FromValue = -1 };
 
     s32 area;
     TaggedValue areaValue;
@@ -4898,7 +4898,7 @@ CHECK_SIZE(SetFocusToPlayerCommand, 0xC);
 // busy and made AgentRef2 too. Bit 21 is handed to DesignatedPosition, which ignores it
 union RequestTarget
 {
-    static constexpr u32 NoReceiver = 0xF;
+    enum { NoReceiver = 0xF };
 
     u32 value;
     struct
@@ -4944,7 +4944,7 @@ class RequestFocusCommand : public ScriptCommand
 public:
     // Which of the instances found it takes: any, those holding something (1, 7) or holding nothing (2, 6, 8), those hanging from
     // something (3, and 5 with the hanging ones' objects) or from nothing (4)
-    enum Attachment : u32
+    enum Attachment
     {
         AnyAttachment = 0,
         Holding = 1,
@@ -4955,7 +4955,7 @@ public:
     };
 
     // Whether the busy instances are wanted or ruled out
-    enum Busy : u32
+    enum Busy
     {
         AnyBusy = 0,
         OnlyBusy = 1,
@@ -4963,7 +4963,7 @@ public:
     };
 
     // The hanging instances' objects' place among the objects
-    static constexpr u32 HangingObjects = 4;
+    enum { HangingObjects = 4 };
 
     u32 unused1;
     f32 offsetX;
@@ -5525,7 +5525,7 @@ class SetAttacksTakenCommand : public ScriptCommand
 {
 public:
     // A setting: on, off (0 and 3 leave it)
-    enum Setting : u32
+    enum Setting
     {
         SettingOn = 1,
         SettingOff = 2,
@@ -5599,7 +5599,7 @@ class CutsceneCameraMoveCommand : public ScriptCommand
 public:
     // What the framing aims at and measures the distance from: the first place, the second, half the way from the first to the
     // second, and (the distance's) the shot's fixed yaw instead
-    enum Aim : u32
+    enum Aim
     {
         AimFirst = 0,
         AimSecond = 1,
@@ -5608,7 +5608,7 @@ public:
     };
 
     // The moves' curve (others leave them as they were)
-    enum Curve : u32
+    enum Curve
     {
         MoveEven = 0,
         MoveSmooth = 1,
@@ -5667,7 +5667,7 @@ CHECK_SIZE(CutsceneCameraMoveCommand, 0x3C);
 class CameraSaveParamsCommand : public ScriptCommand
 {
 public:
-    enum Action : u32
+    enum Action
     {
         ActionSave = 0,
         ActionRestore = 1,
@@ -5697,7 +5697,7 @@ CHECK_SIZE(CameraSaveParamsCommand, 0x10);
 class ToggleCutsceneCameraCommand : public ScriptCommand
 {
 public:
-    enum Shown : u32
+    enum Shown
     {
         ShowsFollowCamera = 0,
         ShowsGameRig = 1,
@@ -5856,7 +5856,7 @@ CHECK_SIZE(SetVehicleWrestleCreatureCommand, 0xC);
 class FadeoutScreenCommand : public ScriptCommand
 {
 public:
-    enum Mode : u32
+    enum Mode
     {
         ModeHide = 0,
         ModeShow = 1,
@@ -6239,7 +6239,7 @@ CHECK_SIZE(UseTriggerCamerasCommand, 0xC);
 // Which rate SetFollowCameraRate sets: the one its place is followed at, the yaw blender's speed (from radians a second)
 union FollowCameraRate
 {
-    enum Kind : u32
+    enum Kind
     {
         PositionRate = 0,
         YawSpeed = 1,
@@ -6272,7 +6272,7 @@ CHECK_SIZE(SetFollowCameraRateCommand, 0x14);
 class SetCameraNodeValuesCommand : public ScriptCommand
 {
 public:
-    enum Value : u32
+    enum Value
     {
         ValuePitch = 0,
         ValueDistance = 1,
@@ -6351,7 +6351,7 @@ CHECK_SIZE(PushPlayerVehicleCommand, 0x10);
 // first, to the last)
 union LinkedRange
 {
-    static constexpr u8 Whole = 0xFF;
+    enum { Whole = 0xFF };
 
     u32 value;
     struct
@@ -6475,9 +6475,9 @@ CHECK_SIZE(ExitBossModeCommand, 0xC);
 class FinalBossWeaponsCommand : public ScriptCommand
 {
 public:
-    static constexpr u32 WeaponCount = 3;
+    enum { WeaponCount = 3 };
 
-    enum Mode : s32
+    enum Mode
     {
         ModeHookJoints = 0,
         ModeReturn = 1,
@@ -6654,7 +6654,7 @@ CHECK_SIZE(PlayCreditsCommand, 0xC);
 class SetMaskControllerIdsCommand : public ScriptCommand
 {
 public:
-    static constexpr u32 MostIds = 12;
+    enum { MostIds = 12 };
 
     union Count
     {
@@ -6774,8 +6774,8 @@ CHECK_SIZE(ClearCharacterDeadCommand, 0x10);
 class SetSkateControllerIdsCommand : public ScriptCommand
 {
 public:
-    static constexpr u32 MostIds = 12;
-    static constexpr u32 MostSounds = 32;
+    enum { MostIds = 12 };
+    enum { MostSounds = 32 };
 
     // How many IDs and sounds it gives, and whether they're added when the controller has some already
     union Counts

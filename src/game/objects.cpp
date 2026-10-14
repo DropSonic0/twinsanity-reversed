@@ -17,7 +17,7 @@ extern "C"
 namespace
 {
 // A game object made empty has no subtype or type
-constexpr u32 NoType = 0xFF;
+CONSTEXPR u32 NoType = 0xFF;
 
 // An array of IDs read: the old one let go, the count, the IDs (made undefined first)
 void ReadIds(ObjectArray<u16>* array, Stream* stream)

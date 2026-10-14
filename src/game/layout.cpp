@@ -13,7 +13,7 @@ extern "C"
 namespace
 {
 // The lists an element is made with have room for this many, and grow by as many
-constexpr u32 ListGrowth = 10;
+CONSTEXPR u32 ListGrowth = 10;
 
 void ConstructIds(IdArray* ids)
 {

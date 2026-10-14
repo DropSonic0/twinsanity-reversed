@@ -14,7 +14,7 @@ extern "C"
 
 namespace
 {
-constexpr u32 MessageTriggerItemType = 0x1814;
+CONSTEXPR u32 MessageTriggerItemType = 0x1814;
 // The trigger's messages and the node's events of them, by what they're sent for
 enum Message : u32
 {

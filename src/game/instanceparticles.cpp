@@ -10,9 +10,9 @@
 namespace
 {
 // No value to start an emitter with (it's made without one), and no emitter
-constexpr u32 NoValue = 0;
+CONSTEXPR u32 NoValue = 0;
 // How far a scattered decal goes across the ground
-constexpr f32 ScatterSpread = Rounded(0.4);
+CONSTEXPR f32 ScatterSpread = Rounded(0.4);
 
 void NegateAxis(Vector4* axis)
 {

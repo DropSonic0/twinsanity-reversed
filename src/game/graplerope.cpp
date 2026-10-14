@@ -10,16 +10,16 @@ EABI_EXPORT(FUN_00162098, ConstructGrapleRope);
 namespace
 {
 // The rope: 10 solver passes a step, a chain of one segment (a spring between two points)
-constexpr u32 RopePasses = 10;
-constexpr u32 RopeSegments = 1;
-constexpr f32 RopeStiffness = 10000.0f;
-constexpr f32 RopeDamping = 100.0f;
+CONSTEXPR u32 RopePasses = 10;
+CONSTEXPR u32 RopeSegments = 1;
+CONSTEXPR f32 RopeStiffness = 10000.0f;
+CONSTEXPR f32 RopeDamping = 100.0f;
 // The graple's joints: 0 at the anchor, turned toward 1 at the hook
-constexpr u32 AnchorJoint = 0;
-constexpr u32 HookJoint = 1;
-constexpr u32 RopeJoints = 2;
+CONSTEXPR u32 AnchorJoint = 0;
+CONSTEXPR u32 HookJoint = 1;
+CONSTEXPR u32 RopeJoints = 2;
 // The ragdoll's joints, in the order its callbacks go on
-constexpr u32 RagdollJoints[] = {0, 1, 5, 23, 15, 14, 13, 22, 19, 18, 17, 8, 7, 6, 11, 10, 9};
+CONSTEXPR u32 RagdollJoints[] = {0, 1, 5, 23, 15, 14, 13, 22, 19, 18, 17, 8, 7, 6, 11, 10, 9};
 }
 
 GrapleRope* ConstructGrapleRope(f32 mass, void* memory, InstanceContext* instance)

@@ -28,7 +28,7 @@ CHECK_SIZE(MovieControllerFlags, 4);
 class GameMovieController
 {
 public:
-    enum Slot : u32
+    enum Slot
     {
         StartSlot = 1,
         StopSlot = 2,
@@ -40,7 +40,7 @@ public:
         ReclaimSoundSlot = 9,
     };
 
-    enum State : u32
+    enum State
     {
         StateIdle = 0,
         StateStarting = 1,
@@ -50,7 +50,7 @@ public:
 
     // What the game asked for: the state Update takes on next (a stop's leaves the stopping state for the idle one the frame
     // after), or nothing
-    enum Request : u32
+    enum Request
     {
         IdleRequested = StateIdle,
         PlayRequested = StateStarting,

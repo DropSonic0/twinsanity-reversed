@@ -16,7 +16,7 @@
 namespace
 {
 // The first item a page starts with: more items than a page has, so the selection stays where it was
-constexpr u32 NoFirstItem = 31;
+CONSTEXPR u32 NoFirstItem = 31;
 
 // The nearest page of the ring a link starts (going on by the same link) that shows the player something, none round to the page
 MenuPage* NextShowing(MenuPage* page, u32 link, u32 player)
@@ -57,13 +57,13 @@ void EnterSideways(MenuPage* page, MenuPage* to, u32 link, u32 player)
 
 // A sound played as the menus play theirs: the voice kind and last, and the volume group they play in by default (one of the
 // groups the effects volume sets)
-constexpr s32 MenuVoiceKind = 0;
-constexpr s32 MenuSoundLast = -1;
-constexpr s32 MenuSoundGroup = MovieGroup;
+CONSTEXPR s32 MenuVoiceKind = 0;
+CONSTEXPR s32 MenuSoundLast = -1;
+CONSTEXPR s32 MenuSoundGroup = MovieGroup;
 
 // The buffer an item's value's text is written into, and the most lines a page draws
-constexpr u32 ValueTextSize = 0x40;
-constexpr u32 MaxLines = 64;
+CONSTEXPR u32 ValueTextSize = 0x40;
+CONSTEXPR u32 MaxLines = 64;
 
 // Where the items go up from the place, by their alignment: centred on it (the middle ones), or ending at it (the bottom ones)
 bool CentresItems(u32 alignment)
@@ -102,11 +102,11 @@ f32 ManyItems(const MenuDrawer* drawer, u32 count)
 }
 
 // A choice's text before it's named
-constexpr s32 NoText = -1;
-constexpr u32 PageItemsGrowth = 10;
+CONSTEXPR s32 NoText = -1;
+CONSTEXPR u32 PageItemsGrowth = 10;
 // What a link's value getters give: it has none
-constexpr s32 NoIntValue = -1;
-constexpr u32 NoUnsignedValue = 0xFFFFFFFF;
+CONSTEXPR s32 NoIntValue = -1;
+CONSTEXPR u32 NoUnsignedValue = 0xFFFFFFFF;
 
 // The players' bits and the bits an item starts with
 void SetItemBits(MenuItem* item, u32 text, u32 id, u32 players, bool withText)
@@ -1001,14 +1001,14 @@ void MenuPage::EndFrame(u32)
 MenuDrawer* MenuDrawer::Construct(MenuDrawer* drawer, Font* font)
 {
     // The styles' colours
-    constexpr ColourIndex TitleColour = ColourWhite;
-    constexpr ColourIndex SelectedColour = ColourWhite;
-    constexpr ColourIndex ShownColour = ColourGrey;
-    constexpr ColourIndex HiddenColour = ColourDarkGrey;
+    CONSTEXPR ColourIndex TitleColour = ColourWhite;
+    CONSTEXPR ColourIndex SelectedColour = ColourWhite;
+    CONSTEXPR ColourIndex ShownColour = ColourGrey;
+    CONSTEXPR ColourIndex HiddenColour = ColourDarkGrey;
     // The items a tenth of the page down, at half size and a twentieth apart
-    constexpr f32 ItemsTop = Rounded(0.1);
-    constexpr f32 ItemScale = 0.5f;
-    constexpr f32 ItemSpacing = Rounded(0.05);
+    CONSTEXPR f32 ItemsTop = Rounded(0.1);
+    CONSTEXPR f32 ItemScale = 0.5f;
+    CONSTEXPR f32 ItemSpacing = Rounded(0.05);
     drawer->colourPulse = nullptr;
     drawer->sizePulse = nullptr;
     drawer->windowStart = 0;

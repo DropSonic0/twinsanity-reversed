@@ -45,38 +45,38 @@ extern "C"
 namespace
 {
 // A file with a tag ends with the tag and the checksum, which leave out the file's last 4 bytes
-constexpr u32 TrailerSize = 8;
-constexpr u32 UnsummedBytes = 4;
-constexpr u8 FillByte = 0xA5;
+CONSTEXPR u32 TrailerSize = 8;
+CONSTEXPR u32 UnsummedBytes = 4;
+CONSTEXPR u8 FillByte = 0xA5;
 // The title's Shift-JIS bytes cleared, and the bytes of a character
-constexpr u32 IconTitleBytes = 0x40;
-constexpr u32 SjisCharacterBytes = 2;
+CONSTEXPR u32 IconTitleBytes = 0x40;
+CONSTEXPR u32 SjisCharacterBytes = 2;
 // The colours of icon.sys's background corners, ambient light and lights
-constexpr ColourIndex CornerColours[] = {ColourRed, ColourMagenta, ColourYellow, ColourCyan};
-constexpr ColourIndex AmbientColour = ColourGrey;
-constexpr ColourIndex LightColours[] = {ColourRed, ColourGreen, ColourBlue};
+CONSTEXPR ColourIndex CornerColours[] = {ColourRed, ColourMagenta, ColourYellow, ColourCyan};
+CONSTEXPR ColourIndex AmbientColour = ColourGrey;
+CONSTEXPR ColourIndex LightColours[] = {ColourRed, ColourGreen, ColourBlue};
 // Each light along an axis
-constexpr Vector4 LightDirections[] = {{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}};
-constexpr f32 IconOpacity = 0.5f;
+CONSTEXPR Vector4 LightDirections[] = {{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}};
+CONSTEXPR f32 IconOpacity = 0.5f;
 // A symbol's index in g_SjisSymbols is its character less its group's offset and SymbolBase. The groups follow each other in the
 // table (16 from the space, 7 from ":", 6 from "[", 4 from "{"), the base keeping the first group's offset above 0 (no symbol)
-constexpr u32 SymbolBase = 0x1F;
+CONSTEXPR u32 SymbolBase = 0x1F;
 
-constexpr u32 SymbolGroup(char first, u32 index)
+CONSTEXPR u32 SymbolGroup(char first, u32 index)
 {
     return static_cast<u32>(first) - index - SymbolBase;
 }
 
-constexpr u32 SpaceSymbols = SymbolGroup(' ', 0);
-constexpr u32 ColonSymbols = SymbolGroup(':', 16);
-constexpr u32 BracketSymbols = SymbolGroup('[', 23);
-constexpr u32 BraceSymbols = SymbolGroup('{', 29);
+CONSTEXPR u32 SpaceSymbols = SymbolGroup(' ', 0);
+CONSTEXPR u32 ColonSymbols = SymbolGroup(':', 16);
+CONSTEXPR u32 BracketSymbols = SymbolGroup('[', 23);
+CONSTEXPR u32 BraceSymbols = SymbolGroup('{', 29);
 // The ranges: digits, capitals, small letters. A character outside them and the symbols (below the space, past "~") is converted
 // in the last range seen. Retail bug: before any, the range is 0x30, past the table (whatever follows it gives the code)
-constexpr u32 DigitRange = 0;
-constexpr u32 CapitalRange = 1;
-constexpr u32 SmallRange = 2;
-constexpr u32 UnsetRange = 0x30;
+CONSTEXPR u32 DigitRange = 0;
+CONSTEXPR u32 CapitalRange = 1;
+CONSTEXPR u32 SmallRange = 2;
+CONSTEXPR u32 UnsetRange = 0x30;
 
 bool InRange(s32 character, char first, char last)
 {

@@ -20,8 +20,8 @@
 #include "game/string.h"
 #include "game/vehicles.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The controllers command 645 gives object nodes: the final boss's weapons, Aku Aku's mask, a path follower and the Humiliskate's
 // trails and sounds
@@ -44,11 +44,11 @@ extern "C"
 namespace
 {
 // The character's exit point the mask hangs on while it's invincible
-constexpr u32 MaskExitPoint = 1;
+CONSTEXPR u32 MaskExitPoint = 1;
 // The player's hit points: one mask (it comes and follows) from 2, two (it shines) from 3, and it doesn't come for more than 4
-constexpr u32 MaskHitPoints = 2;
-constexpr u32 BoostedMaskHitPoints = 3;
-constexpr u32 MostMaskHitPoints = 4;
+CONSTEXPR u32 MaskHitPoints = 2;
+CONSTEXPR u32 BoostedMaskHitPoints = 3;
+CONSTEXPR u32 MostMaskHitPoints = 4;
 // The mask's object's animation slots (on the character, shining, flying away or onto the character) and sound slots
 enum MaskAnimation : u32
 {
@@ -67,18 +67,18 @@ enum MaskSound : u32
 };
 // It comes from 20 above and 3 behind the character in a quarter of a second (and leaves to there in a second), and flies onto
 // it in an eighth
-constexpr f32 AwayHeight = 20.0f;
-constexpr f32 AwayBehind = 3.0f;
-constexpr f32 ArrivingSpeed = 4.0f;
-constexpr f32 FlyingOnSpeed = 8.0f;
+CONSTEXPR f32 AwayHeight = 20.0f;
+CONSTEXPR f32 AwayBehind = 3.0f;
+CONSTEXPR f32 ArrivingSpeed = 4.0f;
+CONSTEXPR f32 FlyingOnSpeed = 8.0f;
 // Where it follows the character: 0.7 to its side and 2 above it
-constexpr Vector4 FollowOffset = {0.7f, 2.0f, 0.0f, 1.0f};
+CONSTEXPR Vector4 FollowOffset = {0.7f, 2.0f, 0.0f, 1.0f};
 // How far along the exit point's z axis (and how far below) it flies to and hangs while invincible, and how much the character's
 // joints are squashed then
-constexpr f32 FlyToAlong = Rounded(0.15);
-constexpr f32 HangAlong = Rounded(0.1);
-constexpr f32 HangBelow = Rounded(0.2);
-constexpr f32 InvincibleSquash = 0.5f;
+CONSTEXPR f32 FlyToAlong = Rounded(0.15);
+CONSTEXPR f32 HangAlong = Rounded(0.1);
+CONSTEXPR f32 HangBelow = Rounded(0.2);
+CONSTEXPR f32 InvincibleSquash = 0.5f;
 
 InstanceContext* PlayerInstance()
 {
@@ -115,19 +115,19 @@ bool GameWatched()
 // An instance's place, flags and nodes the way retail reaches them: a missing one reads the words at the start of memory
 ObjectPlace* PlaceOf(const ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
 ReferencedObjectFlags FlagsOf(const ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, flags);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, flags);
     return *reinterpret_cast<const ReferencedObjectFlags*>(address);
 }
 
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 f32 SecondsOf(InstanceContext* instance)
@@ -174,10 +174,10 @@ Vector4 UnitRotationOf(const Matrix4x4* matrix)
 // then scaled. The place isn't read
 void PoseAimedJoint(AimedJoint* aimed, Matrix4x4* matrix, const Matrix4x4* facing, const Matrix4x4* local, ObjectPlace*)
 {
-    constexpr u8 RootJointId = 0;
-    constexpr f32 TurnsPerSecond = 20.0f;
+    CONSTEXPR u8 RootJointId = 0;
+    CONSTEXPR f32 TurnsPerSecond = 20.0f;
     // How close to its pose a returning joint has to be to rest
-    constexpr f32 RestingTolerance = 0.01f;
+    CONSTEXPR f32 RestingTolerance = 0.01f;
     if (aimed->resting != 0)
     {
         return;
@@ -349,7 +349,7 @@ u32 JointAimer::PoseJoint(JointAnimator* animator, Matrix4x4* matrix)
 JointAimController* JointAimController::Construct(JointAimController* controller, ObjectNode* node, u32 kind)
 {
     // The share of the way the joints turn (times 20 a second)
-    constexpr f32 TurnRate = Rounded(0.1);
+    CONSTEXPR f32 TurnRate = Rounded(0.1);
     controller->kind = static_cast<u8>(kind);
     controller->node = node;
     controller->vtable = g_JointAimControllerVTable;
@@ -559,7 +559,7 @@ void MaskController::Describe(String* text)
 void MaskController::FindCharacter()
 {
     s32 id = node->owner->id;
-    std::uintptr_t entry = id != -1 ? reinterpret_cast<std::uintptr_t>(&g_InstanceIds->entries[id]) : 0;
+    uintptr_t entry = id != -1 ? reinterpret_cast<uintptr_t>(&g_InstanceIds->entries[id]) : 0;
     character = *reinterpret_cast<InstanceContext* const*>(entry + offsetof(InstanceIds::Entry, spawner));
     auto* characterNode = static_cast<AgentNode*>(GetGameNode(NodesOf(character), NodeCharacter));
     switch (characterNode->agent->properties->GetInt(CharacterKindProperty))
@@ -978,8 +978,8 @@ void MaskController::EndInvincibility()
 // second; else put at the offset in the character's space, turned as the character is
 void MaskController::Follow()
 {
-    constexpr f32 SteerShare = 8.0f;
-    constexpr f32 MoveShare = 4.0f;
+    CONSTEXPR f32 SteerShare = 8.0f;
+    CONSTEXPR f32 MoveShare = 4.0f;
     InstanceContext* mask = node->owner;
     f32 seconds = SecondsOf(mask);
     ObjectPlace* place = mask->place;
@@ -1054,9 +1054,9 @@ void SplineController::Start()
 // plus how far it's past the offset's z from the player along the path (times the pull, a second)
 void SplineController::Frame(TimeClock*)
 {
-    constexpr f32 AheadDistance = 6.0f;
+    CONSTEXPR f32 AheadDistance = 6.0f;
     // Not touching anything it turns at this share of its turn rate
-    constexpr f32 UntouchedTurnShare = Rounded(0.3);
+    CONSTEXPR f32 UntouchedTurnShare = Rounded(0.3);
     Waypoints* waypoints = node->waypoints;
     MotionState* motion = node->motion;
     ObjectRigidBody* body = node->rigidBody;

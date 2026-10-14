@@ -9,7 +9,7 @@ EABI_EXPORT(FUN_002996b8, AdvanceShaderAnimation);
 
 namespace
 {
-constexpr f32 TrackUnit = 0x1p-12f;
+CONSTEXPR f32 TrackUnit = 0x1p-12f;
 }
 
 ShaderAnimation* ConstructShaderAnimation(ShaderAnimation* animation)
@@ -59,7 +59,7 @@ void ReadShaderAnimation(ShaderAnimation* animation, Stream* stream)
 
 void AnimateShader(ShaderAnimation* animation, const s32* time)
 {
-    constexpr u32 Channels = 6;
+    CONSTEXPR u32 Channels = 6;
     if (animation->header.started == 0)
     {
         s32 now = *time;

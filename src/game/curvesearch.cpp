@@ -23,7 +23,7 @@ EABI_EXPORT(FUN_0018f2d8, SplineDistanceSquaredIn);
 namespace
 {
 // Brent's golden section step: the share of the larger half (2 less the golden ratio)
-constexpr f32 GoldenSection = 0x1.872218p-2f;
+CONSTEXPR f32 GoldenSection = 0x1.872218p-2f;
 
 // The forward differences of a cubic one step on: each of the first three rows plus the next
 void StepDifferences(Vector4* differences)

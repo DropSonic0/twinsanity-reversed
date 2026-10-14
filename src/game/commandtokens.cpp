@@ -13,15 +13,15 @@
 namespace
 {
 // The kinds of nodes RequestFocus's keywords take or rule out (a bit per NodeKind): the players' are three
-constexpr u32 PlayerKinds = 1u << NodeControls | 1u << NodeCharacter | 1u << NodeFollow;
+CONSTEXPR u32 PlayerKinds = 1u << NodeControls | 1u << NodeCharacter | 1u << NodeFollow;
 
 // The AI positions' flags GetShortRoute's keywords rule out of its start and end (game/navigation.h's AiPositionFlags)
-constexpr u32 FlaggedPositions =
+CONSTEXPR u32 FlaggedPositions =
     AiPositionFlags::Airborne | AiPositionFlags::AlwaysTaken | AiPositionFlags::NeverTaken | AiPositionFlags::ScriptFlag6;
 
 // Where the bottom text's centre keyword puts it
-constexpr f32 BottomCentreX = 0.5f;
-constexpr f32 BottomCentreY = Rounded(0.92);
+CONSTEXPR f32 BottomCentreX = 0.5f;
+CONSTEXPR f32 BottomCentreY = Rounded(0.92);
 }
 
 void SetChiChiGrassCommand::ParseTokens(const ScriptTokenList* tokens)
@@ -550,12 +550,12 @@ void SwingAroundCameraCommand::ParseTokens(const ScriptTokenList* tokens)
 
     // Most of what the tokens gave is then replaced by random and fixed values: the radius and the depth a unit either way of
     // these, the squared distances, the height and its limit
-    constexpr f32 MiddleRadius = 2.0f;
-    constexpr f32 FixedNearDistanceSquared = 150.0f;
-    constexpr f32 FixedFarDistanceSquared = 200.0f;
-    constexpr f32 FixedHeight = -2.0f;
-    constexpr f32 FixedHeightLimit = 2.0f;
-    constexpr f32 MiddleDepth = 5.5f;
+    CONSTEXPR f32 MiddleRadius = 2.0f;
+    CONSTEXPR f32 FixedNearDistanceSquared = 150.0f;
+    CONSTEXPR f32 FixedFarDistanceSquared = 200.0f;
+    CONSTEXPR f32 FixedHeight = -2.0f;
+    CONSTEXPR f32 FixedHeightLimit = 2.0f;
+    CONSTEXPR f32 MiddleDepth = 5.5f;
     phaseOffset = RandomSignedTimes(Pi);
     unused30 = RandomSignedTimes(0.25f) + 1.0f;
     phaseScale = RandomSignedTimes(0.5f) + 0.5f;
@@ -1595,7 +1595,7 @@ void CreateHeadTrackingCommand::ParseTokens(const ScriptTokenList* tokens)
 void SetKeyNearestPlayerCommand::ParseTokens(const ScriptTokenList* tokens)
 {
     // A distance of this or less is taken for none
-    constexpr f32 LeastDistance = Rounded(1e-05);
+    CONSTEXPR f32 LeastDistance = Rounded(1e-05);
     ScriptTokenReader reader;
     ScriptTokenReader::Construct(&reader, tokens);
     reader.First();

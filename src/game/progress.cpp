@@ -17,12 +17,12 @@ namespace
 {
 // The node a character comes back to a checkpoint through (its object node's comeback placement), and the checkpoint's own
 // agent node (a checkpoint crate's), whose state flags say where the instance's persistent flag is
-constexpr u32 ComebackNode = NodeObject;
-constexpr u32 CheckpointNode = NodeCrate;
+CONSTEXPR u32 ComebackNode = NodeObject;
+CONSTEXPR u32 CheckpointNode = NodeCrate;
 // The event a checkpoint's crate is told it isn't the checkpoint any more with
-constexpr u32 CheckpointReleasedEvent = 0xF;
+CONSTEXPR u32 CheckpointReleasedEvent = 0xF;
 // The keywords naming the pairings (from KeywordFirstPlayerMode: 1 to 6)
-constexpr u32 PairingTokens = 6;
+CONSTEXPR u32 PairingTokens = 6;
 
 // The instance the checkpoint is at, when its chunk is one of the chunk manager's (and the chunk)
 InstanceContext* InstanceAt(const Checkpoint* checkpoint, ChunkManager* chunks, ChunkEntry** chunk)

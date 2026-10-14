@@ -15,24 +15,24 @@ namespace
 {
 // Numerical Recipes' ran0: Park and Miller's multiplier and modulus, the modulus's quotient and remainder by the multiplier
 // (Schrage's method), and the mask its seeds are kept with
-constexpr s32 ParkMillerMultiplier = 16807;
-constexpr s32 ParkMillerModulus = 0x7FFFFFFF;
-constexpr s32 ParkMillerQuotient = 127773;
-constexpr s32 ParkMillerRemainder = 2836;
-constexpr s32 SeedMask = 0x75BD924;
+CONSTEXPR s32 ParkMillerMultiplier = 16807;
+CONSTEXPR s32 ParkMillerModulus = 0x7FFFFFFF;
+CONSTEXPR s32 ParkMillerQuotient = 127773;
+CONSTEXPR s32 ParkMillerRemainder = 2836;
+CONSTEXPR s32 SeedMask = 0x75BD924;
 // Numerical Recipes' quick generator's multiplier and increment
-constexpr u64 QuickMultiplier = 1664525;
-constexpr u64 QuickIncrement = 0x3C6EF35F;
+CONSTEXPR u64 QuickMultiplier = 1664525;
+CONSTEXPR u64 QuickIncrement = 0x3C6EF35F;
 // rand's 2^31 values made [0, 1), and less their middle [-1, 1)
-constexpr f32 RandScale = 0x1.0p-31f;
-constexpr f32 RandMiddle = 0x1.0p+30f;
-constexpr f32 SignedRandScale = 0x1.0p-30f;
+CONSTEXPR f32 RandScale = 0x1.0p-31f;
+CONSTEXPR f32 RandMiddle = 0x1.0p+30f;
+CONSTEXPR f32 SignedRandScale = 0x1.0p-30f;
 // 65536ths of a turn in a turn (AngleFrom's turns)
-constexpr f32 TurnsToAngle = FullTurnAngle;
+CONSTEXPR f32 TurnsToAngle = FullTurnAngle;
 // What a value within this of none isn't divided by, and InverseEpsilon squared (the float product, a bit above 1e-20): a
 // rotation's length squared up to it is none
-constexpr f32 DivisionEpsilon = InverseEpsilon;
-constexpr f32 InverseEpsilonSquared = 0x1.79ca12p-67f;
+CONSTEXPR f32 DivisionEpsilon = InverseEpsilon;
+CONSTEXPR f32 InverseEpsilonSquared = 0x1.79ca12p-67f;
 
 // VU0's (the platform's)
 void SinCos(f32 radians, f32* out)
@@ -736,7 +736,7 @@ void PlaneFromTriangle(Vector4* plane, const Vector4* first, const Vector4* seco
 u32 PerpendicularOf(const Vector4* vector, Vector4* out)
 {
     // A vector this short (squared) has no perpendicular
-    constexpr f32 PerpendicularEpsilon = Rounded(1e-20);
+    CONSTEXPR f32 PerpendicularEpsilon = Rounded(1e-20);
     f32 x = vector->x;
     f32 y = vector->y;
     f32 z = vector->z;
@@ -1478,11 +1478,11 @@ s32* SignedAngleAbout(s32* angle, const Vector4* from, const Vector4* to, u32 ax
 
 s32* AngleOfPoint(s32* angle, f32 y, f32 x)
 {
-    constexpr f32 A4 = 0x1.555cbep-6f;
-    constexpr f32 A3 = 0x1.5cb46cp-4f;
-    constexpr f32 A2 = 0x1.70edc4p-3f;
-    constexpr f32 A1 = 0x1.523a08p-2f;
-    constexpr f32 A0 = 0x1.ffee7p-1f;
+    CONSTEXPR f32 A4 = 0x1.555cbep-6f;
+    CONSTEXPR f32 A3 = 0x1.5cb46cp-4f;
+    CONSTEXPR f32 A2 = 0x1.70edc4p-3f;
+    CONSTEXPR f32 A1 = 0x1.523a08p-2f;
+    CONSTEXPR f32 A0 = 0x1.ffee7p-1f;
     // atan2(y, x) is twice atan(y / (r + x))
     f32 beyond = Kept(__builtin_sqrtf(x * x + y * y)) + x;
     if (!(0.0f < beyond))
@@ -1514,7 +1514,7 @@ s32* AngleOfPoint(s32* angle, f32 y, f32 x)
 
 void EulerAnglesOfMatrix(const Matrix4x4* matrix, s32* x, s32* y, s32* z)
 {
-    constexpr f32 Near = 0x1.0624dep-11f;
+    CONSTEXPR f32 Near = 0x1.0624dep-11f;
     const auto& m = matrix->m;
     // A turn about y alone: x and z none
     if (__builtin_fabsf(m[0][1]) <= Near && __builtin_fabsf(m[1][0]) <= Near && __builtin_fabsf(m[1][2]) <= Near &&
@@ -2000,7 +2000,7 @@ f32 ClampFloat(f32 value, f32 low, f32 high)
 
 f32 HalfLifeShare(f32 halfLife, f32 seconds)
 {
-    constexpr f32 MinusLn2 = -0x1.62e43p-1f;
+    CONSTEXPR f32 MinusLn2 = -0x1.62e43p-1f;
     return Exponential(seconds * MinusLn2 / halfLife);
 }
 

@@ -12,10 +12,10 @@ EABI_EXPORT(FUN_001847b0, ScaleIkTurn);
 
 namespace
 {
-constexpr f32 TwoOverPi = 0x1.45f306p-1f;
-constexpr f32 SquareRootOfHalf = 0x1.6a09e6p-1f;
+CONSTEXPR f32 TwoOverPi = 0x1.45f306p-1f;
+CONSTEXPR f32 SquareRootOfHalf = 0x1.6a09e6p-1f;
 // How far off a unit pair a multiple's sine and cosine may be before they're made one again
-constexpr f32 MultipleTolerance = 0x1.5798ecp-29f;
+CONSTEXPR f32 MultipleTolerance = 0x1.5798ecp-29f;
 
 f32 InverseUnlessWithin(f32 value, f32 epsilon)
 {

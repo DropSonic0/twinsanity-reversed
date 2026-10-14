@@ -17,8 +17,8 @@
 #include "game/vehicles.h"
 #include "game/view.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The commands that set an agent's focus from what's around it (a ray's hit, the nearest AI position, the instances of a sphere
 // by their objects, the linked objects near the player), its key nearest the player, its route, and the AI positions' flags
@@ -55,7 +55,7 @@ ObjectNode* NodeOf(BehaviourRunner* runner)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 bool Asleep(const InstanceContext* instance)
@@ -97,7 +97,7 @@ bool DesignatorPosition(ObjectNode* node, u32 designator, Vector4* position)
 // The place of an instance that may be none (retail reads the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -247,9 +247,9 @@ void RaycastFocusPositionCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 // when it's within 30 units or flagged always taken, else the instance's position (a tenth along z without a position)
 void SetFocusPositionToNearestPointCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr f32 Near = 30.0f;
-    constexpr f32 Above = 0.5f;
-    constexpr f32 NudgeWithoutPosition = Rounded(0.1);
+    CONSTEXPR f32 Near = 30.0f;
+    CONSTEXPR f32 Above = 0.5f;
+    CONSTEXPR f32 NudgeWithoutPosition = Rounded(0.1);
     u8 receiver = target.receiver;
     InstanceContext* instance =
         receiver != DesignatesNone ? runner->receivers->instances[receiver] : PlayerInstance();
@@ -286,7 +286,7 @@ void SetFocusPositionToNearestPointCommand::Execute(TimeClock*, BehaviourRunner*
 // by the target word and the choice
 void RequestFocusCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u32 Most = 0x80;
+    CONSTEXPR u32 Most = 0x80;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* owner = node->owner;
     ChunkData* chunk = owner->chunk;
@@ -554,7 +554,7 @@ InstanceContext* FirstRequested(const RequestFocusCommand* command, InstanceCont
 // One of the first 128 that match, at random
 InstanceContext* RandomRequested(const RequestFocusCommand* command, InstanceContext** instances, u32 count)
 {
-    constexpr s32 Most = 0x80;
+    CONSTEXPR s32 Most = 0x80;
     InstanceContext* matching[Most];
     s32 found = 0;
     u16 total = static_cast<u16>(count);
@@ -912,9 +912,9 @@ void SetNearestPointFlagsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 // free one next to the nearest one between them (or toward the free side)
 void SetLinkedObjectNearestPlayerCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr s32 Near = 10;
-    constexpr s32 FarSteps = 100;
-    constexpr s32 NoneFound = -1;
+    CONSTEXPR s32 Near = 10;
+    CONSTEXPR s32 FarSteps = 100;
+    CONSTEXPR s32 NoneFound = -1;
     ObjectNode* node = NodeOf(runner);
     InstanceContext* owner = node->owner;
     AttachmentsNode* attachments = AttachmentsNodeOf(owner);
@@ -1047,7 +1047,7 @@ u32 CountTakenLinked(const SetLinkedObjectNearestPlayerCommand* command, void* a
 void SetFocusToLinkedObjectInViewCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     // The cosine of the angle from the camera's view
-    constexpr f32 InViewCosine = Rounded(0.8);
+    CONSTEXPR f32 InViewCosine = Rounded(0.8);
     ObjectNode* node = NodeOf(runner);
     InstanceContext* chosen = nullptr;
     f32 best = Infinite;

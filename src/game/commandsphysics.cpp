@@ -48,17 +48,17 @@ EABI_EXPORT(FUN_002549b8, SetRigidBodyTurn);
 namespace
 {
 // The kinds of a rigid body past the hulls sized by its instance's own box (RigidBodyKind)
-constexpr u32 BoxKindsEnd = BodyKindSimplex + 1;
+CONSTEXPR u32 BoxKindsEnd = BodyKindSimplex + 1;
 // Made, its bits' low word is set (the bits nothing reads), bits 48 (a size given), 49 (it falls), 53 (touching anything) and 63
 // left as the memory had them and the others cleared
-constexpr u64 BitsSetWhenMade = 0xFFFFFFFF;
-constexpr u64 BitsKeptWhenMade = 0x8023000000000000 | BitsSetWhenMade;
+CONSTEXPR u64 BitsSetWhenMade = 0xFFFFFFFF;
+CONSTEXPR u64 BitsKeptWhenMade = 0x8023000000000000 | BitsSetWhenMade;
 // Its state made: bits 0, 11-14 (the launch steps) and 19 set, 1, 2 and 26-31 left, the others cleared
-constexpr u32 StateClearedWhenMade = 0x3F787F8;
-constexpr u32 StateSetWhenMade = 0x87801;
+CONSTEXPR u32 StateClearedWhenMade = 0x3F787F8;
+CONSTEXPR u32 StateSetWhenMade = 0x87801;
 
 // The surfaces whose triangles a rigid body's collision cache gathers (SurfaceFlags: solid to the player's probes and to objects)
-constexpr u32 CacheSurfaces = SurfaceFlags::SolidToPlayerProbes | SurfaceFlags::SolidToObjects;
+CONSTEXPR u32 CacheSurfaces = SurfaceFlags::SolidToPlayerProbes | SurfaceFlags::SolidToObjects;
 
 ObjectNode* NodeOf(BehaviourRunner* runner)
 {
@@ -782,9 +782,9 @@ void MagnetPullToFocusCommand::Execute(TimeClock* clock, BehaviourRunner* runner
 // distance times (edgePush - push) / radius, 3 units above their middle
 void PushInstancesAwayCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    constexpr u16 Most = 0x40;
-    constexpr u32 QueryKinds = 1 << NodeRigidBody;
-    constexpr f32 Above = 3.0f;
+    CONSTEXPR u16 Most = 0x40;
+    CONSTEXPR u32 QueryKinds = 1 << NodeRigidBody;
+    CONSTEXPR f32 Above = 3.0f;
     InstanceContext* instance = runner->agentNode->owner;
     ChunkData* chunk = instance->chunk;
     void* results[Most];
@@ -1044,9 +1044,9 @@ void ListRigidBodySecond(ObjectRigidBody* body, u32 kind)
 // g_PhysicsBodyKinds, 4 and 5; it places the instance, which is told of its collisions
 void MakePhysicsBody(ObjectRigidBody* body, u32 kind)
 {
-    constexpr u32 AlsoCollidesWith = 1 << NodeDynamicScenery | 1 << NodeRigidBody;
-    constexpr f32 MadeRestitution = Rounded(0.3);
-    constexpr f32 MadeFriction = Rounded(0.8);
+    CONSTEXPR u32 AlsoCollidesWith = 1 << NodeDynamicScenery | 1 << NodeRigidBody;
+    CONSTEXPR f32 MadeRestitution = Rounded(0.3);
+    CONSTEXPR f32 MadeFriction = Rounded(0.8);
     bool sphere = kind == BodyKindSphere;
     DynamicBody* physics = AddPhysicsBody(g_PhysicsWorld, body->node->owner, sphere);
     body->physicsBody = physics;

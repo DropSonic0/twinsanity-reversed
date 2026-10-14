@@ -48,12 +48,12 @@ extern "C"
 namespace
 {
 // How faint a shadow may be and still be cast
-constexpr f32 Faintest = Epsilon;
+CONSTEXPR f32 Faintest = Epsilon;
 // A capsule is cast while its axis is no closer to the way to the light than this cosine
-constexpr f32 MostAlong = Rounded(0.996);
+CONSTEXPR f32 MostAlong = Rounded(0.996);
 // The cross product of the up axis and the shadow's axis is used while its length squared is above it
-constexpr f32 Crossing = Rounded(0.03);
-constexpr u32 MostJoints = 0x40;
+CONSTEXPR f32 Crossing = Rounded(0.03);
+CONSTEXPR u32 MostJoints = 0x40;
 
 void DeleteSlot(ShadowSlot* slot)
 {
@@ -764,10 +764,10 @@ void InitShadows(u32 fromFiles)
 namespace
 {
 // The shapes' models' IDs from the development tools' files, a shape's this plus the shape
-constexpr u32 FirstShadowModelId = 0x67;
+CONSTEXPR u32 FirstShadowModelId = 0x67;
 // The renderer's model and mesh (its RigidModelData and RigidModel)
-constexpr u32 ModelSize = 0x1C;
-constexpr u32 MeshSize = 0x20;
+CONSTEXPR u32 ModelSize = 0x1C;
+CONSTEXPR u32 MeshSize = 0x20;
 
 // The table's folder, a backslash and the name, upper cased (by the signed character, as the retail code indexes the table)
 void ShadowFilePath(String* path, const String* folder, const String* name)

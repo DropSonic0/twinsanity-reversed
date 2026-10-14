@@ -22,7 +22,7 @@ EABI_EXPORT(FUN_0029a068, PlayCameraTrackFrame);
 namespace
 {
 // The cuts' values are in 4096ths
-constexpr f32 CutUnit = 0x1p-12f;
+CONSTEXPR f32 CutUnit = 0x1p-12f;
 
 DynamicAnimationData* NewValues(const AnimationDataInformation* information)
 {

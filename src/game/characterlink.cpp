@@ -85,7 +85,7 @@ CONSTEXPR f32 GaitShuffleEndCosine = Rounded(0.8);
 // A character's link as retail reads it, also when there's no character (the word at 0xB0 then)
 CharacterLink* LinkOf(const CharacterAgent* agent)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(agent) + offsetof(CharacterAgent, link);
+    uintptr_t address = reinterpret_cast<uintptr_t>(agent) + offsetof(CharacterAgent, link);
     return *reinterpret_cast<CharacterLink* const*>(address);
 }
 
@@ -97,13 +97,13 @@ ReferencedObject* ObjectOf(const Reference* handle)
 // An object's flags and place as retail reads them, also when there's no object (the words at 4 and 8 then)
 ReferencedObjectFlags& FlagsOf(ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, flags);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, flags);
     return *reinterpret_cast<ReferencedObjectFlags*>(address);
 }
 
 ObjectPlace* PlaceOf(const ReferencedObject* object)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(object) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(object) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 

@@ -89,7 +89,7 @@ bool IsSpinning(u32 kind)
 // An instance's nodes (no instance: read at 0xD4, retail's)
 NodeList* NodesOf(InstanceContext* instance)
 {
-    return reinterpret_cast<NodeList*>(reinterpret_cast<std::uintptr_t>(instance) + offsetof(InstanceContext, nodes));
+    return reinterpret_cast<NodeList*>(reinterpret_cast<uintptr_t>(instance) + offsetof(InstanceContext, nodes));
 }
 
 InstanceContext* PlayerInstance()
@@ -999,7 +999,7 @@ void CharacterAgent::HullHits()
         for (s32 index = 0; index < count; index++)
         {
             InstanceContext* other = static_cast<InstanceContext*>(query.results[index]);
-            ObjectCollision* otherCollision = reinterpret_cast<ObjectCollision*>(reinterpret_cast<std::uintptr_t>(other)
+            ObjectCollision* otherCollision = reinterpret_cast<ObjectCollision*>(reinterpret_cast<uintptr_t>(other)
                                                                        + offsetof(InstanceContext, collision));
             for (s32 hullIndex = 0; hullIndex < GetHullCount(otherCollision); hullIndex++)
             {

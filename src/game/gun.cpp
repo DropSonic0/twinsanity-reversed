@@ -20,22 +20,22 @@ EABI_EXPORT(FUN_0014a100, &Gun::Frame);
 namespace
 {
 // The area (the progress's) where Cortex's gun aims with a lock of its own
-constexpr u32 GunArea = 24;
+CONSTEXPR u32 GunArea = 24;
 // Its float properties (seconds): how long square is held to charge, the charged shot's delay, and the time after a shot (charged
 // and normal, with and without the ammo)
-constexpr u32 ChargeSecondsProperty = 0x32;
-constexpr u32 ChargedDelayProperty = 0x33;
-constexpr u32 ChargedShotSecondsProperty = 0x34;
-constexpr u32 ShotSecondsProperty = 0x35;
-constexpr u32 ChargedEmptySecondsProperty = 0x36;
-constexpr u32 EmptySecondsProperty = 0x37;
+CONSTEXPR u32 ChargeSecondsProperty = 0x32;
+CONSTEXPR u32 ChargedDelayProperty = 0x33;
+CONSTEXPR u32 ChargedShotSecondsProperty = 0x34;
+CONSTEXPR u32 ShotSecondsProperty = 0x35;
+CONSTEXPR u32 ChargedEmptySecondsProperty = 0x36;
+CONSTEXPR u32 EmptySecondsProperty = 0x37;
 // The ammo a shot takes, the ammo after a reset and its most, the second count's after a reset and its most
-constexpr u32 ChargedShotAmmo = 5;
-constexpr u32 ShotAmmo = 1;
-constexpr u32 ResetAmmo = 15;
-constexpr u32 AmmoLimit = 100;
-constexpr u32 ResetSecondCount = 5;
-constexpr u32 SecondCountLimit = 10;
+CONSTEXPR u32 ChargedShotAmmo = 5;
+CONSTEXPR u32 ShotAmmo = 1;
+CONSTEXPR u32 ResetAmmo = 15;
+CONSTEXPR u32 AmmoLimit = 100;
+CONSTEXPR u32 ResetSecondCount = 5;
+CONSTEXPR u32 SecondCountLimit = 10;
 
 ReferencedObject* ObjectOf(const Reference* handle)
 {

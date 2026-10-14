@@ -14,8 +14,8 @@
 #include "game/reference.h"
 #include "game/rigidbody.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // An object node's trajectory controller, which follows a motion block: cycles about three axes move or turn the instance
 // (stepped on their own, or in step with another instance's), a body of the node's own carries it (a body block's held by springs
@@ -25,18 +25,18 @@
 namespace
 {
 // The most links a cover position may have
-constexpr u32 MostCoverLinks = 4;
+CONSTEXPR u32 MostCoverLinks = 4;
 // The most instances the query of its line of sight to the player takes
-constexpr u16 MostSightInstances = 0x80;
+CONSTEXPR u16 MostSightInstances = 0x80;
 
 // A body resting far from the player that long (frames, after the first second and a half) is put back
-constexpr u32 StuckFrames = 48;
-constexpr f32 StuckDelay = 1.5f;
-constexpr f32 RestingSquared = Rounded(0.4);
+CONSTEXPR u32 StuckFrames = 48;
+CONSTEXPR f32 StuckDelay = 1.5f;
+CONSTEXPR f32 RestingSquared = Rounded(0.4);
 // What a grabber that took hold of something is made: its size and drags
-constexpr f32 GrabbedSize = 3.0f;
-constexpr f32 GrabbedDrag = Rounded(0.03);
-constexpr f32 GrabbedLengthDrag = Rounded(0.01);
+CONSTEXPR f32 GrabbedSize = 3.0f;
+CONSTEXPR f32 GrabbedDrag = Rounded(0.03);
+CONSTEXPR f32 GrabbedLengthDrag = Rounded(0.01);
 
 bool IsAsleep(const InstanceContext* instance)
 {
@@ -52,7 +52,7 @@ InstanceContext* PlayerInstance()
 // The place of an instance that may be none (retail reads the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -410,7 +410,7 @@ void SetCycleMove(Trajectory* trajectory, ObjectNode* node, InstanceContext* ins
 
 Trajectory* ConstructTrajectory(Trajectory* trajectory)
 {
-    constexpr f32 FirstRollRate = 4.0f;
+    CONSTEXPR f32 FirstRollRate = 4.0f;
     trajectory->rollRate = FirstRollRate;
     trajectory->cover = nullptr;
     trajectory->bits.unused16 = 0;
@@ -552,7 +552,7 @@ void MakeTrajectoryBody(Trajectory* trajectory, ObjectNode* node)
     trajectory->axisY = *RowOf(&place->matrix, 1);
 
     // The body: one of kind 10 in the chunk's first list, and in the second unless it has no collisions
-    constexpr u32 BodyKind = 10;
+    CONSTEXPR u32 BodyKind = 10;
     node->ReleaseRigidBody();
     ObjectRigidBody* body = ConstructRigidBody(MemoryAllocate(sizeof(ObjectRigidBody)), node);
     node->rigidBody = body;
@@ -973,7 +973,7 @@ u32 StepCoverSearch(Trajectory* trajectory, ObjectNode* node)
         f32 score = 0.0f;
         if (LineOfSight(instance->chunk, &spot, &way, SurfaceFlags::SolidToObjects, &query, g_CoverKinds) != 0)
         {
-            constexpr f32 Nearness = 100.0f;
+            CONSTEXPR f32 Nearness = 100.0f;
             Vector4 here = PositionOf(node->owner->place);
             f32 x = here.x - eye.x;
             f32 y = here.y - eye.y;

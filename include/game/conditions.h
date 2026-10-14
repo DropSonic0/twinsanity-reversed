@@ -1016,14 +1016,14 @@ CHECK_SIZE(FocusObjectProp0EqualsCondition, 0x14);
 class TargetToSideCondition : public ScriptCondition
 {
 public:
-    enum Target : u32
+    enum Target
     {
         TargetFocus = 0,
         TargetAgentRef1 = 1,
     };
 
     // The side of the instance's x axis the target counts on (on the other: none)
-    enum Side : u32
+    enum Side
     {
         SideLeft = 0,
         SideRight = 1,

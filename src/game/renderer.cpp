@@ -20,7 +20,7 @@
 namespace
 {
 // A width over 4:3's
-constexpr f32 InverseNarrowAspect = 0.75f;
+CONSTEXPR f32 InverseNarrowAspect = 0.75f;
 
 // What the TV's shape squeezes horizontal places and sizes by
 f32 ScreenSqueeze()
@@ -47,9 +47,9 @@ void FinishFrame()
     g_RenderBuffer = g_RenderBuffer == 0;
 }
 
-constexpr u32 RendererStartFlags = RendererFlags::Draws | RendererFlags::ClearsColour | RendererFlags::ClearsDepth;
+CONSTEXPR u32 RendererStartFlags = RendererFlags::Draws | RendererFlags::ClearsColour | RendererFlags::ClearsDepth;
 // The size of a render target's packet (the platform's)
-constexpr u32 TargetPacketSize = 0x60;
+CONSTEXPR u32 TargetPacketSize = 0x60;
 
 // The renderers in use, in their slots' order (the walk the retail code makes on the stack)
 template <typename Visit>

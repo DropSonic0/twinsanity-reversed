@@ -15,8 +15,8 @@
 #include "game/rigidbody.h"
 #include "game/sound.h"
 
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The object node's helpers: where a script's targets are, throws, turning an instance, notifying the instances around it, its
 // water touches and its surfaces' contact sounds and particles
@@ -50,11 +50,11 @@ EABI_EXPORT(PlaySurfaceContactHard, PlaySurfaceContactHard);
 namespace
 {
 // The surface ID of water
-constexpr s32 WaterSurface = 0xC;
+CONSTEXPR s32 WaterSurface = 0xC;
 // The sounds' group (none), and their repeats: none for a sound at a position, followed with the instance for an instance's
-constexpr s32 NoGroup = 0;
-constexpr s32 NotLast = -1;
-constexpr s32 FollowsInstance = 0;
+CONSTEXPR s32 NoGroup = 0;
+CONSTEXPR s32 NotLast = -1;
+CONSTEXPR s32 FollowsInstance = 0;
 
 ObjectNode* NodeOf(BehaviourRunner* runner)
 {
@@ -69,7 +69,7 @@ bool IsAsleep(const InstanceContext* instance)
 // An instance's place as the retail code reads it, also when there's no instance (the word at address 8 then)
 ObjectPlace* RetailPlaceOf(const InstanceContext* instance)
 {
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(instance) + offsetof(ReferencedObject, place);
+    uintptr_t address = reinterpret_cast<uintptr_t>(instance) + offsetof(ReferencedObject, place);
     return *reinterpret_cast<ObjectPlace* const*>(address);
 }
 
@@ -192,8 +192,8 @@ void PlaySurfaceImpactSound(ObjectNode* node, CollisionSurface* surface, const V
 u32 IsWithinAiPosition(const AiPosition* position, GameNode* node)
 {
     // How far above and below the position the middle of the instance's collision box may be
-    constexpr f32 Above = Rounded(3.7);
-    constexpr f32 Below = Rounded(0.8);
+    CONSTEXPR f32 Above = Rounded(3.7);
+    CONSTEXPR f32 Below = Rounded(0.8);
     const Box* box = node->owner->CollisionBox();
     Vector4 middle = box->max;
     middle.x = (middle.x - box->min.x) * 0.5f + box->min.x;
@@ -233,7 +233,7 @@ void ThrowOverHeight(f32 gravity, f32 height, const Vector4* from, const Vector4
 void ThrowInTime(f32 gravity, f32 seconds, const Vector4* from, const Vector4* to, Vector4* velocity)
 {
     // A target closer across than this is straight above or below: the default box's corner across
-    constexpr f32 Least = 5e-05f;
+    CONSTEXPR f32 Least = 5e-05f;
     f32 fall = gravity * (seconds * 0.5f) * seconds;
     Vector4 thrown = *to;
     thrown.x = thrown.x - from->x;
@@ -610,7 +610,7 @@ ObjectPlace* SpaceOfRequest(BehaviourRunner* runner, u32, u32 target, u32 receiv
 
 u32 JointPosition(InstanceContext* instance, u32 joint, Vector4* position, const Vector4* offset)
 {
-    constexpr u32 Slots = 0x3F;
+    CONSTEXPR u32 Slots = 0x3F;
     joint &= 0xFF;
     if (joint >= Slots)
     {
@@ -740,9 +740,9 @@ void SpinAlongMove(f32, f32 degreesPerUnit, ObjectNode* node, const Vector4* mov
 
 void NotifyInstancesWithin(f32 radius, ObjectNode* node)
 {
-    constexpr u16 MostFound = 64;
+    CONSTEXPR u16 MostFound = 64;
     // Without a radius, the instance's collision box grown by this
-    constexpr f32 Margin = 0.5f;
+    CONSTEXPR f32 Margin = 0.5f;
     Box box = *node->owner->CollisionBox();
     if (0.0f < radius)
     {
@@ -830,17 +830,17 @@ void ObjectNode::TouchedWater(const CollisionHit* hit, const Vector4* position)
 void EnteredWater(ObjectNode* node, CollisionSurface* surface, const Vector4*)
 {
     // The splash is ahead of the point by this share of the velocity across, at most every half second
-    constexpr f32 Lead = 0.12f;
-    constexpr f32 SplashInterval = 0.5f;
+    CONSTEXPR f32 Lead = 0.12f;
+    CONSTEXPR f32 SplashInterval = 0.5f;
     // A body falling in while it spins faster than this skims off the water: the faster it spins and the flatter it comes in, the
     // more it bounces (none when it comes in steeper than 1 in 3.5, 1 in 2.5 for spheres)
-    constexpr f32 SkimSpin = 9.0f;
-    constexpr f32 SkimSpinBounce = 0.01f;
-    constexpr f32 SkimBounce = Rounded(0.05);
-    constexpr f32 SkimFlatBounce = 3.0f;
-    constexpr f32 SteepestSkim = 3.5f;
-    constexpr f32 SteepestSphereSkim = 2.5f;
-    constexpr f32 MostBounce = Rounded(0.87);
+    CONSTEXPR f32 SkimSpin = 9.0f;
+    CONSTEXPR f32 SkimSpinBounce = 0.01f;
+    CONSTEXPR f32 SkimBounce = Rounded(0.05);
+    CONSTEXPR f32 SkimFlatBounce = 3.0f;
+    CONSTEXPR f32 SteepestSkim = 3.5f;
+    CONSTEXPR f32 SteepestSphereSkim = 2.5f;
+    CONSTEXPR f32 MostBounce = Rounded(0.87);
     Vector4 velocity;
     NodeVelocity(node, &velocity);
     Vector4 splash = velocity;
@@ -907,13 +907,13 @@ void MovedInWater(ObjectNode* node, CollisionSurface* surface, const Vector4* no
     // The wake's chance of a decal grows with the squared speed (at most a half), it's ahead of the point by this share of the
     // velocity across; faster than 2 it plays the surface's sound at most every half second, and particles when it also goes
     // into the water faster than 36
-    constexpr f32 ChancePerSpeed = Rounded(0.001);
-    constexpr f32 LeastChance = 0.01f;
-    constexpr f32 MostChance = 0.5f;
-    constexpr f32 Lead = Rounded(0.14);
-    constexpr f32 SoundSpeed = 4.0f;
-    constexpr f32 SoundInterval = 0.5f;
-    constexpr f32 SplashSpeed = 36.0f;
+    CONSTEXPR f32 ChancePerSpeed = Rounded(0.001);
+    CONSTEXPR f32 LeastChance = 0.01f;
+    CONSTEXPR f32 MostChance = 0.5f;
+    CONSTEXPR f32 Lead = Rounded(0.14);
+    CONSTEXPR f32 SoundSpeed = 4.0f;
+    CONSTEXPR f32 SoundInterval = 0.5f;
+    CONSTEXPR f32 SplashSpeed = 36.0f;
     Vector4 velocity;
     NodeVelocity(node, &velocity);
     f32 speed = velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z;
@@ -928,7 +928,7 @@ void MovedInWater(ObjectNode* node, CollisionSurface* surface, const Vector4* no
     wake.z = velocity.z * Lead + node->waterPoint.z;
     wake.y = node->waterPoint.y;
     // (The surface goes as the decal's unused argument)
-    ScatterDecal(node->owner, static_cast<u32>(reinterpret_cast<std::uintptr_t>(surface)), &wake, chance);
+    ScatterDecal(node->owner, static_cast<u32>(reinterpret_cast<uintptr_t>(surface)), &wake, chance);
     Agent* agent = node->agent;
     if (CallVirtual<u32>(agent, agent->vtable, Agent::IsCharacterSlot) != 0)
     {
@@ -955,19 +955,19 @@ void PlaySurfaceContact(f32 intensity, ObjectNode* node, CollisionSurface* surfa
     // At most a contact every half second; its sound as loud as the intensity (and the surface's scale for the kind), its pitch
     // higher, the camera shaken by the speed (at most 0.3); past an intensity of 50 on a surface solid to the player what the
     // agent rides and the node's contact sound play too
-    constexpr f32 Interval = 0.5f;
-    constexpr f32 VolumePerStrength = 0.06f;
-    constexpr f32 LeastVolume = Rounded(0.2);
-    constexpr f32 MostVolume = 2.5f;
-    constexpr f32 PitchPerStrength = Rounded(0.3);
-    constexpr f32 LeastPitch = Rounded(0.2);
-    constexpr f32 BasePitch = Rounded(0.4);
-    constexpr f32 MostPitch = 2.0f;
-    constexpr f32 ShakePerSpeed = Rounded(0.001);
-    constexpr f32 MostShake = Rounded(0.3);
-    constexpr f32 ShakeSpread = 0.5f;
-    constexpr f32 ShakeFalloff = 0.02f;
-    constexpr f32 RideIntensity = 50.0f;
+    CONSTEXPR f32 Interval = 0.5f;
+    CONSTEXPR f32 VolumePerStrength = 0.06f;
+    CONSTEXPR f32 LeastVolume = Rounded(0.2);
+    CONSTEXPR f32 MostVolume = 2.5f;
+    CONSTEXPR f32 PitchPerStrength = Rounded(0.3);
+    CONSTEXPR f32 LeastPitch = Rounded(0.2);
+    CONSTEXPR f32 BasePitch = Rounded(0.4);
+    CONSTEXPR f32 MostPitch = 2.0f;
+    CONSTEXPR f32 ShakePerSpeed = Rounded(0.001);
+    CONSTEXPR f32 MostShake = Rounded(0.3);
+    CONSTEXPR f32 ShakeSpread = 0.5f;
+    CONSTEXPR f32 ShakeFalloff = 0.02f;
+    CONSTEXPR f32 RideIntensity = 50.0f;
     if (SecondsSince(node->owner, node->lastContactTime) < Interval)
     {
         return;
@@ -1038,9 +1038,9 @@ void PlaySurfaceContact(f32 intensity, ObjectNode* node, CollisionSurface* surfa
 
 void PlayContactSound(f32 strength, ObjectNode* node)
 {
-    constexpr f32 VolumePerStrength = 0.06f;
-    constexpr f32 LeastVolume = Rounded(0.2);
-    constexpr f32 PitchSpread = Rounded(0.07);
+    CONSTEXPR f32 VolumePerStrength = 0.06f;
+    CONSTEXPR f32 LeastVolume = Rounded(0.2);
+    CONSTEXPR f32 PitchSpread = Rounded(0.07);
     u32 sound = NoSoundId;
     if (node->contactSoundValue < 0.0f)
     {
@@ -1068,17 +1068,17 @@ void PlaySurfaceContactHard(f32 intensity, ObjectNode* node, CollisionSurface* s
 {
     // A scrape's pitch falls with the node's roll radius; the sound keeps playing in the node's slot for it, its pitch and
     // volume following the contacts
-    constexpr f32 ScrapePitchPerStrength = 0.055f;
-    constexpr f32 ScrapePitchPerRadius = Rounded(0.1);
-    constexpr f32 ScrapeVolumePerStrength = Rounded(0.05);
-    constexpr f32 ScrapeBaseVolume = 0.75f;
-    constexpr f32 ScrapeMostPitch = 2.8f;
-    constexpr f32 PitchPerStrength = 0.06f;
-    constexpr f32 BasePitch = Rounded(0.2);
-    constexpr f32 VolumePerStrength = Rounded(0.4);
-    constexpr f32 BaseVolume = Rounded(0.3);
-    constexpr f32 MostPitch = 2.0f;
-    constexpr f32 MostVolume = 1.5f;
+    CONSTEXPR f32 ScrapePitchPerStrength = 0.055f;
+    CONSTEXPR f32 ScrapePitchPerRadius = Rounded(0.1);
+    CONSTEXPR f32 ScrapeVolumePerStrength = Rounded(0.05);
+    CONSTEXPR f32 ScrapeBaseVolume = 0.75f;
+    CONSTEXPR f32 ScrapeMostPitch = 2.8f;
+    CONSTEXPR f32 PitchPerStrength = 0.06f;
+    CONSTEXPR f32 BasePitch = Rounded(0.2);
+    CONSTEXPR f32 VolumePerStrength = Rounded(0.4);
+    CONSTEXPR f32 BaseVolume = Rounded(0.3);
+    CONSTEXPR f32 MostPitch = 2.0f;
+    CONSTEXPR f32 MostVolume = 1.5f;
     f32 volumeScale;
     u32 sound = GetSurfaceSound(surface, kind & 0xFF, &volumeScale);
     u32 particles = GetSurfaceParticle(surface, kind & 0xFF);

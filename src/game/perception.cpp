@@ -16,12 +16,12 @@ namespace
 {
 // The query of the instances in range (those whose collision is active): how many it takes, the flag the search is handed, the
 // distance of no hit
-constexpr u16 MostInRange = 0x38;
-constexpr u32 SearchFlag = 1;
+CONSTEXPR u16 MostInRange = 0x38;
+CONSTEXPR u32 SearchFlag = 1;
 // The instances noticed: those in range and the player
-constexpr u32 MostNoticed = 60;
+CONSTEXPR u32 MostNoticed = 60;
 // The perception's slot an instance's attention is read from
-constexpr u32 AttentionSlot = 2;
+CONSTEXPR u32 AttentionSlot = 2;
 
 // A perception's sense (game/objectnode.h)
 using Sense = PerceptionSense;
@@ -141,7 +141,7 @@ void SenseInstances(const void* sense, TimeClock*, ObjectNode* node, f32* level,
 
 f32 InstanceAttention(const void*, ObjectNode* node, InstanceContext* instance)
 {
-    constexpr u32 FacingRow = 2;
+    CONSTEXPR u32 FacingRow = 2;
     f32 attention = 0.0f;
     auto* other = static_cast<ObjectNode*>(GetGameNode(&instance->nodes, NodeObject));
     if (other != nullptr && CallVirtual<u32>(other, other->vtable, ObjectNode::TakesPacketsSlot) == 0)

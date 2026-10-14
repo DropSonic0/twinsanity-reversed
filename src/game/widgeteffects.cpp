@@ -7,14 +7,14 @@
 namespace
 {
 // The rock's widest turn (a sixteenth of a turn, radians), the spin's four turns, the slide's distance (4:3 and 16:9)
-constexpr f32 RockTurn = TwoPi / 16.0f;
-constexpr f32 FourTurns = 4.0f * TwoPi;
-constexpr f32 SlideNarrow = 0x1.70A3D8p-2f;
-constexpr f32 SlideWide = 0x1.C28F5Cp-2f;
+CONSTEXPR f32 RockTurn = TwoPi / 16.0f;
+CONSTEXPR f32 FourTurns = 4.0f * TwoPi;
+CONSTEXPR f32 SlideNarrow = 0x1.70A3D8p-2f;
+CONSTEXPR f32 SlideWide = 0x1.C28F5Cp-2f;
 // The sparkle's emitter once reset
-constexpr u32 SparkleTries = 4;
-constexpr f32 SparkleLifetime = 0.5f;
-constexpr f32 SparkleChance = 0x1.E66666p+0f;
+CONSTEXPR u32 SparkleTries = 4;
+CONSTEXPR f32 SparkleLifetime = 0.5f;
+CONSTEXPR f32 SparkleChance = 0x1.E66666p+0f;
 
 // The cycle moved on by the seconds (its fraction from where the step started): past its end the time starts over (or keeps what's
 // past the end) and a repeat is used up; with none left the next effect plays

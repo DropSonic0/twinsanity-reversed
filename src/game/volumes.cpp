@@ -49,14 +49,14 @@ enum VolumeSlot : u32
 };
 
 // A segment whose length squared is below its sphere's radius squared times this has no direction
-constexpr f32 ShortSegment = LengthEpsilon;
+CONSTEXPR f32 ShortSegment = LengthEpsilon;
 // How far a quadratic's root may be before a segment's start, or past its end, and still be the share where it crosses a sphere
-constexpr f32 RootTolerance = Epsilon;
-constexpr f32 LastRoot = 0x1.000346p+0f;
+CONSTEXPR f32 RootTolerance = Epsilon;
+CONSTEXPR f32 LastRoot = 0x1.000346p+0f;
 // How far a point is in front of a hull's plane to be outside it
-constexpr f32 PlaneTolerance = Epsilon;
+CONSTEXPR f32 PlaneTolerance = Epsilon;
 // Further beyond a box than a point ever is
-constexpr f32 NoFace = 1.0e10f;
+CONSTEXPR f32 NoFace = 1.0e10f;
 
 // Where a point is against a box (an outcode): beyond its max or its min along each axis
 union BoxOutCode
@@ -147,7 +147,7 @@ void ClampToBox(f32* point, const f32* extents, s32 axis, f32* squared)
 // The outcode's bits go above and below for each axis in turn
 BoxOutCode OutCode(const Vector4* point, const Vector4* low, const Vector4* high)
 {
-    constexpr u32 Faces = 6;
+    CONSTEXPR u32 Faces = 6;
     BoxOutCode code = {0};
     for (u32 face = 0; face < Faces; face++)
     {

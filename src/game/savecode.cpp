@@ -22,7 +22,7 @@ extern "C"
 namespace
 {
 // Bytes rounded up to kilobytes
-constexpr u32 KilobyteRound = (1u << SaveDevice::KilobyteShift) - 1;
+CONSTEXPR u32 KilobyteRound = (1u << SaveDevice::KilobyteShift) - 1;
 
 u32 AskDevice(SaveCode* code, u32 operation, u32 file)
 {

@@ -11,8 +11,8 @@
 #include "game/sound.h"
 
 #include <bit>
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 // The commands that make and set up the object nodes' controllers (game/nodecontrollers.h)
 
@@ -93,7 +93,7 @@ void FinalBossWeaponsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
 {
     ObjectNode* node = NodeOf(runner);
     // A retail bug: the controller's kind isn't checked, nor whether there's one (then it writes from address 0x10 on)
-    auto* aimer = reinterpret_cast<JointAimer*>(reinterpret_cast<std::uintptr_t>(node->controller)
+    auto* aimer = reinterpret_cast<JointAimer*>(reinterpret_cast<uintptr_t>(node->controller)
                                                 + offsetof(JointAimController, aimer));
     switch (mode)
     {
@@ -181,8 +181,8 @@ void SetMaskControllerIdsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
         BoostId = 2,
     };
 
-    constexpr u16 InvincibleTrails = 3;
-    constexpr u8 InvincibleExitPoint = 5;
+    CONSTEXPR u16 InvincibleTrails = 3;
+    CONSTEXPR u8 InvincibleExitPoint = 5;
     auto* mask = ControllerOf<MaskController>(NodeOf(runner), NodeController::KindMask);
     if (mask == nullptr)
     {

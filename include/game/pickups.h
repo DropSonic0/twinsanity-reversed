@@ -12,15 +12,18 @@ struct SphereBody;
 // The custom pickups and projectiles the object scripts set up through code models, one per slot (game/pickups.cpp and
 // game/projectiles.cpp; their nodes' function 25 gives the slot, SetCustomPickup and SetCustomProjectile set them up)
 
-constexpr u32 CustomPickupSlots = 5;
-constexpr u32 CustomProjectileSlots = 9;
+CONSTEXPR u32 CustomPickupSlots = 5;
+CONSTEXPR u32 CustomProjectileSlots = 9;
 
 // A custom pickup's flags, bits 0-10 set by SetCustomPickup (the command's word has the same bits): only its spinning while it's
 // idle is read (the development tools' parser puts hit points in bits 8 and 9 and marks a radius or a pull given in bit 10)
 union CustomPickupFlags
 {
     // The bits SetCustomPickup sets, which a new custom pickup clears
-    static constexpr u32 CommandBits = 0x7FF;
+    enum
+    {
+        CommandBits = 0x7FF
+    };
 
     u32 value;
     struct
@@ -59,7 +62,10 @@ CHECK_SIZE(CustomPickup, 0x18);
 union CustomProjectileFlags
 {
     // The bits a new custom projectile clears
-    static constexpr u32 ClearedBits = 0x3FF;
+    enum
+    {
+        ClearedBits = 0x3FF
+    };
 
     u32 value;
     struct
@@ -124,7 +130,7 @@ CHECK_SIZE(PickupNodeBits, 4);
 // runs the model's pack of it
 struct PickupObjectNode : GameNode
 {
-    enum State : u32
+    enum State
     {
         // Asleep with its instance
         StateAsleep = 0,
@@ -144,7 +150,7 @@ struct PickupObjectNode : GameNode
 
     // What its prototype's flags' bits 2 and 8 mean to it (ObjectNodeFlags' falls and keepsParticles to the other nodes): it has
     // a physics body, it flies on to its focus's own focus once it reaches it (until that's the player's instance)
-    enum Flags : u32
+    enum Flags
     {
         FlagLaunched = 0x4,
         FlagHandsOn = 0x100,

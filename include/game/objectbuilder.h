@@ -10,7 +10,7 @@ struct ObjectItemBuilder
 {
     // The item types it makes: game objects, property lists, the named items of 0xA0 bytes, code models, the named items of
     // 0x28 bytes, the named items of 0x50 bytes and resource references; and the named items' base's type
-    enum Type : u32
+    enum Type
     {
         TypeGameObject = 0x1B02,
         TypePropertyList = 0x1B04,

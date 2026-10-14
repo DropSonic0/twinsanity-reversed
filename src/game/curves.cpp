@@ -68,16 +68,16 @@ EABI_EXPORT(BoxPointAtFractions, BoxPointAtFractions);
 
 namespace
 {
-constexpr f32 Sixth = 0x1.555556p-3f;
+CONSTEXPR f32 Sixth = 0x1.555556p-3f;
 // The path's basis as retail has it (a sixth, a half and two thirds a few bits short)
-constexpr f32 BasisSixth = 0x1.55554cp-3f;
-constexpr f32 BasisHalf = 0x1.fffff2p-2f;
-constexpr f32 BasisOne = 0x1.fffff2p-1f;
-constexpr f32 BasisTwoThirds = 0x1.55554cp-1f;
+CONSTEXPR f32 BasisSixth = 0x1.55554cp-3f;
+CONSTEXPR f32 BasisHalf = 0x1.fffff2p-2f;
+CONSTEXPR f32 BasisOne = 0x1.fffff2p-1f;
+CONSTEXPR f32 BasisTwoThirds = 0x1.55554cp-1f;
 // The share the chords of a path's segment are walked by
-constexpr f32 ChordStep = 0x1.47ae14p-7f;
+CONSTEXPR f32 ChordStep = 0x1.47ae14p-7f;
 // A walk's point this much nearer than the segment's ends is refined
-constexpr f32 RefineBelow = 0x1.fef9dcp-1f;
+CONSTEXPR f32 RefineBelow = 0x1.fef9dcp-1f;
 
 struct PathSegment
 {
