@@ -450,7 +450,7 @@ void SetPerceptionWeightCommand::ParseTokens(const ScriptTokenList* tokens)
         switch (token->tag)
         {
         case TagPerceptionWeight:
-            weight = __builtin_bit_cast(f32, token->value);
+            weight = token->Float();
             break;
         case TagNone:
         {
@@ -481,7 +481,7 @@ void AddPerceptionWeightCommand::ParseTokens(const ScriptTokenList* tokens)
         switch (token->tag)
         {
         case TagPerceptionWeight:
-            weight = __builtin_bit_cast(f32, token->value);
+            weight = token->Float();
             break;
         case TagNone:
         {
@@ -1063,7 +1063,7 @@ void SpawnResidentAgentCommand::ParseTokens(const ScriptTokenList* tokens)
     while (!reader.AtEnd())
     {
         const ScriptToken* token = reader.Current();
-        flags.space = TokenSpace(token, flags.space);
+        flags.space = TokenSpace(token, static_cast<u32>(flags.space));
         TokenVectorComponent(token, &offsetX);
         switch (token->tag)
         {

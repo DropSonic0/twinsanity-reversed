@@ -1168,7 +1168,7 @@ void PlayMovieCommand::ParseTokens(const ScriptTokenList* tokens)
                 break;
             }
 
-            [[fallthrough]];
+            // fallthrough
         case TagValue:
             movie.type = TaggedValue::TypeInt;
             ParseTaggedValueRecord(token, &movie);
@@ -1914,14 +1914,14 @@ void AddPerceptionCommand::ParseTokens(const ScriptTokenList* tokens)
             break;
         case TagRange:
             // The radius and its square
-            sense.radius = __builtin_bit_cast(f32, token->value);
+            sense.radius = token->Float();
             sense.falloff = token->Float() * token->Float();
             break;
         case TagSenseInterval:
             sense.interval = token->Float();
             break;
         case TagSenseDecay:
-            sense.decay = __builtin_bit_cast(f32, token->value);
+            sense.decay = token->Float();
             break;
         case TagActor:
         {
@@ -1933,13 +1933,13 @@ void AddPerceptionCommand::ParseTokens(const ScriptTokenList* tokens)
             break;
         }
         case TagLowest:
-            sense.lowest = __builtin_bit_cast(f32, token->value);
+            sense.lowest = token->Float();
             break;
         case TagHighest:
             sense.highest = token->Float();
             break;
         case TagSpeedScale:
-            sense.speedScale = __builtin_bit_cast(f32, token->value);
+            sense.speedScale = token->Float();
             break;
         case TagAttentionWeight:
             sense.attentionWeight = token->Float();

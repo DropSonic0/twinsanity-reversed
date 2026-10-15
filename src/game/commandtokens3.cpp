@@ -16,7 +16,7 @@
 namespace
 {
 // The axes of the instance's frame SetFocusPosition's position is kept to (SetFocusPositionCommand::Target::keptAxes)
-enum KeptAxis : u32
+enum KeptAxis
 {
     KeepsX = 1 << 0,
     KeepsY = 1 << 1,
@@ -25,7 +25,7 @@ enum KeptAxis : u32
 
 // The frame a particle trail's emitter follows (TrailBits::space, game/particletrails.cpp's EmitterFrame): its exit point's,
 // where its instance started, its instance's place, the origin
-enum TrailSpace : u32
+enum TrailSpace
 {
     TrailFromExitPoint = 0,
     TrailFromStart = 1,
@@ -35,7 +35,7 @@ enum TrailSpace : u32
 
 // The trails taken away together (TrailBits::removalKind, ParticleTrails::RemoveKind): the ones a runner's end takes away when
 // its node keeps its particles, and a kind nothing asks to take away
-enum TrailRemoval : u32
+enum TrailRemoval
 {
     RemovedAtRunnerEnd = 1,
     UnusedRemovalKind = 2,
@@ -426,7 +426,7 @@ void AddToFocusCounterCommand::ParseTokens(const ScriptTokenList* tokens)
                 break;
             }
 
-            [[fallthrough]];
+            // fallthrough
         case TagValue:
             amount.type = TaggedValue::TypeInt;
             ParseTaggedValueRecord(token, &amount);
@@ -456,7 +456,7 @@ void SetFocusCounterCommand::ParseTokens(const ScriptTokenList* tokens)
         case TagAgentCounter:
             // Retail has no break here: a source of type 1 is the value as well
             source = static_cast<s32>(token->value);
-            [[fallthrough]];
+            // fallthrough
         case TagNone:
             if (token->type == TokenInt)
             {
@@ -862,7 +862,7 @@ void PositionWarpCommand::ParseTokens(const ScriptTokenList* tokens)
             }
 
             // Retail has no break here: the token's value goes on into the receiver
-            [[fallthrough]];
+            // fallthrough
         case TagAgent:
             target.receiver = token->value;
             break;
@@ -1109,7 +1109,7 @@ void WarpAgentCommand::ParseTokens(const ScriptTokenList* tokens)
             }
 
             // Retail has no break here: the token also names the agent warped
-            [[fallthrough]];
+            // fallthrough
         case TagAgentDesignator:
             warp.agent = TokenDesignator(token, warp.agent);
             break;
@@ -1777,7 +1777,7 @@ void AddTrailCommand::ParseTokens(const ScriptTokenList* tokens)
             }
 
             // Retail has no break here: the value goes on into the halfword after the sounds
-            [[fallthrough]];
+            // fallthrough
         case TagDecal:
             trail.extraSound = static_cast<u16>(token->value);
             break;

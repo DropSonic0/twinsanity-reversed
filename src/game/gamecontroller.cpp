@@ -1671,14 +1671,14 @@ u32 GameController::StartingPlay(TimeClock*)
             progress.Enter(static_cast<u32>(states.entry), &saveController.chunk, &saveController.place, &progress, chunkManager);
             EnableCharacters(1);
             InstanceContext* player = CharacterInstance(&progress);
-            auto* follow = static_cast<FollowNode*>(GetGameNode(&player->nodes, NodeFollow));
+            FollowNode* follow = static_cast<FollowNode*>(GetGameNode(&player->nodes, NodeFollow));
             follow->camera.rig.Restart();
         }
-            [[fallthrough]];
+            // fallthrough
         case StateCredits:
         case StateRestarting:
             StartChunks();
-            [[fallthrough]];
+            // fallthrough
         case StateWatching:
         case StateMovie:
             EnableCharacters(1);

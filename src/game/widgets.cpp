@@ -1098,7 +1098,7 @@ void Widget::Appear(s32 newDuration, s32 newHold)
     {
     case 0:
         CallVirtual<void>(this, vtable, EnterHiddenSlot);
-        [[fallthrough]];
+        // fallthrough
     case StateHidden:
         duration = newDuration;
         hold = newHold;

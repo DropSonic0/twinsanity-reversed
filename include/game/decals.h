@@ -35,7 +35,7 @@ union DecalLife
 CHECK_SIZE(DecalLife, 4);
 
 // A decal's place in its block: where it is and its life (a float of -1 for no decal)
-struct alignas(16) DecalPlace
+struct ALIGN16 DecalPlace
 {
     f32 x;
     f32 y;
@@ -104,7 +104,7 @@ CHECK_SIZE(DecalType, 0x890);
 
 // The packet of the decal types' UV rectangles VU1 gets (TT Lab's DecalUvPacket): a GIF tag the game writes (its first word and
 // its registers' two words), then the rectangles
-struct alignas(16) DecalUvPacket
+struct ALIGN16 DecalUvPacket
 {
     u64 gifTag;
     u32 gifRegisters[2];

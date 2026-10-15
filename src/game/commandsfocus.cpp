@@ -340,9 +340,9 @@ void CopyDesignatorCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
         return;
     }
 
-    if (CallVirtual<u32>(node, node->vtable, ObjectNode::SetDesignatorSlot, u32{destination}, instance) == 0)
+    if (CallVirtual<u32>(node, node->vtable, ObjectNode::SetDesignatorSlot, static_cast<u32>(destination), instance) == 0)
     {
-        CallVirtual<u32>(node, node->vtable, ObjectNode::SetDesignatorPositionSlot, u32{destination}, &position);
+        CallVirtual<u32>(node, node->vtable, ObjectNode::SetDesignatorPositionSlot, static_cast<u32>(destination), &position);
     }
 }
 
@@ -445,7 +445,7 @@ void RunSlotBehaviourOnLinkedCommand::Execute(TimeClock*, BehaviourRunner* runne
     u16 id;
     GetObjectBehaviourId(&id, ObjectOf(node), slot.slot);
     ResourceTable* scripts = G_GameResourcesObjectPointer->scripts;
-    auto* starter = id != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[id & ResourceIndexMask]) : nullptr;
+    ScriptStarter* starter = id != NoScriptId ? static_cast<ScriptStarter*>(scripts->items[id & ResourceIndexMask]) : nullptr;
     if (starter == nullptr)
     {
         return;
@@ -507,8 +507,8 @@ void PlaySlotAnimation(f32 blendSeconds, ObjectNode* node, u32 slot, u32 loops)
 
     GameResources* resources = G_GameResourcesObjectPointer;
     u16 id = modelId;
-    auto* ogi = id != NoModelId ? static_cast<GameOGI*>(resources->models->items[id & ResourceIndexMask]) : nullptr;
-    auto* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+    GameOGI* ogi = id != NoModelId ? static_cast<GameOGI*>(resources->models->items[id & ResourceIndexMask]) : nullptr;
+    ModelNode* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
     u16 animationId;
     GetObjectAnimationId(&animationId, object, objectSlot);
     model->SetOgi(ogi, object->header.reactJoints, object->header.exitPoints);
@@ -704,7 +704,7 @@ void SetFocusPositionCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
         }
         else if (awayFromPlayer != 0.0f)
         {
-            auto* player = g_PlayerInstance != nullptr ? static_cast<InstanceContext*>(g_PlayerInstance->object) : nullptr;
+            InstanceContext* player = g_PlayerInstance != nullptr ? static_cast<InstanceContext*>(g_PlayerInstance->object) : nullptr;
             Vector4 own = PositionOf(node->owner);
             // A missing player's place is read at address 8
             Vector4 from = PositionOf(player);
@@ -809,7 +809,7 @@ void SetFocusPositionCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
 // side or the other by the side of the player's x axis the instance is on
 void SetFocusPositionBesidePlayerCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* player = g_PlayerInstance != nullptr ? static_cast<InstanceContext*>(g_PlayerInstance->object) : nullptr;
+    InstanceContext* player = g_PlayerInstance != nullptr ? static_cast<InstanceContext*>(g_PlayerInstance->object) : nullptr;
     ObjectNode* node = NodeOf(runner);
     Vector4 own = PositionOf(node->owner);
     // A missing player's place is read at address 8

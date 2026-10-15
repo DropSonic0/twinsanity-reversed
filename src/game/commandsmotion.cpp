@@ -305,7 +305,7 @@ void DesignatorTarget(ObjectNode* node, u8 designator, Vector4* target, bool foc
 // The waypoints the keys are of: the node's it takes its object from when there's one
 Waypoints* KeyWaypoints(ObjectNode* node)
 {
-    auto* source = static_cast<ObjectNode*>(node->sourceNode);
+    ObjectNode* source = static_cast<ObjectNode*>(node->sourceNode);
     return source != nullptr ? source->waypoints : node->waypoints;
 }
 
@@ -376,7 +376,7 @@ void StrafeTowardsTargetCommand::Execute(TimeClock* clock, BehaviourRunner* runn
     Vector4 position = PositionOf(instance);
     Vector4 way = {to.x - position.x, to.y - position.y, to.z - position.z, 1.0f};
     Vector4 axis = way;
-    Vector4 start = {};
+    Vector4 start = {0.0f, 0.0f, 0.0f, 0.0f};
     switch (target.space)
     {
     case ControlPacket::InitialSpace:
@@ -849,7 +849,7 @@ void SetShadowCircleCommand::ExecuteOn(GameNode* node)
 
     PropertyHolder* properties = static_cast<ObjectNodeBase*>(node)->PacketProperties();
     ShadowShapes* shapes = SlotShapes(shadow, shape.slot);
-    auto* memory = static_cast<ShadowCircle*>(MemoryAllocate(sizeof(ShadowCircle)));
+    ShadowCircle* memory = static_cast<ShadowCircle*>(MemoryAllocate(sizeof(ShadowCircle)));
     f32 circleRadius = radius.FloatWith(properties);
     f32 circleHeight = height.FloatWith(properties);
     ShadowCircle* circle = ShadowCircle::Construct(circleRadius, circleHeight, memory, shape.kind, shape.joint);
@@ -863,18 +863,18 @@ void SetShadowCommand::ExecuteOn(GameNode* node)
 {
     PropertyHolder* properties = static_cast<ObjectNodeBase*>(node)->PacketProperties();
     InstanceContext* instance = node->owner;
-    auto* shadow = static_cast<ShadowNode*>(GetGameNode(&instance->nodes, NodeShadow));
+    ShadowNode* shadow = static_cast<ShadowNode*>(GetGameNode(&instance->nodes, NodeShadow));
     if (shadow == nullptr)
     {
         shadow = ShadowNode::Construct(static_cast<ShadowNode*>(MemoryAllocate(sizeof(ShadowNode))));
         RegisterNode(instance, AttachNode, shadow);
     }
 
-    auto* memory = static_cast<ShadowShapes*>(MemoryAllocate(sizeof(ShadowShapes)));
+    ShadowShapes* memory = static_cast<ShadowShapes*>(MemoryAllocate(sizeof(ShadowShapes)));
     f32 reach = distance.FloatWith(properties);
     f32 strength = farStrength.FloatWith(properties);
     ShadowShapes* shapes = ShadowShapes::Construct(reach, strength, memory);
-    auto* shadowSlot = static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot)));
+    ShadowSlot* shadowSlot = static_cast<ShadowSlot*>(MemoryAllocate(sizeof(ShadowSlot)));
     shadowSlot = ShadowSlot::Construct(nearStrength.FloatWith(properties), shadowSlot, shapes);
     shadow->SetSlot(slot.slot, shadowSlot);
 }
@@ -891,7 +891,7 @@ void SetShadowMeshCommand::ExecuteOn(GameNode* node)
 
     PropertyHolder* properties = static_cast<ObjectNodeBase*>(node)->PacketProperties();
     ShadowShapes* shapes = SlotShapes(shadow, shape.slot);
-    auto* memory = static_cast<ShadowCapsule*>(MemoryAllocate(sizeof(ShadowCapsule)));
+    ShadowCapsule* memory = static_cast<ShadowCapsule*>(MemoryAllocate(sizeof(ShadowCapsule)));
     f32 capsuleRadius = radius.FloatWith(properties);
     ShadowCapsule* capsule = ShadowCapsule::Construct(capsuleRadius, memory, shape.kind, shape.joint, shape.secondJoint);
     capsule->offset = ShapeOffset(offsetX, offsetY, offsetZ, properties);
@@ -909,7 +909,7 @@ void SetShadowRectangleCommand::ExecuteOn(GameNode* node)
 
     PropertyHolder* properties = static_cast<ObjectNodeBase*>(node)->PacketProperties();
     ShadowShapes* shapes = SlotShapes(shadow, shape.slot);
-    auto* memory = static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain)));
+    ShadowPlain* memory = static_cast<ShadowPlain*>(MemoryAllocate(sizeof(ShadowPlain)));
     f32 plainWidth = width.FloatWith(properties);
     f32 plainDepth = depth.FloatWith(properties);
     ShadowPlain* plain = ShadowPlain::Construct(plainWidth, plainDepth, memory, shape.kind);

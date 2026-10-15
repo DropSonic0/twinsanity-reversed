@@ -219,7 +219,10 @@ void RaycastFocusPositionCommand::Execute(TimeClock*, BehaviourRunner* runner, B
     }
     else
     {
-        way = {x, y, z, w};
+        way.x = x;
+        way.y = y;
+        way.z = z;
+        way.w = w;
     }
 
     if (LineOfSight(instance->chunk, &from, &way, SurfaceFlags::SolidToObjects, nullptr, SolidOrProjectileNodeKinds) == 0)
@@ -292,7 +295,7 @@ void RequestFocusCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
     ChunkData* chunk = owner->chunk;
     Vector4 sphere = {0.0f, 0.0f, 0.0f, 1.0f};
     u32 receiver = target.receiver == RequestTarget::NoReceiver ? DesignatesNone : target.receiver;
-    const auto* offset = target.offsetGiven ? reinterpret_cast<const Vector4*>(&offsetX) : nullptr;
+    const Vector4* offset = target.offsetGiven ? reinterpret_cast<const Vector4*>(&offsetX) : nullptr;
     DesignatedPosition(&sphere, target.space, runner, offset, target.designator, receiver, target.unused21);
     u32 wanted = choice.ignoresSignals ? 0 : ReferencedObjectFlags::ReceivesTriggerSignals;
     u32 unwanted = ReferencedObjectFlags::Asleep;
@@ -453,7 +456,7 @@ void RequestFocusCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
 // Whether the instance's object is one the request names: one of its objects, or for the hanging instances one of theirs
 u32 RequestMatches(const RequestFocusCommand* command, InstanceContext* instance, u32 hanging)
 {
-    auto* node = static_cast<ObjectNodeBase*>(GetGameNode(NodesOf(instance), NodeObject));
+    ObjectNodeBase* node = static_cast<ObjectNodeBase*>(GetGameNode(NodesOf(instance), NodeObject));
     u16 id = node->agent->objectId;
     const u16* ids;
     u32 count;
@@ -586,7 +589,7 @@ void SetFocusPropertiesCommand::Execute(TimeClock*, BehaviourRunner* runner, Beh
     }
 
     void* objectNode = GetGameNode(&focus->nodes, NodeObject);
-    auto* part = static_cast<BasicAgentPart*>(AgentNodeOf(focus)->agent->part);
+    BasicAgentPart* part = static_cast<BasicAgentPart*>(AgentNodeOf(focus)->agent->part);
     if (objectNode == nullptr)
     {
         return;
@@ -605,9 +608,9 @@ void SetFocusPropertiesCommand::Execute(TimeClock*, BehaviourRunner* runner, Beh
         break;
     }
 
-    Switch(&focus->flags.value, switches.visible, u32{ReferencedObjectFlags::Visible});
-    Switch(&focus->flags.value, switches.collisionActive, u32{ReferencedObjectFlags::CollisionActive});
-    Switch(&focus->flags.value, switches.receivesTriggerSignals, u32{ReferencedObjectFlags::ReceivesTriggerSignals});
+    Switch(&focus->flags.value, switches.visible, static_cast<u32>(ReferencedObjectFlags::Visible));
+    Switch(&focus->flags.value, switches.collisionActive, static_cast<u32>(ReferencedObjectFlags::CollisionActive));
+    Switch(&focus->flags.value, switches.receivesTriggerSignals, static_cast<u32>(ReferencedObjectFlags::ReceivesTriggerSignals));
     switch (switches.canDamageCharacter)
     {
     case SwitchOn:
@@ -637,7 +640,7 @@ void SetKeyNearestPlayerCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
     InstanceContext* owner = node->owner;
     LayoutPosition* current = waypoints->positions.data[waypoints->key];
     Vector4 target = PositionOf(player);
-    auto* character = static_cast<CharacterAgent*>(static_cast<AgentNode*>(GetGameNode(&player->nodes, NodeCharacter))->agent);
+    CharacterAgent* character = static_cast<CharacterAgent*>(static_cast<AgentNode*>(GetGameNode(&player->nodes, NodeCharacter))->agent);
     Vector4 velocity;
     if (character->vehicle != nullptr)
     {
@@ -749,7 +752,7 @@ void GetShortRouteCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
     }
 
     Vector4 end;
-    const auto* offset = target.offsetGiven ? reinterpret_cast<const Vector4*>(&offsetX) : nullptr;
+    const Vector4* offset = target.offsetGiven ? reinterpret_cast<const Vector4*>(&offsetX) : nullptr;
     DesignatedPosition(&end, target.space, runner, offset, target.designator, target.receiver, 0);
     u16 startIndex;
     AiPosition* from = NearestWithFlags(chunk, &start, &startIndex, positionFlags.startRequired, startFlags.startRuledOut);
@@ -871,7 +874,7 @@ void GetShortRouteCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviou
         SetNearFocusWeight(finder, request.nearFocusWeight);
     }
 
-    auto* route = CallVirtual<Route*>(finder, finder->vtable, PathFinder::FindRouteSlot, &request);
+    Route* route = CallVirtual<Route*>(finder, finder->vtable, PathFinder::FindRouteSlot, &request);
     if (route != nullptr)
     {
         waypoints->SetRoute(route);
@@ -904,8 +907,8 @@ void SetNearestPointFlagsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
         break;
     }
 
-    Switch(&nearest->flags.value, bits.airborne, u16{AiPositionFlags::Airborne});
-    Switch(&nearest->flags.value, bits.alwaysTaken, u16{AiPositionFlags::AlwaysTaken});
+    Switch(&nearest->flags.value, bits.airborne, static_cast<u16>(AiPositionFlags::Airborne));
+    Switch(&nearest->flags.value, bits.alwaysTaken, static_cast<u16>(AiPositionFlags::AlwaysTaken));
 }
 
 // AgentRef1 the linked object (of the range) whose box's middle is nearest the player, marked busy; with two busy or more around, a
@@ -1007,7 +1010,7 @@ void SetLinkedObjectNearestPlayerCommand::Execute(TimeClock*, BehaviourRunner* r
 // asked: its index, -1 for none
 s32 FindLinked(const SetLinkedObjectNearestPlayerCommand*, u32 taken, s32 index, s32 steps, void* attachments)
 {
-    auto* node = static_cast<AttachmentsNode*>(attachments);
+    AttachmentsNode* node = static_cast<AttachmentsNode*>(attachments);
     s32 last = static_cast<s32>(node->LinkedCount()) - 1;
     bool backwards = steps < 1;
     s32 step = backwards ? -1 : 1;
@@ -1028,7 +1031,7 @@ s32 FindLinked(const SetLinkedObjectNearestPlayerCommand*, u32 taken, s32 index,
 
 u32 CountTakenLinked(const SetLinkedObjectNearestPlayerCommand* command, void* attachments)
 {
-    auto* node = static_cast<AttachmentsNode*>(attachments);
+    AttachmentsNode* node = static_cast<AttachmentsNode*>(attachments);
     u8 firstByte = command->range.first;
     u8 endByte = command->range.end;
     u32 first = firstByte != LinkedRange::Whole ? firstByte - 1u : 0;
@@ -1054,7 +1057,7 @@ void SetFocusToLinkedObjectInViewCommand::Execute(TimeClock*, BehaviourRunner* r
     AttachmentsNode* attachments = AttachmentsNodeOf(node->owner);
     Vector4 target = PositionOf(PlayerInstance());
     InstanceContext* camera = CameraInstance();
-    auto* character = reinterpret_cast<Agent*>(g_PlayerCharacter);
+    Agent* character = reinterpret_cast<Agent*>(g_PlayerCharacter);
     Vector4 velocity;
     CallVirtual<u32>(character, character->vtable, Agent::VelocitySlot, &velocity);
     f32 speed = __builtin_sqrtf(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);

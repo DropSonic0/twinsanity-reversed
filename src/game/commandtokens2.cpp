@@ -1731,7 +1731,7 @@ void SetObjectCommand::ParseTokens(const ScriptTokenList* tokens)
             // The node's distance and then, falling through, the model's: the same as TagLodBoost
             switches.nodeDistanceGiven = 1;
             switches.nodeDistance = token->value;
-            [[fallthrough]];
+            // fallthrough
         case TagModelDistance:
             switches.modelDistanceGiven = 1;
             switches.modelDistance = token->value;

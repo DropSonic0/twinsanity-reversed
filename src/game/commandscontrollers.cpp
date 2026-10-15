@@ -10,7 +10,6 @@
 #include "game/properties.h"
 #include "game/sound.h"
 
-#include <bit>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -93,8 +92,8 @@ void FinalBossWeaponsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
 {
     ObjectNode* node = NodeOf(runner);
     // A retail bug: the controller's kind isn't checked, nor whether there's one (then it writes from address 0x10 on)
-    auto* aimer = reinterpret_cast<JointAimer*>(reinterpret_cast<uintptr_t>(node->controller)
-                                                + offsetof(JointAimController, aimer));
+    JointAimer* aimer = reinterpret_cast<JointAimer*>(reinterpret_cast<uintptr_t>(node->controller)
+                                                      + offsetof(JointAimController, aimer));
     switch (mode)
     {
     case ModeHookJoints:
@@ -106,7 +105,7 @@ void FinalBossWeaponsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
         }
 
         aimer->node = node;
-        auto* model = static_cast<ModelNode*>(GetGameNode(&node->owner->nodes, NodeModel));
+        ModelNode* model = static_cast<ModelNode*>(GetGameNode(&node->owner->nodes, NodeModel));
         aimer->AttachVirtual(model->animator);
         break;
     }
@@ -136,7 +135,7 @@ void FinalBossWeaponsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
         break;
     case ModeTarget:
     {
-        auto* instance = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, target.designator);
+        InstanceContext* instance = CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, target.designator);
         if (instance != nullptr)
         {
             aimer->targetInstance = instance;
@@ -174,7 +173,7 @@ void FinalBossWeaponsCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
 void SetMaskControllerIdsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     // The mask's IDs: the invincibility's first trail, the unused trail, the boost trail
-    enum MaskId : u32
+    enum MaskId
     {
         InvincibleId = 0,
         UnusedTrailId = 1,
@@ -183,7 +182,7 @@ void SetMaskControllerIdsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 
     CONSTEXPR u16 InvincibleTrails = 3;
     CONSTEXPR u8 InvincibleExitPoint = 5;
-    auto* mask = ControllerOf<MaskController>(NodeOf(runner), NodeController::KindMask);
+    MaskController* mask = ControllerOf<MaskController>(NodeOf(runner), NodeController::KindMask);
     if (mask == nullptr)
     {
         return;
@@ -213,7 +212,7 @@ void SetMaskControllerIdsCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 void SetSplineControllerValuesCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     ObjectNode* node = NodeOf(runner);
-    auto* spline = ControllerOf<SplineController>(node, NodeController::KindSpline);
+    SplineController* spline = ControllerOf<SplineController>(node, NodeController::KindSpline);
     if (spline == nullptr)
     {
         return;
@@ -227,7 +226,10 @@ void SetSplineControllerValuesCommand::Execute(TimeClock*, BehaviourRunner* runn
     f32 turnRateValue = turnRate.FloatWith(properties);
     f32 unused = unusedValue.FloatWith(properties);
     f32 dropValue = drop.FloatWith(properties);
-    spline->offset = {x, y, z, 1.0f};
+    spline->offset.x = x;
+    spline->offset.y = y;
+    spline->offset.z = z;
+    spline->offset.w = 1.0f;
     spline->pull = pullValue;
     spline->turnRate = turnRateValue;
     spline->unused28 = unused;
@@ -239,7 +241,7 @@ void SetSplineControllerValuesCommand::Execute(TimeClock*, BehaviourRunner* runn
 void SetSkateControllerIdsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     ObjectNode* node = NodeOf(runner);
-    auto* skate = ControllerOf<SkateController>(node, NodeController::KindSkate);
+    SkateController* skate = ControllerOf<SkateController>(node, NodeController::KindSkate);
     if (skate == nullptr)
     {
         return;

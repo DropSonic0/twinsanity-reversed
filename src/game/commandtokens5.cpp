@@ -378,7 +378,7 @@ void SetCollisionsCommand::ParseTokens(const ScriptTokenList* tokens)
                 case KeywordPushedByVolumes:
                     // Falls through into the default (no break in retail)
                     settings.pushedByVolumes = 1;
-                    [[fallthrough]];
+                    // fallthrough
                 default:
                     lengthDrag = -1.0f;
                     break;
@@ -556,7 +556,7 @@ void ColliderLaunchNowCommand::ParseTokens(const ScriptTokenList* tokens)
             break;
         case TagAddedRise:
             extras.addsRise = 1;
-            [[fallthrough]];
+            // fallthrough
         case TagRise:
             launch.thrownOverHeight = 1;
             heightOrTime = token->Float();
@@ -643,7 +643,7 @@ void LaunchAtTargetCommand::ParseTokens(const ScriptTokenList* tokens)
             break;
         case TagAddedRise:
             launch.addsRise = 1;
-            [[fallthrough]];
+            // fallthrough
         case TagRise:
             heightOrTime = token->Float();
             launch.thrownOverHeight = 1;
@@ -1033,7 +1033,7 @@ void ReleaseAgentRef2Command::ParseTokens(const ScriptTokenList* tokens)
             }
 
             // Every keyword falls through into the message (no break in retail)
-            [[fallthrough]];
+            // fallthrough
         case TagMessage:
             release.message = token->value;
             break;

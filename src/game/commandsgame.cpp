@@ -117,7 +117,7 @@ void EndWhackawormCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*
 
 void ResetCharacterFallCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(&runner->agentNode->owner->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&runner->agentNode->owner->nodes, NodeCharacter));
     if (node != nullptr)
     {
         ResetCharacterFall(node->agent);
@@ -186,7 +186,7 @@ void PlayCreditsCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 // The cutscene of the number queued for the node's instance (the object of the node it takes its object from when there's one)
 void QueueObjectVideoCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<ObjectNode*>(runner->agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(runner->agentNode);
     InstanceContext* instance = node->owner;
     GameObject* object = ObjectOf(node);
     QueueObjectMovie(G_VideoController, object, instance, cutscene);
@@ -201,7 +201,7 @@ void QueueVideoCommand::Execute(TimeClock* clock, BehaviourRunner* runner, Behav
 // The pitch scale and volume of the node's tracked sound (when the node takes packets)
 void SetSoundParamsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<ObjectNode*>(runner->agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(runner->agentNode);
     if (CallVirtual<u32>(node, node->vtable, ObjectNode::TakesPacketsSlot) == 0)
     {
         return;
@@ -325,7 +325,7 @@ void DisplayBottomTextInstanceCommand::Execute(TimeClock*, BehaviourRunner* runn
 // when there's one)
 void EnableBossModeCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<ObjectNode*>(runner->agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(runner->agentNode);
     GameObject* object = ObjectOf(node);
     s32 most = health.IntWith(node->PacketProperties());
     u16 icon = SlotModel(object, iconSlot);
@@ -335,7 +335,7 @@ void EnableBossModeCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
 // Whack-a-worm's time (seconds) and count, its icon the model of the object's slot
 void StartWhackawormCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<ObjectNode*>(runner->agentNode);
+    ObjectNode* node = static_cast<ObjectNode*>(runner->agentNode);
     GameObject* object = ObjectOf(node);
     PropertyHolder* properties = node->PacketProperties();
     s32 count = total.IntWith(properties);
@@ -398,8 +398,8 @@ void PickUpHealthCommand::ExecuteOn(GameNode*)
         return;
     }
 
-    auto* agent = static_cast<CharacterAgent*>(static_cast<AgentNode*>(GetGameNode(&played->nodes, NodeCharacter))->agent);
-    auto* part = static_cast<CreaturePart*>(agent->part);
+    CharacterAgent* agent = static_cast<CharacterAgent*>(static_cast<AgentNode*>(GetGameNode(&played->nodes, NodeCharacter))->agent);
+    CreaturePart* part = static_cast<CreaturePart*>(agent->part);
     u32 points = part->flags.hitPoints + 1;
     if (points > MostHitPoints)
     {
@@ -418,10 +418,10 @@ void PickUpWumpaCommand::ExecuteOn(GameNode* node)
     OLEG* oleg = &G_GameController->oleg;
     if (GetGameNode(nodes, NodePickup) == nullptr)
     {
-        auto* crate = static_cast<AgentNode*>(GetGameNode(nodes, NodeCrate));
+        AgentNode* crate = static_cast<AgentNode*>(GetGameNode(nodes, NodeCrate));
         if (crate != nullptr)
         {
-            auto* part = static_cast<CratePart*>(crate->agent->part);
+            CratePart* part = static_cast<CratePart*>(crate->agent->part);
             u32 crateWumpa = part->crate.wumpaFruit;
             u32 left = crateWumpa < static_cast<u32>(wumpaFruit) ? 0 : crateWumpa - wumpaFruit;
             part->crate.wumpaFruit = left;

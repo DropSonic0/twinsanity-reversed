@@ -89,7 +89,7 @@ void ClearTrailCommand::ExecuteOn(GameNode* node)
 void NextKeyCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     ObjectNode* node = NodeOf(runner);
-    auto* source = static_cast<ObjectNode*>(node->sourceNode);
+    ObjectNode* source = static_cast<ObjectNode*>(node->sourceNode);
     (source != nullptr ? source->waypoints : node->waypoints)->NextKey();
 }
 
@@ -231,7 +231,7 @@ void ClearObjectContextTargetCommand::Execute(TimeClock*, BehaviourRunner* runne
 
 void SetFocusToOriginatorCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* originator = static_cast<InstanceContext*>(runner->originator);
+    InstanceContext* originator = static_cast<InstanceContext*>(runner->originator);
     if (originator == nullptr)
     {
         return;
@@ -445,7 +445,7 @@ void SetCurrentLinked(AttachmentsNode* attachments, u32 index)
 
 InstanceContext* DesignatorOf(ObjectNode* node, u8 designator)
 {
-    return CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, u32{designator});
+    return CallVirtual<InstanceContext*>(node, node->vtable, ObjectNode::GetDesignatorSlot, static_cast<u32>(designator));
 }
 
 // Every sense of a perception switched on or off
@@ -751,7 +751,7 @@ void SetCollisionBoxSizeCommand::Execute(TimeClock*, BehaviourRunner* runner, Be
 
 void SetBodyMassCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* body = static_cast<RigidBody*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeRigidBody));
+    RigidBody* body = static_cast<RigidBody*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeRigidBody));
     if (body != nullptr)
     {
         body->SetMassAndSize(mass, 1.0f, 1.0f, 1.0f);
@@ -819,7 +819,7 @@ void SetBehaviourPriorityCommand::Execute(TimeClock*, BehaviourRunner* runner, B
 void CreateCrateContentsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
     InstanceContext* instance = NodeOf(runner)->owner;
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCrate));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCrate));
     CreateCrateContents(this, node->agent, instance, runner);
 }
 
@@ -831,21 +831,21 @@ void SetCrateCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLeve
         return;
     }
 
-    auto* node = static_cast<AgentNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeCrate));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeCrate));
     if (node == nullptr)
     {
         return;
     }
 
-    auto* part = static_cast<CratePart*>(node->agent->part);
+    CratePart* part = static_cast<CratePart*>(node->agent->part);
     part->crate.wumpaFruit = wumpaFruit;
 }
 
 // None left below 0 (whether the instance has a creature agent isn't checked)
 void ReduceHitPointsCommand::Execute(TimeClock*, BehaviourRunner* runner, BehaviourLevel*)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeCreature));
-    auto* part = static_cast<CreaturePart*>(node->agent->part);
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&NodeOf(runner)->owner->nodes, NodeCreature));
+    CreaturePart* part = static_cast<CreaturePart*>(node->agent->part);
     s32 left = static_cast<s32>(part->flags.hitPoints) - hitPoints;
     if (left < 0)
     {
@@ -875,7 +875,7 @@ InstanceContext* PlayerInstance()
 // The instance's playable character agent's node, else the player's
 AgentNode* CharacterNodeOf(InstanceContext* instance)
 {
-    auto* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&instance->nodes, NodeCharacter));
     if (node == nullptr)
     {
         InstanceContext* player = PlayerInstance();
@@ -1002,7 +1002,7 @@ void DismissCharacterCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLev
 void SetCharacterHomeChunkCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
     InstanceContext* player = PlayedCharacter();
-    auto* node = static_cast<AgentNode*>(GetGameNode(&player->nodes, NodeCharacter));
+    AgentNode* node = static_cast<AgentNode*>(GetGameNode(&player->nodes, NodeCharacter));
     static_cast<CharacterAgent*>(node->agent)->homeChunk = player->chunk;
 }
 
@@ -1071,7 +1071,7 @@ void ClearCharacterDeadCommand::Execute(TimeClock*, BehaviourRunner* runner, Beh
 // Whether the played character has a follow node isn't checked
 void ResetCameraCommand::Execute(TimeClock*, BehaviourRunner*, BehaviourLevel*)
 {
-    auto* node = static_cast<FollowNode*>(GetGameNode(&PlayedCharacter()->nodes, NodeFollow));
+    FollowNode* node = static_cast<FollowNode*>(GetGameNode(&PlayedCharacter()->nodes, NodeFollow));
     node->camera.rig.Restart();
 }
 
@@ -1141,7 +1141,7 @@ void Switch(u32 setting, T* word, T bit)
 // The physics body's flags switched, and it's made to have touched another body and pushable
 void SwitchBodyFlagsCommand::ExecuteOn(GameNode* node)
 {
-    auto* body = static_cast<RigidBody*>(GetGameNode(&node->owner->nodes, NodeRigidBody));
+    RigidBody* body = static_cast<RigidBody*>(GetGameNode(&node->owner->nodes, NodeRigidBody));
     if (body == nullptr)
     {
         return;
@@ -1157,7 +1157,7 @@ void SwitchBodyFlagsCommand::ExecuteOn(GameNode* node)
 
 void SetShadowSlotCommand::ExecuteOn(GameNode* node)
 {
-    auto* shadow = static_cast<ShadowNode*>(GetGameNode(&node->owner->nodes, NodeShadow));
+    ShadowNode* shadow = static_cast<ShadowNode*>(GetGameNode(&node->owner->nodes, NodeShadow));
     if (shadow != nullptr)
     {
         CastShadowSlot(shadow, slot.slot);
@@ -1167,7 +1167,7 @@ void SetShadowSlotCommand::ExecuteOn(GameNode* node)
 // The slot's shadow deleted
 void ClearShadowSlotCommand::ExecuteOn(GameNode* node)
 {
-    auto* shadow = static_cast<ShadowNode*>(GetGameNode(&node->owner->nodes, NodeShadow));
+    ShadowNode* shadow = static_cast<ShadowNode*>(GetGameNode(&node->owner->nodes, NodeShadow));
     if (shadow != nullptr)
     {
         shadow->ClearSlot(slot.slot);
@@ -1180,33 +1180,36 @@ void ClearShadowSlotCommand::ExecuteOn(GameNode* node)
 void SetObjectCommand::ExecuteOn(GameNode* node)
 {
     InstanceContext* instance = node->owner;
-    auto* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
-    Switch(switches.busy, &instance->flags.value, u32{ReferencedObjectFlags::Busy});
+    ModelNode* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+    Switch(switches.busy, &instance->flags.value, static_cast<u32>(ReferencedObjectFlags::Busy));
     u32 setting = bodySwitches.carries;
     if (setting == SwitchOn || setting == SwitchOff)
     {
-        auto* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
+        MovementNode* movement = static_cast<MovementNode*>(GetGameNode(&instance->nodes, NodeMovement));
         if (movement != nullptr)
         {
             movement->bits.carries = setting == SwitchOn ? 1 : 0;
         }
     }
 
-    for (auto [field, bit] : {std::pair{u32{switches.pushable20}, BodyPushable20},
-                              std::pair{u32{bodySwitches.pushable40}, BodyPushable40}})
+    u32 fields[2];
+    fields[0] = static_cast<u32>(switches.pushable20);
+    fields[1] = static_cast<u32>(bodySwitches.pushable40);
+    u32 bits[2] = {BodyPushable20, BodyPushable40};
+    for (size_t i = 0; i < 2; ++i)
     {
-        if (field == SwitchOn || field == SwitchOff)
+        if (fields[i] == SwitchOn || fields[i] == SwitchOff)
         {
-            auto* body = static_cast<RigidBody*>(GetGameNode(&instance->nodes, NodeRigidBody));
+            RigidBody* body = static_cast<RigidBody*>(GetGameNode(&instance->nodes, NodeRigidBody));
             if (body != nullptr)
             {
-                Switch(field, &body->bodyFlags.value, bit);
+                Switch(fields[i], &body->bodyFlags.value, bits[i]);
             }
         }
     }
 
-    Switch(switches.visible, &instance->flags.value, u32{ReferencedObjectFlags::Visible});
-    Switch(switches.collision, &instance->flags.value, u32{ReferencedObjectFlags::CollisionActive});
+    Switch(switches.visible, &instance->flags.value, static_cast<u32>(ReferencedObjectFlags::Visible));
+    Switch(switches.collision, &instance->flags.value, static_cast<u32>(ReferencedObjectFlags::CollisionActive));
     u32 asleep = switches.asleep;
     if (asleep == SwitchOn)
     {
@@ -1307,7 +1310,7 @@ void DoAnimationCommand::Play(PropertyHolder* properties, GameAnimation* animati
 
 void DoAnimationCommand::ExecuteOn(GameNode* node)
 {
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     GameObject* object = agent->sourceNode != nullptr ? SourceObject(agent->sourceNode) : agent->object;
     InstanceContext* instance = agent->owner;
     u32 slot = flags.slotCount == 1 ? slots[0] : slots[RandomBelow(flags.slotCount)];
@@ -1318,8 +1321,8 @@ void DoAnimationCommand::ExecuteOn(GameNode* node)
         GameResources* resources = G_GameResourcesObjectPointer;
         ResourceTable* models = resources->models;
         u16 id = modelId;
-        auto* ogi = id != NoModelId ? static_cast<GameOGI*>(models->items[id & ResourceIndexMask]) : nullptr;
-        auto* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+        GameOGI* ogi = id != NoModelId ? static_cast<GameOGI*>(models->items[id & ResourceIndexMask]) : nullptr;
+        ModelNode* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
         PropertyHolder* properties = agent->sourceNode != nullptr ? GetPropsHolderFromInstanceNode(agent->sourceNode)
                                                                   : agent->properties;
         u16 animationId;
@@ -1343,7 +1346,7 @@ void DoAnimationCommand::ExecuteOn(GameNode* node)
 
     if (flags.shadowGiven != 0)
     {
-        auto* shadow = static_cast<ShadowNode*>(GetGameNode(&instance->nodes, NodeShadow));
+        ShadowNode* shadow = static_cast<ShadowNode*>(GetGameNode(&instance->nodes, NodeShadow));
         if (shadow != nullptr)
         {
             CastShadowSlot(shadow, flags.shadowSlot);
@@ -1353,7 +1356,7 @@ void DoAnimationCommand::ExecuteOn(GameNode* node)
 
 void DoParticleCommand::ExecuteOn(GameNode* node)
 {
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     InstanceContext* instance = agent->owner;
     s32 system = emission.system;
     if (placement.key != Waypoints::NoKey)
@@ -1414,7 +1417,7 @@ void DoParticleCommand::ExecuteOn(GameNode* node)
     if (placement.designator != DesignatesNone)
     {
         u32 designator = placement.designator;
-        auto* target = CallVirtual<InstanceContext*>(agent, agent->vtable, ObjectNode::GetDesignatorSlot, designator);
+        InstanceContext* target = CallVirtual<InstanceContext*>(agent, agent->vtable, ObjectNode::GetDesignatorSlot, designator);
         if (target != nullptr)
         {
             ObjectPlace* place = target->place;
@@ -1527,7 +1530,7 @@ void DoSoundCommand::ExecuteOn(GameNode* node)
 {
     CONSTEXPR f32 LoudestVolume = 5.0f;
     CONSTEXPR f32 ShakeThreshold = Rounded(0.01);
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     f32 volumeGiven = -1.0f;
     if (flags.volumeGiven != 0)
     {
@@ -1664,7 +1667,7 @@ void DoSoundCommand::ExecuteOn(GameNode* node)
 
 void BeginMusicCommand::ExecuteOn(GameNode* node)
 {
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     PropertyHolder* properties = agent->sourceNode != nullptr ? GetPropsHolderFromInstanceNode(agent->sourceNode)
                                                               : agent->properties;
     s32 number = track.IntWith(properties);
@@ -1709,7 +1712,7 @@ void BeginMusicCommand::ExecuteOn(GameNode* node)
 void CreateDamageCommand::ExecuteOn(GameNode* node)
 {
     CONSTEXPR u32 MostHit = 0x40;
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     u32 found = 0;
     ContactMessage message;
     ContactMessage::Construct(&message);
@@ -1808,18 +1811,15 @@ void CreateDamageCommand::ExecuteOn(GameNode* node)
         message.point.w = messageW.FloatWith(properties);
     }
 
-    auto send = [&](void* hit) {
-        AgentNode* hitNode = AgentNodeOf(static_cast<InstanceContext*>(hit));
-        if (hitNode != nullptr)
-        {
-            CallVirtual<void>(hitNode->agent, hitNode->agent->vtable, Agent::ContactSlot, &message, instance, 1u);
-        }
-    };
     if (flags.nearestOnly == 0)
     {
         for (u16 index = 0; index < found; index++)
         {
-            send(results[index]);
+            AgentNode* hitNode = AgentNodeOf(static_cast<InstanceContext*>(results[index]));
+            if (hitNode != nullptr)
+            {
+                CallVirtual<void>(hitNode->agent, hitNode->agent->vtable, Agent::ContactSlot, &message, instance, 1u);
+            }
         }
 
         return;
@@ -1829,7 +1829,7 @@ void CreateDamageCommand::ExecuteOn(GameNode* node)
     f32 best = Infinite;
     for (u16 index = 0; index < found; index++)
     {
-        auto* hit = static_cast<InstanceContext*>(results[index]);
+        InstanceContext* hit = static_cast<InstanceContext*>(results[index]);
         const Box* box = hit->CollisionBox();
         f32 dx = ((box->max.x - box->min.x) * 0.5f + box->min.x) - position.x;
         f32 dy = ((box->max.y - box->min.y) * 0.5f + box->min.y) - position.y;
@@ -1844,7 +1844,11 @@ void CreateDamageCommand::ExecuteOn(GameNode* node)
 
     if (nearest != nullptr)
     {
-        send(nearest);
+        AgentNode* hitNode = AgentNodeOf(nearest);
+        if (hitNode != nullptr)
+        {
+            CallVirtual<void>(hitNode->agent, hitNode->agent->vtable, Agent::ContactSlot, &message, instance, 1u);
+        }
     }
 }
 
@@ -1880,7 +1884,7 @@ extern "C"
 
 void ShootCommand::ExecuteOn(GameNode* node)
 {
-    auto* agent = static_cast<ObjectNode*>(node);
+    ObjectNode* agent = static_cast<ObjectNode*>(node);
     InstanceContext* instance = agent->owner;
     ChunkEntry* chunk = ChunkOfInstance(G_ChunkManager, instance);
     InstanceFactory* factory = g_InstanceFactory;
@@ -1900,7 +1904,7 @@ void ShootCommand::ExecuteOn(GameNode* node)
     }
     else
     {
-        auto* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
+        ModelNode* model = static_cast<ModelNode*>(GetGameNode(&instance->nodes, NodeModel));
         ExitPointAnimation* point = nullptr;
         if (model->animator != nullptr)
         {
@@ -1940,7 +1944,7 @@ void ShootCommand::ExecuteOn(GameNode* node)
     s32 angles[3];
     AnglesOfMatrix(&frame, angles);
     InstanceContext* made = CreateInstance(factory, chunk, object.id & ResourceIndexMask, &position, angles);
-    auto* madeNode = static_cast<ObjectNodeBase*>(GetGameNode(&made->nodes, NodeObject));
+    ObjectNodeBase* madeNode = static_cast<ObjectNodeBase*>(GetGameNode(&made->nodes, NodeObject));
     if (shot.speedGiven != 0)
     {
         Vector4 velocity = *RowOf(&frame, 2);

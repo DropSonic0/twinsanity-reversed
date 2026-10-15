@@ -168,7 +168,8 @@ f32 BodyMass(ObjectNode* node)
 
 Vector4 SidesOf(const Box* box)
 {
-    return {box->max.x - box->min.x, box->max.y - box->min.y, box->max.z - box->min.z, 1.0f};
+    Vector4 sides = {box->max.x - box->min.x, box->max.y - box->min.y, box->max.z - box->min.z, 1.0f};
+    return sides;
 }
 
 f32 LargestSide(const Box* box)
@@ -251,13 +252,13 @@ void SetLogicalRadiusCommand::Execute(TimeClock*, BehaviourRunner* runner, Behav
     }
 
     node->rollRadius = radius;
-    auto* body = static_cast<GameNode*>(GetGameNode(&node->owner->nodes, NodeRigidBody));
+    GameNode* body = static_cast<GameNode*>(GetGameNode(&node->owner->nodes, NodeRigidBody));
     if (body == nullptr || CallVirtual<u32>(body, body->vtable, DynamicBody::IsSphereSlot) == 0)
     {
         return;
     }
 
-    auto* sphere = static_cast<SphereBody*>(body);
+    SphereBody* sphere = static_cast<SphereBody*>(body);
     sphere->ellipsoid = 0;
     sphere->radius = radius;
 }
@@ -445,7 +446,7 @@ void ContinueColliderMotionCommand::Execute(TimeClock*, BehaviourRunner* runner,
     {
         // Retail bug: the vector it turns into the world is its stack's, never the velocity given (unused2 to unused4), so the
         // node gets whatever was left there (none here)
-        Vector4 velocity = {};
+        Vector4 velocity = {0.0f, 0.0f, 0.0f, 0.0f};
         ObjectPlace* place = node->owner->place;
         RotateAndTranslate(place);
         VuRotateVector(&place->matrix, &velocity, &velocity);
@@ -505,7 +506,7 @@ void ColliderLaunchNowCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
         target.w = 1.0f;
         LaunchTarget(launch, reinterpret_cast<const Vector4*>(&x), stepCorner, stepToward, stepScatter, runner, &target);
         // Retail bug: with neither kind of throw the node gets the velocity its stack had (none here)
-        Vector4 velocity = {};
+        Vector4 velocity = {0.0f, 0.0f, 0.0f, 0.0f};
         f32 gravity = body->gravity;
         if (launch.thrownOverHeight)
         {
@@ -566,9 +567,9 @@ void LaunchAtTargetCommand::Execute(TimeClock*, BehaviourRunner* runner, Behavio
     ObjectNode* node = NodeOf(runner);
     ObjectRigidBody* body = node->rigidBody;
     MotionState* motion = node->motion;
-    const auto* offset = reinterpret_cast<const Vector4*>(&offsetX);
+    const Vector4* offset = reinterpret_cast<const Vector4*>(&offsetX);
     // Retail bug: with neither kind of throw the node and its physics body get the velocity the stack had (none here)
-    Vector4 velocity = {};
+    Vector4 velocity = {0.0f, 0.0f, 0.0f, 0.0f};
     if (launch.velocityGiven)
     {
         velocity = *offset;
@@ -665,7 +666,7 @@ void ApplyImpulseCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
         }
 
         // Retail looks for the physics body a second time when there's none
-        auto* physics = static_cast<RigidBody*>(GetGameNode(nodes, NodeRigidBody));
+        RigidBody* physics = static_cast<RigidBody*>(GetGameNode(nodes, NodeRigidBody));
         if (physics == nullptr)
         {
             physics = static_cast<RigidBody*>(GetGameNode(nodes, NodeRigidBody));
@@ -685,7 +686,7 @@ void ApplyImpulseCommand::Execute(TimeClock*, BehaviourRunner* runner, Behaviour
         return;
     }
 
-    auto* physics = static_cast<RigidBody*>(GetGameNode(nodes, NodeRigidBody));
+    RigidBody* physics = static_cast<RigidBody*>(GetGameNode(nodes, NodeRigidBody));
     if (physics == nullptr)
     {
         return;
@@ -746,7 +747,7 @@ void MagnetPullToFocusCommand::Execute(TimeClock* clock, BehaviourRunner* runner
     if (focus->flags.attached)
     {
         // Retail doesn't check that the parent has an object node
-        auto* holder = static_cast<ObjectNode*>(GetGameNode(&focus->parent->nodes, NodeObject));
+        ObjectNode* holder = static_cast<ObjectNode*>(GetGameNode(&focus->parent->nodes, NodeObject));
         if (TakesPackets(holder))
         {
             holderBody = holder->rigidBody;
@@ -827,8 +828,8 @@ void PushInstancesAwayCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
     bool byDistance = flags.byDistance != 0;
     for (u16 index = 0; index < found; index++)
     {
-        auto* other = static_cast<InstanceContext*>(results[index]);
-        auto* physics = static_cast<RigidBody*>(GetGameNode(&other->nodes, NodeRigidBody));
+        InstanceContext* other = static_cast<InstanceContext*>(results[index]);
+        RigidBody* physics = static_cast<RigidBody*>(GetGameNode(&other->nodes, NodeRigidBody));
         if (physics == nullptr)
         {
             continue;
@@ -850,15 +851,26 @@ void PushInstancesAwayCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
             way.x = way.x * inverse;
             way.y = way.y * inverse;
             way.z = way.z * inverse;
-            impulse = {way.x * push + away.x * perDistance, way.y * push + away.y * perDistance, way.z * push + away.z * perDistance,
-                       1.0f};
-            point = {0.0f, Above, 0.0f, 1.0f};
+            impulse.x = way.x * push + away.x * perDistance;
+            impulse.y = way.y * push + away.y * perDistance;
+            impulse.z = way.z * push + away.z * perDistance;
+            impulse.w = 1.0f;
+            point.x = 0.0f;
+            point.y = Above;
+            point.z = 0.0f;
+            point.w = 1.0f;
         }
         else
         {
             f32 inverse = InverseLength(&away, LengthEpsilon);
-            impulse = {away.x * inverse * push, away.y * inverse * push, away.z * inverse * push, 1.0f};
-            point = {0.0f, 0.0f, 0.0f, 1.0f};
+            impulse.x = away.x * inverse * push;
+            impulse.y = away.y * inverse * push;
+            impulse.z = away.z * inverse * push;
+            impulse.w = 1.0f;
+            point.x = 0.0f;
+            point.y = 0.0f;
+            point.z = 0.0f;
+            point.w = 1.0f;
         }
 
         physics->ApplyImpulse(&impulse, &point);
@@ -867,7 +879,7 @@ void PushInstancesAwayCommand::Execute(TimeClock*, BehaviourRunner* runner, Beha
 
 ObjectRigidBody* ConstructRigidBody(void* memory, ObjectNode* node)
 {
-    auto* body = static_cast<ObjectRigidBody*>(memory);
+    ObjectRigidBody* body = static_cast<ObjectRigidBody*>(memory);
     body->node = node;
     body->state.value = (body->state.value & ~StateClearedWhenMade) | StateSetWhenMade;
     body->bits.value = (body->bits.value & BitsKeptWhenMade) | BitsSetWhenMade;
@@ -880,7 +892,10 @@ ObjectRigidBody* ConstructRigidBody(void* memory, ObjectNode* node)
     body->unusedC4 = 0.0f;
     body->grip = 0.0f;
     body->widthScale = 1.0f;
-    body->contactNormal = {0.0f, 1.0f, 0.0f, 1.0f};
+    body->contactNormal.x = 0.0f;
+    body->contactNormal.y = 1.0f;
+    body->contactNormal.z = 0.0f;
+    body->contactNormal.w = 1.0f;
     body->unusedCC = node->motion->velocity.y;
     body->secondIndex = ObjectRigidBody::NoSecondIndex;
     body->firstIndex = ObjectRigidBody::NoFirstIndex;
@@ -1065,7 +1080,7 @@ void MakePhysicsBody(ObjectRigidBody* body, u32 kind)
     body->physicsBody->collisionMask = g_PhysicsBodyKinds | AlsoCollidesWith;
     if (sphere)
     {
-        auto* ball = static_cast<SphereBody*>(body->physicsBody);
+        SphereBody* ball = static_cast<SphereBody*>(body->physicsBody);
         ball->ellipsoid = 0;
         ball->radius = body->node->rollRadius;
     }
@@ -1155,7 +1170,10 @@ void MagnetPull(ObjectRigidBody* body, const Vector4* position, Vector4* pull)
     switch (body->state.magnetWay)
     {
     case MagnetFromBody:
-        way = {position->x - here.x, position->y - here.y, position->z - here.z, 1.0f};
+        way.x = position->x - here.x;
+        way.y = position->y - here.y;
+        way.z = position->z - here.z;
+        way.w = 1.0f;
         break;
     case MagnetAlongZAxis:
         place = body->node->owner->place;
@@ -1178,7 +1196,10 @@ void MagnetPull(ObjectRigidBody* body, const Vector4* position, Vector4* pull)
     }
 
     f32 size = body->sizes[1];
-    *pull = {way.x * size, way.y * size, way.z * size, 1.0f};
+    pull->x = way.x * size;
+    pull->y = way.y * size;
+    pull->z = way.z * size;
+    pull->w = 1.0f;
 }
 
 void DestroyRigidBody(ObjectRigidBody* body, u32 destroyFlags)
